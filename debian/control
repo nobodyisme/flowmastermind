@@ -1,0 +1,13 @@
+Source: flowmastermind
+Section: net
+Priority: extra
+Maintainer: Andrey Vasilenkov <indigo@yandex-team.ru>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.2
+Homepage: https://github.com/nobodyisme/flowmastermind
+Vcs-Git: git://github.com/nobodyisme/flowmastermind.git
+
+Package: flowmastermind
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, cocaine-framework-python (>= 0.10.6), cocaine-tornado-proxy (>= 0.10.6)
+Description: Frontend for mastermind storage statistics display
