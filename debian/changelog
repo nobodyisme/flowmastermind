@@ -1,3 +1,9 @@
+flowmastermind (0.5) lucid; urgency=low
+
+  * Fix: missed terrabytes label
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 20 Dec 2013 16:47:39 +0400
+
 flowmastermind (0.4) lucid; urgency=low
 
   * Fix: forgotten deb package files
