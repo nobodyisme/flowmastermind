@@ -23,7 +23,7 @@
         showTooltips: true
     };
 
-    var prefixes = ['б', 'кб', 'Мб', 'Гб', 'Пб'],
+    var prefixes = ['б', 'кб', 'Мб', 'Гб', 'Тб', 'Пб'],
         gb = 1024 * 1024 * 1024;
 
     var dc_names = {'ugr': 'Угрешка',
