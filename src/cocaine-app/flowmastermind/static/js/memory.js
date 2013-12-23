@@ -49,7 +49,7 @@
                 value: data[0].value,
                 // color: "#467EE2",
                 color : "rgba(88, 218, 119, 1.0)",
-                label: '  ' + data[0].label + '  ',
+                label: ' ' + data[0].label + ' ',
                 labelAlign: 'right',
                 labelFontSize: '14',
                 labelColor: "#334153"
@@ -59,7 +59,7 @@
                 value : data[1].value,
                 // color : "#9DC7FD",
                 color : "#eee",
-                label: '  ' + data[1].label + '  ',
+                label: ' ' + data[1].label + ' ',
                 labelFontSize: '14',
                 // labelColor: "#00509E"
                 // labelColor: "#467EE2"
@@ -75,7 +75,7 @@
             {
                 value: data[0].value,
                 color : "#fdb45c",
-                label: '  ' + data[0].label + '  ',
+                label: ' ' + data[0].label + ' ',
                 labelAlign: 'right',
                 labelFontSize: '14',
                 labelColor: "#422C12"
@@ -83,7 +83,7 @@
             {
                 value: data[1].value,
                 color : "#cfe4ff",
-                label: '  ' + data[1].label + '  ',
+                label: ' ' + data[1].label + ' ',
                 labelAlign: 'right',
                 labelFontSize: '14',
                 labelColor: "#422C12"
@@ -91,7 +91,7 @@
             {
                 value : data[2].value,
                 color : "#eee",
-                label: '  ' + data[2].label + '  ',
+                label: ' ' + data[2].label + ' ',
                 labelFontSize: '14',
                 labelColor: "#b6b6b6"
             }
@@ -131,21 +131,21 @@
                     overlap: true
                 },
                 {
-                    fillColor : "rgba(235,235,235,1)",
-                    strokeColor : "rgba(220,220,220,1)",
+                    fillColor : "rgba(162,227,177, 1)",
+                    strokeColor : "rgba(88, 218, 119, 1)",
                     data : data[1],
                     labelFontSize: '10',
+                    labelColor: '#1D421D',
                     labels: barlabels[1],
-                    labelColor: "#b6b6b6",
-                    overlap : true
+                    overlap: true
                 },
                 {
-                    fillColor : "rgba(88, 218, 119, 0.5)",
-                    strokeColor : "rgba(88, 218, 119, 1)",
+                    fillColor : "rgba(235,235,235,1)",
+                    strokeColor : "rgba(220,220,220,1)",
                     data : data[2],
                     labelFontSize: '10',
-                    labelColor: '#1D421D',
-                    labels: barlabels[2]
+                    labels: barlabels[2],
+                    labelColor: "#b6b6b6"
                 }
             ]
         };
@@ -184,16 +184,16 @@
                     overlap: true
                 },
                 {
-                    fillColor : "rgba(235,235,235,1)",
-                    strokeColor : "rgba(220,220,220,1)",
+                    fillColor : "rgba(254, 218, 172, 1)",
+                    strokeColor : "rgba(253, 180, 92, 1)",
                     data : data[1],
                     labelFontSize: '10',
+                    labelColor: 'rgba(65, 44, 19, 1)',
                     labels: barlabels[1],
-                    labelColor: "#b6b6b6",
                     overlap : true
                 },
                 {
-                    fillColor : "rgba(160, 202, 255, 0.5)",
+                    fillColor : "rgba(198,219,245, 1)",
                     strokeColor : "rgba(160, 202, 255, 1)",
                     data : data[2],
                     labelFontSize: '10',
@@ -202,12 +202,12 @@
                     overlap: true
                 },
                 {
-                    fillColor : "rgba(254, 218, 172, 1)",
-                    strokeColor : "rgba(253, 180, 92, 1)",
+                    fillColor : "rgba(235,235,235,1)",
+                    strokeColor : "rgba(220,220,220,1)",
                     data : data[3],
                     labelFontSize: '10',
-                    labelColor: 'rgba(65, 44, 19, 1)',
-                    labels: barlabels[3]
+                    labels: barlabels[3],
+                    labelColor: "#b6b6b6"
                 }
             ]
         };
@@ -270,11 +270,11 @@
                     var uncoupled_acc = data['dc'][dc]['uncoupled_space'] + data['dc'][dc]['effective_space'];
                     dcdata[0].push(uncoupled_acc / gb);
                     dcdata[1].push(data['dc'][dc]['effective_space'] / gb);
-                    dcdata[2].push(data['dc'][dc]['effective_free_space'] / gb);
+                    dcdata[2].push((data['dc'][dc]['effective_space'] - data['dc'][dc]['effective_free_space']) / gb);
 
                     barlabels[0].push(prefixBytes(data['dc'][dc]['uncoupled_space']));
-                    barlabels[1].push(prefixBytes(data['dc'][dc]['effective_space'] - data['dc'][dc]['effective_free_space']));
-                    barlabels[2].push(prefixBytes(data['dc'][dc]['effective_free_space']));
+                    barlabels[1].push(prefixBytes(data['dc'][dc]['effective_free_space']));
+                    barlabels[2].push(prefixBytes(data['dc'][dc]['effective_space'] - data['dc'][dc]['effective_free_space']));
 
                 }
                 $('#dscMemoryChart').attr('width', 30 + labels.length * 100).css({width: 30 + labels.length * 100 + 'px'});
@@ -291,13 +291,13 @@
                     var uncoupled_acc = data['dc'][dc]['uncoupled_groups'] + data['dc'][dc]['total_couples'];
                     dcdata[0].push(uncoupled_acc);
                     dcdata[1].push(data['dc'][dc]['total_couples']);
-                    dcdata[2].push(data['dc'][dc]['frozen_couples'] + data['dc'][dc]['open_couples']);
-                    dcdata[3].push(data['dc'][dc]['open_couples']);
+                    dcdata[2].push(data['dc'][dc]['total_couples'] - data['dc'][dc]['open_couples']);
+                    dcdata[3].push(data['dc'][dc]['total_couples'] - data['dc'][dc]['open_couples'] - data['dc'][dc]['frozen_couples']);
 
                     barlabels[0].push(data['dc'][dc]['uncoupled_groups']);
-                    barlabels[1].push(data['dc'][dc]['total_couples'] - data['dc'][dc]['open_couples'] - data['dc'][dc]['frozen_couples']);
+                    barlabels[1].push(data['dc'][dc]['open_couples']);
                     barlabels[2].push(data['dc'][dc]['frozen_couples']);
-                    barlabels[3].push(data['dc'][dc]['open_couples']);
+                    barlabels[3].push(data['dc'][dc]['total_couples'] - data['dc'][dc]['open_couples'] - data['dc'][dc]['frozen_couples']);
 
                 }
                 $('#dscGroupsChart').attr('width', 30 + labels.length * 100).css({width: 30 + labels.length * 100 + 'px'});
