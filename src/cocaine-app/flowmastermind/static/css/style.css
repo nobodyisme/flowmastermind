@@ -68,6 +68,13 @@ span.chart-label {
     text-align: center;
 }
 
+.ns-chart-label {
+    display: block;
+    padding: 10px 0 5px 20px;
+    color: #666;
+    font-size: 20px;
+}
+
 .inner-content {
     margin-left: 200px;
 }
@@ -117,6 +124,8 @@ span.chart-label {
     border-bottom: 1px dashed #fff;
 
     margin-top: -1px;
+
+    border-color: rgba(200, 200, 200, 0.0);
 }
 
 .menu-item:first {

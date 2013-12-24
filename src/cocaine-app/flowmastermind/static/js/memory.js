@@ -16,11 +16,11 @@
 
     var options = {
         //String - Animation easing effect
-        animation: true,
+        animation: false,
         animationEasing: "easeOutQuart",
         barStrokeWidth: 2,
         labelFontFamily: 'Verdana',
-        showTooltips: true
+        showTooltips: false
     };
 
     var prefixes = ['б', 'кб', 'Мб', 'Гб', 'Тб', 'Пб'],
@@ -32,6 +32,10 @@
                     'fol': 'Фольга',
                     'iva': 'Ивантеевка'}
 
+    var ns_container = $('.namespaces'),
+        namespaces_menu = $('.namespaces-menu'),
+        namespaces = {};
+
     function prefixBytes(bytes) {
         var res = bytes;
         for (var i in prefixes) {
@@ -41,6 +45,29 @@
             res = res / 1024;
         }
         return res.toFixed(2) + ' ' + prefixes[prefixes.length - 1];
+    }
+
+    function SortByAlphanum(a, b){
+        var aName = a.toLowerCase(),
+            bName = b.toLowerCase();
+        return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+    }
+
+
+    function iterItems(obj) {
+        var keys = [],
+            items = [];
+        for (key in obj) {
+            keys.push(key);
+        }
+
+        keys.sort(SortByAlphanum);
+
+        for (idx in keys) {
+            items.push([keys[idx], obj[keys[idx]]]);
+        }
+
+        return items;
     }
 
     function renderMemoryChart(chart, data) {
@@ -215,6 +242,40 @@
         chart.Bar(mdc_data, dc_options);
     }
 
+    function nsChart(ns) {
+        if (!namespaces[ns]) {
+
+            var chart_set = $('<div class="chart-set" id="' + ns + '">').appendTo(ns_container),
+                chart_label = $('<span class="ns-chart-label">').appendTo(chart_set),
+                clear2 = $('<span class="clear">').appendTo(chart_set),
+                m_chart = $('<div class="chart">').appendTo(chart_set),
+                m_chart_canvas = $('<canvas height="300" width="750">').appendTo(m_chart),
+                c_chart = $('<div class="chart">').appendTo(chart_set),
+                c_chart_canvas = $('<canvas height="300" width="750">').appendTo(c_chart),
+
+                ctxNSMDC = m_chart_canvas[0].getContext('2d'),
+                ctxNSCDC = c_chart_canvas[0].getContext('2d'),
+
+                menuItem = $('<a class="menu-item" href="#' + ns + '">').appendTo(namespaces_menu);
+
+            menuItem.text(ns);
+            chart_label.text('Неймспейс ' + ns);
+
+            // $('<span class="clear">').appendTo(m_chart_set);
+            $('<span class="clear">').appendTo(chart_set);
+
+
+            namespaces[ns] = {
+                'm_chart': new Chart(ctxNSMDC),
+                'c_chart': new Chart(ctxNSCDC),
+                'm_canvas': m_chart_canvas,
+                'c_canvas': c_chart_canvas
+            };
+        }
+
+        return namespaces[ns];
+    }
+
     function updateStats() {
         $.ajax({
             url: '/json/stat/',
@@ -265,7 +326,11 @@
                     dcdata = [[], [], []],
                     barlabels = [[], [], []];
 
-                for (dc in data['dc']) {
+                var dc_data_items = iterItems(data['dc']);
+
+                for (idx in dc_data_items) {
+                    dc = dc_data_items[idx][0];
+
                     labels.push(dc_names[dc]);
                     var uncoupled_acc = data['dc'][dc]['uncoupled_space'] + data['dc'][dc]['effective_space'];
                     dcdata[0].push(uncoupled_acc / gb);
@@ -281,12 +346,13 @@
                 renderDcMemoryChart(dcMemoryChart, labels, dcdata, barlabels);
 
 
-
                 var labels = [],
                     dcdata = [[], [], [], []],
                     barlabels = [[], [], [], []];
 
-                for (dc in data['dc']) {
+                for (idx in dc_data_items) {
+                    dc = dc_data_items[idx][0];
+
                     labels.push(dc_names[dc]);
                     var uncoupled_acc = data['dc'][dc]['uncoupled_groups'] + data['dc'][dc]['total_couples'];
                     dcdata[0].push(uncoupled_acc);
@@ -303,6 +369,69 @@
                 $('#dscGroupsChart').attr('width', 30 + labels.length * 100).css({width: 30 + labels.length * 100 + 'px'});
                 renderDcGroupsChart(dcGroupsChart, labels, dcdata, barlabels);
 
+                var ns_items = iterItems(data['namespaces']);
+
+                // namespaces stats
+                for (var idx in ns_items) {
+
+                    var ns = nsChart(ns_items[idx][0]),
+                        ns_data = ns_items[idx][1];
+
+
+                    // MEMORY
+                    var labels = [],
+                        dcdata = [[], [], []],
+                        barlabels = [[], [], []];
+
+                    var ns_data_items = iterItems(ns_data);
+
+                    for (idx in ns_data_items) {
+
+                        dc = ns_data_items[idx][0];
+
+                        labels.push(dc_names[dc]);
+                        var uncoupled_acc = ns_data[dc]['uncoupled_space'] + ns_data[dc]['effective_space'];
+                        dcdata[0].push(uncoupled_acc / gb);
+                        dcdata[1].push(ns_data[dc]['effective_space'] / gb);
+                        dcdata[2].push((ns_data[dc]['effective_space'] - ns_data[dc]['effective_free_space']) / gb);
+
+                        barlabels[0].push(prefixBytes(ns_data[dc]['uncoupled_space']));
+                        barlabels[1].push(prefixBytes(ns_data[dc]['effective_free_space']));
+                        barlabels[2].push(prefixBytes(ns_data[dc]['effective_space'] - ns_data[dc]['effective_free_space']));
+
+                    }
+                    ns.m_canvas.attr('width', 30 + labels.length * 100).css({width: 30 + labels.length * 100 + 'px'});
+                    renderDcMemoryChart(ns.m_chart, labels, dcdata, barlabels);
+
+
+                    // COUPLES
+
+                    var labels = [],
+                        dcdata = [[], [], [], []],
+                        barlabels = [[], [], [], []];
+
+                    for (idx in ns_data_items) {
+
+                        dc = ns_data_items[idx][0];
+
+                        labels.push(dc_names[dc]);
+                        var uncoupled_acc = ns_data[dc]['uncoupled_groups'] + ns_data[dc]['total_couples'];
+                        dcdata[0].push(uncoupled_acc);
+                        dcdata[1].push(ns_data[dc]['total_couples']);
+                        dcdata[2].push(ns_data[dc]['total_couples'] - ns_data[dc]['open_couples']);
+                        dcdata[3].push(ns_data[dc]['total_couples'] - ns_data[dc]['open_couples'] - ns_data[dc]['frozen_couples']);
+
+                        barlabels[0].push(ns_data[dc]['uncoupled_groups']);
+                        barlabels[1].push(ns_data[dc]['open_couples']);
+                        barlabels[2].push(ns_data[dc]['frozen_couples']);
+                        barlabels[3].push(ns_data[dc]['total_couples'] - ns_data[dc]['open_couples'] - ns_data[dc]['frozen_couples']);
+
+                    }
+                    ns.c_canvas.attr('width', 30 + labels.length * 100).css({width: 30 + labels.length * 100 + 'px'});
+
+
+                    renderDcGroupsChart(ns.c_chart, labels, dcdata, barlabels);
+                }
 
                 // no more animation, i'm begging you
                 options.animation = false;
@@ -317,11 +446,11 @@
     periodicTask();
 
 
-    $(".menu-item").mouseover(function() {
+    $(document).on("mouseover", ".menu-item", function() {
         $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 1.0)" }, "fast");
     });
 
-    $(".menu-item").mouseout(function() {
+    $(document).on("mouseout", ".menu-item", function() {
         $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 0.0)" }, "fast");
     });
 
