@@ -1,3 +1,10 @@
+flowmastermind (0.6) lucid; urgency=low
+
+  * Feature: per namespace statistics
+  * Fix: namespace and dc names ordering
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 24 Dec 2013 20:27:52 +0400
+
 flowmastermind (0.5) lucid; urgency=low
 
   * Fix: missed terrabytes label
