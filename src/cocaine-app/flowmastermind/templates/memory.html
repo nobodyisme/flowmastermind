@@ -34,11 +34,17 @@
         <div class="chart-set" id="memory">
             <div class="chart">
                 <canvas id="effectiveMemoryChart" width="200" height="200"></canvas>
-                <span class="chart-label">эффективная память</span>
+                <span class="chart-label">эффективное место</span>
             </div>
             <div class="chart">
                 <canvas id="totalMemoryChart" width="200" height="200"></canvas>
-                <span class="chart-label">общая память</span>
+                <span class="chart-label">общее место</span>
+            </div>
+            <div class="chart">
+                <canvas id="realDataEffMemoryChart" width="200" height="200"></canvas>
+                <span class="chart-label">размер данных<sup>*</sup></span>
+                <span class="chart-label-small"><sup>*</sup>экспериментальная фича,<br />
+                доверяй, но проверяй</span>
             </div>
             <div class="chart-legend">
                 <div class="chart-legend-item">
@@ -80,12 +86,12 @@
             </div>
             <div class="chart-legend">
                 <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-total"></span>
-                    &mdash; закрыто
-                </div>
-                <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-dc-free"></span>
                     &mdash; свободно
+                </div>
+                <div class="chart-legend-item">
+                    <span class="chart-legend-color-sample color-dc-total"></span>
+                    &mdash; занято
                 </div>
                 <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-dc-uncoupled"></span>
@@ -101,16 +107,16 @@
             </div>
             <div class="chart-legend">
                 <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-couples-total"></span>
-                    &mdash; в капле, закрыта
-                </div>
-                <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-dc-couples-open"></span>
                     &mdash; в капле, открыта
                 </div>
                 <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-dc-couples-frozen"></span>
                     &mdash; в капле, заморожена
+                </div>
+                <div class="chart-legend-item">
+                    <span class="chart-legend-color-sample color-dc-couples-total"></span>
+                    &mdash; в капле, закрыта
                 </div>
                 <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-dc-groups-uncoupled"></span>

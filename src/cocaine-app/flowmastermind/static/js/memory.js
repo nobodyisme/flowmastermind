@@ -2,17 +2,19 @@
 
     var updatePeriod = 10000;
 
-    var ctxEM = document.getElementById('effectiveMemoryChart').getContext('2d');
-    var ctxTM = document.getElementById('totalMemoryChart').getContext('2d');
-    var ctxC = document.getElementById('couplesChart').getContext('2d');
-    var ctxMDC = document.getElementById('dscMemoryChart').getContext('2d');
-    var ctxGDC = document.getElementById('dscGroupsChart').getContext('2d');
+    var ctxEM = document.getElementById('effectiveMemoryChart').getContext('2d'),
+        ctxTM = document.getElementById('totalMemoryChart').getContext('2d'),
+        ctxRDEM = document.getElementById('realDataEffMemoryChart').getContext('2d'),
+        ctxC = document.getElementById('couplesChart').getContext('2d'),
+        ctxMDC = document.getElementById('dscMemoryChart').getContext('2d'),
+        ctxGDC = document.getElementById('dscGroupsChart').getContext('2d'),
 
-    var effectiveMemoryChart = new Chart(ctxEM);
-    var totalMemoryChart = new Chart(ctxTM);
-    var couplesChart = new Chart(ctxC);
-    var dcMemoryChart = new Chart(ctxMDC);
-    var dcGroupsChart = new Chart(ctxGDC);
+        effectiveMemoryChart = new Chart(ctxEM),
+        totalMemoryChart = new Chart(ctxTM),
+        realDataEffMemoryChart = new Chart(ctxRDEM),
+        couplesChart = new Chart(ctxC),
+        dcMemoryChart = new Chart(ctxMDC),
+        dcGroupsChart = new Chart(ctxGDC);
 
     var options = {
         //String - Animation easing effect
@@ -125,6 +127,41 @@
         ];
 
         chart.Pie(c_data, options);
+    }
+
+    function addLegend(chart_set) {
+
+        var legends = [
+            {label: ' — свободно',
+             labelclass: 'color-memory-free'},
+            {label: ' — занято',
+             labelclass: 'color-memory-occ',
+             padding: true},
+            {label: ' — в капле, открыта',
+             labelclass: 'color-dc-couples-open'},
+            {label: ' — в капле, заморожена',
+             labelclass: 'color-dc-couples-frozen'},
+            {label: ' — в капле, закрыта',
+             labelclass: 'color-dc-couples-total'},
+            {label: ' — не в капле',
+             labelclass: 'color-dc-groups-uncoupled'},
+        ];
+
+        var chart_legend = $('<div class="chart-legend">').appendTo(chart_set),
+            item_dummy = $('<div class="chart-legend-item">'),
+            color_sample_dummy = $('<span class="chart-legend-color-sample">');
+
+        for (idx in legends) {
+            var item = item_dummy.clone().appendTo(chart_legend),
+                color_sample = color_sample_dummy.clone().appendTo(item),
+                textNode = document.createTextNode(legends[idx].label);
+            item.append(textNode);
+            color_sample.addClass(legends[idx].labelclass);
+
+            if (legends[idx].padding) {
+                item_dummy.clone().appendTo(chart_legend);
+            }
+        }
     }
 
     function renderDcMemoryChart(chart, labels, data, barlabels) {
@@ -261,7 +298,8 @@
             menuItem.text(ns);
             chart_label.text('Неймспейс ' + ns);
 
-            // $('<span class="clear">').appendTo(m_chart_set);
+            addLegend(chart_set);
+
             $('<span class="clear">').appendTo(chart_set);
 
 
@@ -289,6 +327,11 @@
                     effective_occ_space = occ_space,
                     effective_free_space = data['effective_free_space'],
 
+                    rd_free_space = data['real_data']['free_space'],
+                    rd_occ_space = data['real_data']['total_space'] - rd_free_space,
+                    rd_effective_occ_space = rd_occ_space,
+                    rd_effective_free_space = data['real_data']['effective_free_space'],
+
                     open_couples = data['open_couples'],
                     frozen_couples = data['frozen_couples'],
                     closed_couples = data['total_couples'] - open_couples - frozen_couples,
@@ -296,7 +339,12 @@
                     free_space_label = prefixBytes(free_space),
                     occ_space_label = prefixBytes(occ_space),
                     effective_free_space_label = prefixBytes(effective_free_space),
-                    effective_occ_space_label = prefixBytes(effective_occ_space);
+                    effective_occ_space_label = prefixBytes(effective_occ_space),
+
+                    rd_free_space_label = prefixBytes(rd_free_space),
+                    rd_occ_space_label = prefixBytes(rd_occ_space),
+                    rd_effective_free_space_label = prefixBytes(rd_effective_free_space),
+                    rd_effective_occ_space_label = prefixBytes(rd_effective_occ_space);
 
                 renderMemoryChart(effectiveMemoryChart, [
                     {value: effective_free_space,
@@ -310,6 +358,13 @@
                      label: free_space_label},
                     {value: occ_space,
                      label: occ_space_label}
+                ]);
+
+                renderMemoryChart(realDataEffMemoryChart, [
+                    {value: rd_effective_free_space,
+                     label: rd_effective_free_space_label},
+                    {value: rd_effective_occ_space,
+                     label: rd_effective_occ_space_label}
                 ]);
 
                 renderCouplesChart(couplesChart, [
@@ -447,11 +502,11 @@
 
 
     $(document).on("mouseover", ".menu-item", function() {
-        $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 1.0)" }, "fast");
+        $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 1.0)" }, 0.1);
     });
 
     $(document).on("mouseout", ".menu-item", function() {
-        $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 0.0)" }, "fast");
+        $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 0.0)" }, 0.1);
     });
 
 })();
