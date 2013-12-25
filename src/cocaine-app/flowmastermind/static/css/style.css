@@ -76,18 +76,26 @@ span.chart-label {
 }
 
 .inner-content {
-    margin-left: 200px;
+    min-height: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 220px;
+    overflow-y: scroll;
 }
 
 
 /* Menu */
 .menu {
+    min-height: 100%;
     position: fixed;
     top: 0px;
     bottom: 0px;
     width: 200px;
     float: left;
     padding-left: 10px;
+    overflow-y: scroll;
 }
 
 .menu-item-header {
