@@ -1,3 +1,10 @@
+flowmastermind (0.7) lucid; urgency=low
+
+  * Feature: real data memory availability
+  * Fix: per namespace legends
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 25 Dec 2013 18:50:19 +0400
+
 flowmastermind (0.6) lucid; urgency=low
 
   * Feature: per namespace statistics
