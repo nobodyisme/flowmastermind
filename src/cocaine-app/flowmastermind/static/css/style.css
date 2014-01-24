@@ -47,11 +47,12 @@ span.clear {
 .chart-set {
     border-bottom: 1px dashed #ccc;
     padding-left:50px;
+    overflow: hidden;
 }
 
 .chart {
-    display: block;
-    float: left;
+    vertical-align: top;
+    display: inline-block;
     /*width: 200px;*/
     padding: 20px;
 }
@@ -195,7 +196,7 @@ span.chart-label-small {
 /* legend */
 .chart-legend {
     float: right;
-    width: 300px;
+    width: 250px;
     padding-top: 50px;
 }
 
@@ -226,6 +227,10 @@ span.chart-label-small {
 
 .color-couples-frozen {
     background-color: #cfe4ff;
+}
+
+.color-couples-bad {
+    background-color: rgb(227, 65, 65);
 }
 
 .color-couples-closed {

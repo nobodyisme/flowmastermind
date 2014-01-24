@@ -14,11 +14,9 @@ logging = Logger()
 app = Flask(__name__)
 
 @app.route('/')
-@app.route('/test')
-def memory():
-    logging.info('test')
+def charts():
     try:
-        return render_template('memory.html')
+        return render_template('charts.html')
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())

@@ -32,6 +32,16 @@
     </div>
     <div class="inner-content">
         <div class="chart-set" id="memory">
+            <div class="chart-legend">
+                <div class="chart-legend-item">
+                    <span class="chart-legend-color-sample color-memory-free"></span>
+                    &mdash; свободно
+                </div>
+                <div class="chart-legend-item">
+                    <span class="chart-legend-color-sample color-memory-occ"></span>
+                    &mdash; занято
+                </div>
+            </div>
             <div class="chart">
                 <canvas id="effectiveMemoryChart" width="200" height="200"></canvas>
                 <span class="chart-label">эффективное место</span>
@@ -46,23 +56,9 @@
                 <span class="chart-label-small"><sup>*</sup>экспериментальная фича,<br />
                 доверяй, но проверяй</span>
             </div>
-            <div class="chart-legend">
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-memory-free"></span>
-                    &mdash; свободно
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-memory-occ"></span>
-                    &mdash; занято
-                </div>
-            </div>
             <span class="clear" />
         </div>
         <div class="chart-set" id="couples">
-            <div class="chart">
-                <canvas id="couplesChart" width="200" height="200"></canvas>
-                <span class="chart-label">каплы</span>
-            </div>
             <div class="chart-legend">
                 <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-couples-open"></span>
@@ -76,14 +72,18 @@
                     <span class="chart-legend-color-sample color-couples-closed"></span>
                     &mdash; закрытые
                 </div>
+                <div class="chart-legend-item">
+                    <span class="chart-legend-color-sample color-couples-bad"></span>
+                    &mdash; недоступные
+                </div>
+            </div>
+            <div class="chart">
+                <canvas id="couplesChart" width="200" height="200"></canvas>
+                <span class="chart-label">каплы</span>
             </div>
             <span class="clear" />
         </div>
         <div class="chart-set" id="dcs-memory">
-            <div class="chart">
-                <canvas id="dscMemoryChart" width="750" height="300"></canvas>
-                <span class="chart-label">память по дата-центрам</span>
-            </div>
             <div class="chart-legend">
                 <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-dc-free"></span>
@@ -98,13 +98,13 @@
                     &mdash; не используется
                 </div>
             </div>
+            <div class="chart">
+                <canvas id="dscMemoryChart" width="750" height="300"></canvas>
+                <span class="chart-label">память по дата-центрам</span>
+            </div>
             <span class="clear" />
         </div>
         <div class="chart-set" id="dcs-groups">
-            <div class="chart">
-                <canvas id="dscGroupsChart" width="750" height="300"></canvas>
-                <span class="chart-label">группы по дата-центрам</span>
-            </div>
             <div class="chart-legend">
                 <div class="chart-legend-item">
                     <span class="chart-legend-color-sample color-dc-couples-open"></span>
@@ -122,6 +122,10 @@
                     <span class="chart-legend-color-sample color-dc-groups-uncoupled"></span>
                     &mdash; не в капле
                 </div>
+            </div>
+            <div class="chart">
+                <canvas id="dscGroupsChart" width="750" height="300"></canvas>
+                <span class="chart-label">группы по дата-центрам</span>
             </div>
             <span class="clear" />
         </div>

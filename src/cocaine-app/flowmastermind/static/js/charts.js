@@ -1,6 +1,6 @@
 (function () {
 
-    var updatePeriod = 10000;
+    var updatePeriod = 30000;
 
     var ctxEM = document.getElementById('effectiveMemoryChart').getContext('2d'),
         ctxTM = document.getElementById('totalMemoryChart').getContext('2d'),
@@ -84,8 +84,11 @@
 
             var chart_set = $('<div class="chart-set" id="' + ns + '">').appendTo(ns_container),
                 chart_label = $('<span class="ns-chart-label">').appendTo(chart_set),
-                clear2 = $('<span class="clear">').appendTo(chart_set),
-                m_chart = $('<div class="chart">').appendTo(chart_set),
+                clear2 = $('<span class="clear">').appendTo(chart_set);
+
+            addLegend(chart_set);
+
+            var m_chart = $('<div class="chart">').appendTo(chart_set),
                 m_chart_canvas = $('<canvas height="300" width="750">').appendTo(m_chart),
                 c_chart = $('<div class="chart">').appendTo(chart_set),
                 c_chart_canvas = $('<canvas height="300" width="750">').appendTo(c_chart),
@@ -97,8 +100,6 @@
 
             menuItem.text(ns);
             chart_label.text('Неймспейс ' + ns);
-
-            addLegend(chart_set);
 
             $('<span class="clear">').appendTo(chart_set);
 
