@@ -85,3 +85,37 @@ function clone(obj) {
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
+
+function dateToStr(d) {
+    var dateStr = d.getFullYear() + '-' +
+                  padStr(1 + d.getMonth()) + '-' +
+                  padStr(d.getDate()) + ' ' +
+                  padStr(d.getHours()) + ':' +
+                  padStr(d.getMinutes()) + ':' +
+                  padStr(d.getSeconds());
+    return dateStr;
+}
+
+function padStr(i) {
+    return (i < 10) ? "0" + i : "" + i;
+}
+
+function timedeltaToStr(sec) {
+    var postfixes = ['сек', 'мин', 'час'],
+        units = [60, 60, 1],
+        x = sec,
+        res = '';
+
+    for (var i = 0; i < postfixes.length - 1; i++) {
+        var cur = x % units[i];
+        x = Math.floor(x / units[i]);
+        if (cur != 0 || (i == 0 && x == 0)) {
+            res = cur + ' ' + postfixes[i] + ' ' + res;
+        }
+        if (x == 0) {
+            break;
+        }
+    }
+
+    return res;
+}

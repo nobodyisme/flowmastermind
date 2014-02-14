@@ -5,7 +5,7 @@ var options = {
     animationEasing: "easeOutQuart",
     barStrokeWidth: 2,
     labelFontFamily: 'Verdana',
-    showTooltips: false
+    showTooltips: true
 };
 
 var dc_names = {'ugr': 'Угрешка',
