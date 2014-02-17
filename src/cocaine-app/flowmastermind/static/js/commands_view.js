@@ -131,7 +131,11 @@ var Commands = (function() {
             cmd_progress = cmd.find('.cmd-progress'),
             cmd_uid = cmd.find('.cmd-uid');
 
-        cmd_group.text('Группа: ' + status.group);
+        group_txt = 'Группа: ' + status.group;
+        if (status['couple'] != undefined) {
+            group_txt += '<br /><span class="cmd-couple">Капл: ' + status['couple'] + '</span>';
+        }
+        cmd_group.html(group_txt);
         cmd_command.text(status.command);
         var progress = status.progress * 100;
         cmd_uid.text(uid);

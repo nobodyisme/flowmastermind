@@ -352,6 +352,10 @@ span.chart-label-small {
     vertical-align: middle;
 }
 
+.cmd-couple {
+    font-size: 9px;
+}
+
 .cmd-startdt, .cmd-finishdt, .cmd-mdash {
     font-size: 10px;
 }
@@ -422,7 +426,7 @@ span.chart-label-small {
     border: 1px solid #111;
     border-radius: 5px;
     overflow: hidden;
-    /*box-shadow: 0 0 5px #333;*/
+    box-shadow: 0 0 5px #333;
 }
 
 .progressBar div {
