@@ -20,7 +20,7 @@ app = Flask(__name__)
 @app.route('/')
 def charts():
     try:
-        return render_template('charts.html')
+        return render_template('charts.html', menu_page='charts')
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -30,22 +30,29 @@ def charts():
 @app.route('/commands/')
 def commands():
     try:
-        return render_template('commands.html')
+        return render_template('commands.html', menu_page='commands',
+                                                cur_page='commands')
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
         raise
 
 
+@app.route('/commands/history/')
 @app.route('/commands/history/<year>/<month>/')
-def history(year, month):
+def history(year=None, month=None):
     try:
+        if year is None:
+            dt = datetime.datetime.now()
+            year, month = dt.year, dt.month
         try:
             dt = datetime.datetime(int(year), int(month), 1)
         except ValueError:
             abort(404)
         return render_template('commands_history.html', year=year,
-                                                        month=month)
+                                                        month=month,
+                                                        menu_page='commands',
+                                                        cur_page='history')
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())

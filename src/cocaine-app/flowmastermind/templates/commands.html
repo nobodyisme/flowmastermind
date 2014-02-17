@@ -2,43 +2,15 @@
 {% block title %}Memory{% endblock %}
 
 {% block content %}
-    <div class="menu">
-        <div class="stripes">
-        </div>
-        <span class="menu-item-header">
-            Общее
-        </span>
-        <a class="menu-item" href="#memory">
-            память
-        </a>
-        <a class="menu-item" href="#couples">
-            каплы
-        </a>
-        <span class="menu-item-header">
-            Дата-центры
-        </span>
-        <a class="menu-item" href="#dcs-memory">
-            память
-        </a>
-        <a class="menu-item" href="#dcs-groups">
-            группы
-        </a>
-
-        <span class="menu-item-header">
-            Неймспэйсы
-        </span>
-        <div class="namespaces-menu">
-        </div>
-    </div>
     <div class="inner-content">
         <div class="cmd-containers">
             <div class="cmd-unknown" style="display: none;">
             </div>
             <div class="cmd-executing">
-                <div class="cmd-header">выполняющиеся команды</div>
+                <div class="cmd-header cmd-header-executing">выполняющиеся команды</div>
             </div>
             <div class="cmd-finished">
-                <div class="cmd-header">выполненные команды</div>
+                <div class="cmd-header cmd-header-finished">выполненные команды</div>
             </div>
         </div>
     </div>

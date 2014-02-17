@@ -16,12 +16,6 @@
         dcMemoryChart = new Chart(ctxMDC),
         dcGroupsChart = new Chart(ctxGDC);
 
-    var dc_names = {'ugr': 'Угрешка',
-                    'myt': 'Мытищи',
-                    'sas': 'Сасово',
-                    'fol': 'Фольга',
-                    'iva': 'Ивантеевка'}
-
     var ns_container = $('.namespaces'),
         namespaces_menu = $('.namespaces-menu'),
         namespaces = {};
@@ -96,7 +90,8 @@
                 ctxNSMDC = m_chart_canvas[0].getContext('2d'),
                 ctxNSCDC = c_chart_canvas[0].getContext('2d'),
 
-                menuItem = $('<a class="menu-item" href="#' + ns + '">').appendTo(namespaces_menu);
+                spanMenuItem = $('<span class="menu-item">').appendTo(namespaces_menu),
+                menuItem = $('<a href="#' + ns + '">').appendTo(spanMenuItem);
 
             menuItem.text(ns);
             chart_label.text('Неймспейс ' + ns);
@@ -160,11 +155,15 @@
     periodicTask();
 
     $(document).on("mouseover", ".menu-item", function() {
-        $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 1.0)" }, 0.1);
+        // $(this).stop(true, true).animate({ borderBottomColor: "rgba(200, 200, 200, 1.0)",
+        //                                    borderTopColor: "rgba(200, 200, 200, 1.0)" }, 0.5);
     });
 
     $(document).on("mouseout", ".menu-item", function() {
-        $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 0.0)" }, 0.1);
+        // $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 0.0)" }, 0.1);
+        // $(this).stop(true, true).animate({ borderBottomColor: "rgba(200, 200, 200, 0.0)",
+        //                                    borderTopColor: "rgba(200, 200, 200, 0.0)" }, 0.5);
+
     });
 
 })();

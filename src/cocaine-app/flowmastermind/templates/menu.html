@@ -1,0 +1,52 @@
+    <div class="menu">
+        <div class="stripes">
+        </div>
+        <a class="menu-page" href="/">
+            Графики
+        </a>
+        {% if menu_page == 'charts' %}
+            <span class="menu-item-header">
+                Общее
+            </span>
+            <span class="menu-item">
+                <a href="#memory">память</a>
+            </span>
+            <span class="menu-item">
+                <a href="#couples">каплы</a>
+            </span>
+            <span class="menu-item-header">
+                Дата-центры
+            </span>
+            <span class="menu-item">
+                <a href="#dcs-memory">память</a>
+            </span>
+            <span class="menu-item">
+                <a href="#dcs-groups">группы</a>
+            </span>
+
+            <span class="menu-item-header">
+                Неймспэйсы
+            </span>
+            <div class="namespaces-menu">
+            </div>
+        {% endif %}
+        <a class="menu-page" href="/commands/">
+            Команды
+        </a>
+        {% if menu_page == 'commands' %}
+            <span class="menu-page-item">
+                {% if cur_page != 'commands' %}
+                    <a href="/commands/">текущие</a>
+                {% else %}
+                    <span class="selected">текущие</span>
+                {% endif %}
+            </span>
+            <span class="menu-page-item">
+                {% if cur_page != 'history' %}
+                    <a href="/commands/history/">архив</a>
+                {% else %}
+                    <span class="selected">архив</span>
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
