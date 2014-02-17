@@ -43,36 +43,36 @@ var Commands = (function() {
 
         var cmd = $('<div class="cmd">'),
             cmd_level_one = $('<div>').appendTo(cmd),
-            cmd_host = $('<div class="cmd-host">').appendTo(cmd),
+            cmd_group = $('<div class="cmd-group">').appendTo(cmd),
             cmd_command = $('<div class="cmd-command">').appendTo(cmd),
             cmd_progress = $('<div class="cmd-progress">'). appendTo(cmd),
             cmd_progress_bar = $('<div class="progressBar">').appendTo(cmd_progress),
             cmd_progress_bar_div = $('<div>').appendTo(cmd_progress_bar),
             cmd_pid = $('<div class="cmd-pid">').appendTo(cmd),
             cmd_level_two = $('<div>').appendTo(cmd)
+            cmd_host = $('<div class="cmd-host">').appendTo(cmd),
             cmd_startdt = $('<div class="cmd-startdt">').appendTo(cmd),
+            cmd_mdashdt = $('<div class="cmd-mdash">').appendTo(cmd),
             cmd_finishdt = $('<div class="cmd-finishdt">').appendTo(cmd),
             cmd_runtime = $('<div class="cmd-runtime">').appendTo(cmd),
             cmd_uid = $('<div class="cmd-uid">').appendTo(cmd);
 
         cmd.attr('uid', uid);
         cmd.attr('host', host);
+        cmd.attr('group', status.group);
         cmd.attr('stage', 'unknown');
         cmd.css({display: 'none'});
 
         this.initCmd(cmd, host, uid, status);
 
-        cmd_host.text(host);
+        host_txt = host;
+        if (status['hostname'] != undefined) {
+            host_txt = status['hostname'] + '<br />' + host_txt;
+        }
+        cmd_host.html(host_txt);
         cmd_uid.text(uid);
 
         cmd.appendTo(this.unknown_cont);
-
-        // var progress = status.progress * 100,
-        //     progressBar = cmd_progress.percentageLoader({
-        //     width: 80, height: 80, progress: status.progress, value: progress
-        // });
-
-         // this.progress[uid] = progressBar;
     }
 
     CommandsView.prototype.updateCmd = function(event, host, uid, status) {
@@ -82,6 +82,7 @@ var Commands = (function() {
 
         var cmd = this.container.find('.cmd[uid='+uid+']'),
             cmd_progress = cmd.find('.progressBar'),
+            cmd_mdash = cmd.find('.cmd-mdash'),
             cmd_finishdt = cmd.find('.cmd-finishdt'),
             cmd_runtime = cmd.find('.cmd-runtime');
 
@@ -105,6 +106,7 @@ var Commands = (function() {
                 this.addErrorData(cmd, status);
             }
 
+            cmd_mdash.text('—');
             cmd_finishdt.text(dateToStr(new Date(status.finish_ts * 1000)));
 
             this.updateContainers();
@@ -120,24 +122,21 @@ var Commands = (function() {
         $element.find('div').animate({ width: progressBarWidth + '%' }, 500).html(percent + "%&nbsp;");
     }
 
-    CommandsView.prototype.addErrorData = function(cmd, status) {
-        cmd.addClass('cmd-error');
-
-    }
-
     CommandsView.prototype.initCmd = function(cmd, host, uid, status) {
-        var cmd_host = cmd.find('.cmd-host'),
+        var cmd_group = cmd.find('.cmd-group'),
             cmd_command = cmd.find('.cmd-command'),
             cmd_pid = cmd.find('.cmd-pid'),
+            cmd_host = cmd.find('.cmd-host'),
             cmd_startdt = cmd.find('.cmd-startdt'),
             cmd_progress = cmd.find('.cmd-progress'),
             cmd_uid = cmd.find('.cmd-uid');
 
-        cmd_host.text(host);
+        cmd_group.text('Группа: ' + status.group);
         cmd_command.text(status.command);
         var progress = status.progress * 100;
         cmd_uid.text(uid);
         cmd_pid.text('pid: ' + status.pid);
+        cmd_host.text(host);
         cmd_startdt.text(dateToStr(new Date(status.start_ts * 1000)));
     }
 
@@ -153,6 +152,16 @@ var Commands = (function() {
             }
         }
     };
+
+    CommandsView.prototype.addErrorData = function(cmd, status) {
+        var cmd_level_three = $('<div>').appendTo(cmd),
+            cmd_error_code = $('<div class="cmd-error-code">').appendTo(cmd),
+            cmd_error_message = $('<div class="cmd-error-message">').appendTo(cmd);
+
+        cmd_error_code.text('Код возврата: ' + status.exit_code);
+        cmd_error_message.text(status.exit_message);
+        cmd.addClass('cmd-error');
+    }
 
     view = new CommandsView();
     view.eventer.on("create", view.createCmd.bind(view));

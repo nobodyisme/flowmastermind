@@ -14,6 +14,9 @@ var dc_names = {'ugr': 'Угрешка',
                 'fol': 'Фольга',
                 'iva': 'Ивантеевка'}
 
+function getDcLabel(dc) {
+    return (dc_names[dc] != undefined ? dc_names[dc] : dc);
+}
 
 function accBar(values, labels, colors) {
     function get_values() {
@@ -177,7 +180,7 @@ function renderBarsByData(data_filter) {
                 stat = data_items[idx][1];
 
             bars.push(data_filter(stat));
-            labels.push(dc_names[dc]);
+            labels.push(getDcLabel(dc));
 
         }
         div.attr('width', 30 + labels.length * 100).css({width: 30 + labels.length * 100 + 'px'});
