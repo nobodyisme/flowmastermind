@@ -47,7 +47,7 @@ span.clear {
 .chart-set {
     border-bottom: 1px dashed #ccc;
     padding-left:50px;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .chart {
@@ -303,6 +303,10 @@ span.chart-label-small {
 
 .color-dc-couples-frozen {
     background-color: rgba(160, 202, 255, 0.5);
+}
+
+.color-dc-couples-bad {
+    background-color: rgb(255,136,136);
 }
 
 .color-dc-groups-uncoupled {

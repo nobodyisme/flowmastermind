@@ -34,6 +34,8 @@
              labelclass: 'color-dc-couples-frozen'},
             {label: ' — в капле, закрыта',
              labelclass: 'color-dc-couples-total'},
+            {label: ' — в капле, недоступна',
+             labelclass: 'color-dc-couples-bad'},
             {label: ' — не в капле',
              labelclass: 'color-dc-groups-uncoupled'},
         ];
