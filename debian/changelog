@@ -1,3 +1,9 @@
+flowmastermind (0.10) lucid; urgency=low
+
+  * Fix: Charts.js build fix
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 18 Feb 2014 18:28:46 +0400
+
 flowmastermind (0.9) lucid; urgency=low
 
   * Feature: commands view from mastermind minions
