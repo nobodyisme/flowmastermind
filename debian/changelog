@@ -1,3 +1,11 @@
+flowmastermind (0.9) lucid; urgency=low
+
+  * Feature: commands view from mastermind minions
+  * Fix: legend fixes
+  * Fix: menu style extended for new pages support
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 18 Feb 2014 16:21:41 +0400
+
 flowmastermind (0.8) lucid; urgency=low
 
   * Feature: closed and bad couples are displayed separately
