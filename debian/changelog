@@ -1,3 +1,9 @@
+flowmastermind (0.14) lucid; urgency=low
+
+  * Cocaine dependencies fixed again
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 25 Feb 2014 20:08:54 +0400
+
 flowmastermind (0.13) lucid; urgency=low
 
   * Removing cocaine-tornado-proxy restart
