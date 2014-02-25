@@ -1,3 +1,9 @@
+flowmastermind (0.12) lucid; urgency=low
+
+  * Updating cocaine dependencies
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 25 Feb 2014 19:56:16 +0400
+
 flowmastermind (0.11) lucid; urgency=low
 
   * Moving from cocaine-tornado-proxy to cocaine-native-proxy
