@@ -10,8 +10,6 @@ case "$1" in
     invoke-rc.d syslog-ng restart
     /usr/bin/flowmastermind_deploy.sh ||true
 
-    /etc/init.d/cocaine-tornado-proxy restart
-
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;
