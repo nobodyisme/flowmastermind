@@ -1,3 +1,9 @@
+flowmastermind (0.17) lucid; urgency=low
+
+  * Removed zooming delay for treemap groups stats
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 13 Mar 2014 19:21:42 +0400
+
 flowmastermind (0.16) lucid; urgency=low
 
   * Treemap groups stats
