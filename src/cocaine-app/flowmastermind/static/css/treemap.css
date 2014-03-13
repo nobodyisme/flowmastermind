@@ -1,0 +1,108 @@
+div.treemap {
+    position: fixed;
+    top: 20px;
+    left: 240px;
+    bottom: 20px;
+    right: 30px;
+
+    /*filter: blur(1px);*/
+    /*-webkit-filter: blur(0);*/
+
+    background-color: #fff;
+    /*opacity: 1.0;*/
+    border: 1px solid #aaa;
+}
+
+div.switcher {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 30px;
+    background-color: #fff;
+}
+
+path.spinner {
+    fill: #2377A7;
+}
+
+g.topline text {
+    font-size: 15px;
+    alignment-baseline: middle;
+}
+
+g.topline text.crumbs {
+    fill: #666;
+}
+
+g.topline text {
+    fill: #999;
+}
+
+.topline-bg {
+    fill: #fff;
+}
+
+div.switcher input {
+    display: none;
+}
+
+div.switcher label {
+    font-size: 12px;
+    color: #333;
+    display: inline-block;
+    margin: 5px;
+    padding: 4px;
+    border-bottom: 1px dashed #333;
+    cursor: pointer;
+}
+
+div.switcher label.selected {
+    border-bottom: none;
+    background-color: #eee;
+}
+
+
+/* Side panel */
+.sidepanel {
+    background-color: #fff;
+    border: 1px solid #333;
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    color: #444;
+    font-size: 12px;
+    opacity: 0;
+    display: none;
+    width: 200px;
+
+    -webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    1px 1px 5px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         1px 1px 5px 0px rgba(50, 50, 50, 0.75);
+}
+
+.sidepanel .leftcolumn {
+    width: 90px;
+    float: left;
+    padding: 4px;
+    text-align: right;
+}
+
+.sidepanel .title {
+    font-size: 15px;
+}
+
+.sidepanel .rightcolumn {
+    margin-left: 100px;
+    padding: 4px;
+}
+
+.sidepanel .clear {
+    clear: both;
+}
+
+.sidepanel .splitter {
+    height: 0;
+    border-bottom: 1px solid #333;
+    margin: 0 10px;
+}

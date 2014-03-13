@@ -14,6 +14,17 @@ function prefixBytes(bytes) {
     return res.toFixed(2) + ' ' + prefixes[prefixes.length - 1];
 }
 
+function prefixBytesRound(bytes) {
+    var res = bytes;
+    for (var i in prefixes) {
+        if (res < 1024) {
+            return Math.round(res) + ' ' + prefixes[i];
+        }
+        res = res / 1024;
+    }
+    return Math.round(res) + ' ' + prefixes[prefixes.length - 1];
+}
+
 function SortByAlphanum(a, b){
     var aName = a.toLowerCase(),
         bName = b.toLowerCase();

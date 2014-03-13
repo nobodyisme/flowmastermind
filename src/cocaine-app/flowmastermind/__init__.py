@@ -102,5 +102,19 @@ def json_commands_history(year, month):
         raise
 
 
+@app.route('/json/treemap/')
+def json_treemap():
+    try:
+        m = Service('mastermind')
+        resp = Response(json.dumps(m.enqueue('get_groups_tree',
+            '').get()))
+        resp.headers['Cache-Control'] = 'no-cache, must-revalidate'
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
 if __name__ == '__main__':
     app.run(debug=True)

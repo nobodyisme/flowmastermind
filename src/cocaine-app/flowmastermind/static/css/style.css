@@ -47,7 +47,7 @@ span.clear {
 .chart-set {
     border-bottom: 1px dashed #ccc;
     padding-left:50px;
-    overflow: auto;
+    /*overflow: auto;*/
 }
 
 .chart {
@@ -440,9 +440,77 @@ span.chart-label-small {
     line-height: 16px; /* same as #progressBar height if we want text middle aligned */
     width: 0;
     background-color: #1a82f7;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0099FF), to(#1a82f7)); 
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0099FF), to(#1a82f7));
     background: -webkit-linear-gradient(top, #0099FF, #1a82f7);
     background: -moz-linear-gradient(top, #0099FF, #1a82f7);
     background: -ms-linear-gradient(top, #0099FF, #1a82f7);
     background: -o-linear-gradient(top, #0099FF, #1a82f7);
+}
+
+
+/* D3 styles */
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #888;
+  shape-rendering: crispEdges;
+}
+
+.axis {
+    fill: #666;
+}
+
+
+.y.axis path,
+.y.axis line {
+  fill: none;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+
+
+.y.axis line {
+    stroke: #bbb;
+    stroke-dasharray: 5,2;
+    stroke-opacity: .8;
+}
+
+.axis .tick {
+    font-size: 10px;
+}
+
+
+text.barlabel {
+    font-size: 9px;
+    fill: #555;
+    text-anchor: middle;
+    alignment-baseline: central;
+}
+
+rect.legend-colorsample {
+    fill-opacity: 0.6;
+    stroke: rgb(120,120,120);
+    stroke-width: 1px;
+}
+
+text.legend-label {
+    font-size: 9px;
+    fill: #555;
+    alignment-baseline: central;
+}
+
+text.pielabel {
+    font-size: 12px;
+    fill: #555;
+    text-anchor: middle;
+    alignment-baseline: central;
+}
+
+
+g.chart-label text {
+    font-size: 15px;
+    fill: #555;
+    alignment-baseline: central;
+    text-anchor: middle;
 }

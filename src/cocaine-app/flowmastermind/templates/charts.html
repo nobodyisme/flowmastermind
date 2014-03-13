@@ -1,107 +1,42 @@
 {% extends "base.html" %}
 {% block title %}Memory{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="/static/css/tooltip.css" />
+<link rel="stylesheet" href="/static/css/treemap.css" />
+{% endblock %}
+
 {% block content %}
     <div class="inner-content">
         <div class="chart-set" id="memory">
-            <div class="chart-legend">
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-memory-free"></span>
-                    &mdash; свободно
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-memory-occ"></span>
-                    &mdash; занято
-                </div>
+            <div class="chart">
+                <div id="effectiveMemoryChart" width="200" height="200"></div>
             </div>
             <div class="chart">
-                <canvas id="effectiveMemoryChart" width="200" height="200"></canvas>
-                <span class="chart-label">эффективное место</span>
+                <div id="totalMemoryChart" width="200" height="200"></div>
             </div>
             <div class="chart">
-                <canvas id="totalMemoryChart" width="200" height="200"></canvas>
-                <span class="chart-label">общее место</span>
+                <div id="realDataEffMemoryChart"></div>
+                <!-- <span class="chart-label-small"><sup>*</sup>экспериментальная фича,<br />
+                доверяй, но проверяй</span> -->
             </div>
+            <!-- <span class="clear" /> -->
+        <!-- </div>
+        <div class="chart-set" id="couples"> -->
             <div class="chart">
-                <canvas id="realDataEffMemoryChart" width="200" height="200"></canvas>
-                <span class="chart-label">размер данных<sup>*</sup></span>
-                <span class="chart-label-small"><sup>*</sup>экспериментальная фича,<br />
-                доверяй, но проверяй</span>
-            </div>
-            <span class="clear" />
-        </div>
-        <div class="chart-set" id="couples">
-            <div class="chart-legend">
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-couples-open"></span>
-                    &mdash; открытые
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-couples-frozen"></span>
-                    &mdash; замороженные
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-couples-closed"></span>
-                    &mdash; закрытые
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-couples-bad"></span>
-                    &mdash; недоступные
-                </div>
-            </div>
-            <div class="chart">
-                <canvas id="couplesChart" width="200" height="200"></canvas>
-                <span class="chart-label">каплы</span>
+                <div id="couplesChart"></div>
             </div>
             <span class="clear" />
         </div>
         <div class="chart-set" id="dcs-memory">
-            <div class="chart-legend">
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-free"></span>
-                    &mdash; свободно
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-total"></span>
-                    &mdash; занято
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-uncoupled"></span>
-                    &mdash; не используется
-                </div>
-            </div>
             <div class="chart">
-                <canvas id="dscMemoryChart" width="750" height="300"></canvas>
-                <span class="chart-label">память по дата-центрам</span>
+                <div id="dscMemoryChart"></div>
             </div>
             <span class="clear" />
         </div>
         <div class="chart-set" id="dcs-groups">
-            <div class="chart-legend">
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-couples-open"></span>
-                    &mdash; в капле, открыта
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-couples-frozen"></span>
-                    &mdash; в капле, заморожена
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-couples-total"></span>
-                    &mdash; в капле, закрыта
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-couples-bad"></span>
-                    &mdash; в капле, недоступна
-                </div>
-                <div class="chart-legend-item">
-                    <span class="chart-legend-color-sample color-dc-groups-uncoupled"></span>
-                    &mdash; не в капле
-                </div>
-            </div>
             <div class="chart">
-                <canvas id="dscGroupsChart" width="750" height="300"></canvas>
-                <span class="chart-label">группы по дата-центрам</span>
+                <div id="dscGroupsChart"></div>
             </div>
             <span class="clear" />
         </div>
@@ -116,5 +51,9 @@
     <script src="/static/js/helpers.js"></script>
     <script src="/static/js/colors.js"></script>
     <script src="/static/js/render.js"></script>
+    <script src="/static/js/tooltip.js"></script>
+    <script src="/static/js/bars.js"></script>
+    <script src="/static/js/pie.js"></script>
+    <script src="/static/js/treemap.js"></script>
     <script src="/static/js/charts.js"></script>
 {% endblock %}

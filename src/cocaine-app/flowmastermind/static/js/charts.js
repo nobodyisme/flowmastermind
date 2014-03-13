@@ -2,60 +2,18 @@
 
     var updatePeriod = 30000;
 
-    var ctxEM = document.getElementById('effectiveMemoryChart').getContext('2d'),
-        ctxTM = document.getElementById('totalMemoryChart').getContext('2d'),
-        ctxRDEM = document.getElementById('realDataEffMemoryChart').getContext('2d'),
-        ctxC = document.getElementById('couplesChart').getContext('2d'),
-        ctxMDC = document.getElementById('dscMemoryChart').getContext('2d'),
-        ctxGDC = document.getElementById('dscGroupsChart').getContext('2d'),
+    var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'эффективное место'),
+        ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
+        ctxRDEM = new EffectiveMemoryPie('#realDataEffMemoryChart', 'размер данных*', true),
+        ctxC = new GroupsPie('#couplesChart', 'каплы', true),
+        ctxMDC = new MemoryBar('#dscMemoryChart', 'память по датацентрам'),
+        ctxGDC = new GroupsBar('#dscGroupsChart', 'группы по датацентрам');
 
-        effectiveMemoryChart = new Chart(ctxEM),
-        totalMemoryChart = new Chart(ctxTM),
-        realDataEffMemoryChart = new Chart(ctxRDEM),
-        couplesChart = new Chart(ctxC),
-        dcMemoryChart = new Chart(ctxMDC),
-        dcGroupsChart = new Chart(ctxGDC);
+    ctxMDC.onBarClick(showDcTreeMap);
 
     var ns_container = $('.namespaces'),
         namespaces_menu = $('.namespaces-menu'),
         namespaces = {};
-
-    function addLegend(chart_set) {
-
-        var legends = [
-            {label: ' — свободно',
-             labelclass: 'color-memory-free'},
-            {label: ' — занято',
-             labelclass: 'color-memory-occ',
-             padding: true},
-            {label: ' — в капле, открыта',
-             labelclass: 'color-dc-couples-open'},
-            {label: ' — в капле, заморожена',
-             labelclass: 'color-dc-couples-frozen'},
-            {label: ' — в капле, закрыта',
-             labelclass: 'color-dc-couples-total'},
-            {label: ' — в капле, недоступна',
-             labelclass: 'color-dc-couples-bad'},
-            {label: ' — не в капле',
-             labelclass: 'color-dc-groups-uncoupled'},
-        ];
-
-        var chart_legend = $('<div class="chart-legend">').appendTo(chart_set),
-            item_dummy = $('<div class="chart-legend-item">'),
-            color_sample_dummy = $('<span class="chart-legend-color-sample">');
-
-        for (idx in legends) {
-            var item = item_dummy.clone().appendTo(chart_legend),
-                color_sample = color_sample_dummy.clone().appendTo(item),
-                textNode = document.createTextNode(legends[idx].label);
-            item.append(textNode);
-            color_sample.addClass(legends[idx].labelclass);
-
-            if (legends[idx].padding) {
-                item_dummy.clone().appendTo(chart_legend);
-            }
-        }
-    }
 
     function transpose(source) {
 
@@ -82,15 +40,10 @@
                 chart_label = $('<span class="ns-chart-label">').appendTo(chart_set),
                 clear2 = $('<span class="clear">').appendTo(chart_set);
 
-            addLegend(chart_set);
-
-            var m_chart = $('<div class="chart">').appendTo(chart_set),
-                m_chart_canvas = $('<canvas height="300" width="750">').appendTo(m_chart),
-                c_chart = $('<div class="chart">').appendTo(chart_set),
-                c_chart_canvas = $('<canvas height="300" width="750">').appendTo(c_chart),
-
-                ctxNSMDC = m_chart_canvas[0].getContext('2d'),
-                ctxNSCDC = c_chart_canvas[0].getContext('2d'),
+            var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
+                c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
+                m_bars = new MemoryBar('.m-chart-' + ns, 'память'),
+                c_bars = new GroupsBar('.c-chart-' + ns, 'каплы'),
 
                 spanMenuItem = $('<span class="menu-item">').appendTo(namespaces_menu),
                 menuItem = $('<a href="#' + ns + '">').appendTo(spanMenuItem);
@@ -100,12 +53,9 @@
 
             $('<span class="clear">').appendTo(chart_set);
 
-
             namespaces[ns] = {
-                'm_chart': new Chart(ctxNSMDC),
-                'c_chart': new Chart(ctxNSCDC),
-                'm_canvas': m_chart_canvas,
-                'c_canvas': c_chart_canvas
+                'm_bars': m_bars,
+                'c_bars': c_bars
             };
         }
 
@@ -124,13 +74,13 @@
                     frozen_couples = data['frozen_couples'],
                     closed_couples = data['total_couples'] - open_couples - frozen_couples;
 
-                renderEffectiveMemoryPie(effectiveMemoryChart, data);
-                renderTotalMemoryPie(totalMemoryChart, data);
-                renderEffectiveMemoryPie(realDataEffMemoryChart, data['real_data']);
-                renderCouplesPie(couplesChart, data);
+                ctxEM.update(data);
+                ctxTM.update(data);
+                ctxRDEM.update(data['real_data']);
+                ctxC.update(data);
 
-                renderMemoryBars($('#dscMemoryChart'), dcMemoryChart, data['dc']);
-                renderCoupleBars($('#dscGroupsChart'), dcGroupsChart, data['dc']);
+                ctxMDC.update(data['dc']);
+                ctxGDC.update(data['dc']);
 
                 var ns_items = iterItems(data['namespaces']);
 
@@ -140,8 +90,8 @@
                     var ns = nsChart(ns_items[idx][0]),
                         ns_data = ns_items[idx][1];
 
-                    renderMemoryBars(ns.m_canvas, ns.m_chart, ns_data);
-                    renderCoupleBars(ns.c_canvas, ns.c_chart, ns_data);
+                    ns.m_bars.update(ns_data);
+                    ns.c_bars.update(ns_data);
                 }
 
                 // no more animation, i'm begging you
