@@ -545,7 +545,6 @@ TreeMap.prototype.zoom = function (node) {
     self.yScale.domain([node.y, node.y + node.dy]);
 
     var t = self.svg.selectAll('g.cell').transition()
-        .delay(function (d, i) { return i * 5; })
         .attr('transform', function(d) { return "translate(" + self.xScale(d.x) + "," + self.yScale(d.y) + ")"; });
 
     t.select('rect')
