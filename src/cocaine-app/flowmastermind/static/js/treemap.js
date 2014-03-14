@@ -1,4 +1,4 @@
-function showDcTreeMap() {
+function showDcTreeMap(dc, type) {
     var container = $('.inner-content'),
         layer = $('<div>');
 
@@ -6,42 +6,82 @@ function showDcTreeMap() {
 
     layer.appendTo(container);
 
+    var closeBtn = $('<div>').addClass('close')
+        .on('click', function () { window.location.hash = ''; })
+        .text('X')
+        .appendTo(layer);
+
     var spinner = new Spinner('div.treemap');
     spinner.start();
 
-    $.ajax({
-        url: '/json/treemap/',
-        method: 'get',
-        dataType: 'json',
-        success: function (data) {
+    var tries = 0,
+        max_tries = 3;
+    (function loadTreemap() {
+        $.ajax({
+            url: '/json/treemap/',
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
 
-            var labels = {"types": {}};
+                var labels = {"types": {}};
 
-            $.ajax({
-                url: '/external/labels.json',
-                method: 'get',
-                dataType: 'json',
-                success: function (data) {
-                    labels = data;
-                    buildTreeMap();
-                },
-                error: function (data) {
-                    buildTreeMap();
+                $.ajax({
+                    url: '/external/labels.json',
+                    method: 'get',
+                    dataType: 'json',
+                    success: function (data) {
+                        labels = data;
+                        buildTreeMap();
+                    },
+                    error: function (data) {
+                        buildTreeMap();
+                    }
+                });
+
+                function buildTreeMap() {
+                    spinner.stop();
+                    treemap = new TreeMap('div.treemap', data, labels, dc, type);
                 }
-            });
 
-            function buildTreeMap() {
-                spinner.stop();
-                treemap = new TreeMap('div.treemap', data, labels);
+            },
+            error: function () {
+                tries += 1;
+                if (tries >= max_tries) {
+                    failTreemapLoad(layer);
+                    return;
+                }
+                setTimeout(loadTreemap, 2000);
             }
-
-        },
-        error: function () {
-
-        }
-    });
+        });
+    })();
 }
 
+function hideDcTreeMap() {
+    $('div.treemap').remove();
+}
+
+
+function failTreemapLoad(layer) {
+    layer.children().remove();
+
+    var error = $('<div>').addClass('errormsg')
+        .appendTo(layer);
+
+    var errorquote = $('<span>').addClass('quote')
+        .appendTo(error)
+        .html('Идут по улице три помидора. Папа-помидор, Мама-помидор и Малыш-помидор. <br />' +
+              'Малыш-помидор начинает отставать, и Папа-помидор приходит в ярость. <br />' +
+              'Он подбегает к нему, давит его ногой всмятку, и говорит: «Догоняй, кетчуп»<br />');
+    $('<div>').addClass('qmark').addClass('lqmark')
+        .text('«')
+        .appendTo(errorquote);
+    $('<div>').addClass('qmark').addClass('rqmark')
+        .text('»')
+        .appendTo(errorquote);
+    $('<span>').addClass('quoter')
+        .appendTo(error)
+        .text('Миа, Криминальное чтиво');
+}
 
 
 function Spinner(container) {
@@ -113,7 +153,7 @@ Spinner.prototype.stop = function () {
 
 
 
-function TreeMap(container, data, labels) {
+function TreeMap(container, data, labels, curvalue, curtype) {
 
     var self = this;
 
@@ -201,13 +241,19 @@ function TreeMap(container, data, labels) {
         });
 
     self.resize();
-    self.createSwitcher();
+    self.createSwitcher(curtype);
+
+    if (curvalue) {
+        self.nodes.forEach(function (d) {
+            if (d.name == curvalue) self.zoom(d);
+        });
+    };
 }
 
 TreeMap.prototype.close = function () {
     var self = this;
     if (d3.event.keyCode == 27) {
-        self.container.remove();
+        window.location.hash = '';
     }
 };
 

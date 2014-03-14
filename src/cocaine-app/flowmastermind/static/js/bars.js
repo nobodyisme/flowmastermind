@@ -352,7 +352,7 @@ Bar.prototype.updateBars = function (data) {
         new_bars.on('click', function () {
             self.mouseLeave();
             /* pass some parameters, should decide which ones are needed */
-            return self.barClickHandler();
+            return self.barClickHandler(this.__data__.x, this.__data__.y);
         })
     }
 

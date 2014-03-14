@@ -9,28 +9,38 @@
         ctxMDC = new MemoryBar('#dscMemoryChart', 'память по датацентрам'),
         ctxGDC = new GroupsBar('#dscGroupsChart', 'группы по датацентрам');
 
-    ctxMDC.onBarClick(showDcTreeMap);
+    ctxMDC.onBarClick(function (dc) {
+        window.location = window.location.pathname + '#groups-memory-' + dc;
+    });
+
+    ctxGDC.onBarClick(function (dc) {
+        window.location = window.location.pathname + '#groups-couples-' + dc;
+    });
 
     var ns_container = $('.namespaces'),
         namespaces_menu = $('.namespaces-menu'),
         namespaces = {};
 
-    function transpose(source) {
+    $(window).on('hashchange', function () {
+        checkHash();
+    });
 
-        var result = [],
-            length = source[0].length;
 
-        while (length--) {
-            result.push([]);
+    function checkHash() {
+
+        var popup = window.location.hash.split('-', 1)[0],
+            type = window.location.hash.split('-', 2)[1];
+
+        switch (popup) {
+            case '#groups':
+                var curtype = (type == 'couples') ? 'couple_status' : 'free_space',
+                    value = window.location.hash.substr(popup.length + 1 + type.length + 1);
+                showDcTreeMap(value, curtype);
+                break;
+            case '':
+                hideDcTreeMap();
+                break;
         }
-
-        source.forEach(function (inner) {
-            inner.forEach(function (item, index) {
-                result[index].push(item);
-            });
-        });
-
-        return result;
     }
 
     function nsChart(ns) {
@@ -117,5 +127,7 @@
         //                                    borderTopColor: "rgba(200, 200, 200, 0.0)" }, 0.5);
 
     });
+
+    checkHash();
 
 })();
