@@ -214,7 +214,7 @@ function TreeMap(container, data, labels, curvalue, curtype) {
         couple_status: d3.scale.ordinal()
                            .domain([null, 'OK', 'FROZEN', 'BAD', 'CLOSED'])
                            .range([d3.rgb('#f2ee60'), d3.rgb('#4ec96a'), d3.rgb('#96c5ff'),
-                                   d3.rgb('#f04848'), d3.rgb('#787878')])
+                                   d3.rgb('#f04848'), d3.rgb('#bbb')])
     };
 
     self.crumbs = [];
