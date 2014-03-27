@@ -1,3 +1,9 @@
+flowmastermind (0.20) lucid; urgency=low
+
+  * Cocaine dependencies changed
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 27 Mar 2014 16:25:14 +0400
+
 flowmastermind (0.19) lucid; urgency=low
 
   * Changed closed couples color for treemap
