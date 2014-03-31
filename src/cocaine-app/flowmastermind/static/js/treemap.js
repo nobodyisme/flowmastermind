@@ -84,75 +84,6 @@ function failTreemapLoad(layer) {
 }
 
 
-function Spinner(container) {
-    var self = this,
-        container = d3.select(container),
-        thickness = 7,
-        endAngle = Math.PI * 3 / 2;
-    self.svg = container.append('svg')
-        .attr('width', '100%')
-        .attr('height', '100%');
-
-    self.width = 30;
-    self.height = 30;
-
-    self.spinner = self.svg.append('g')
-        .attr('transform', 'translate(' + (self.width / 2 + 10) + ',' +
-                                          (self.height / 2 + 10) + ') rotate(0)');
-
-    var path = self.spinner
-            .append('path')
-            .attr('class', 'spinner')
-            .attr('fill-opacity', 1),
-        arc = d3.svg.arc()
-            .outerRadius(self.height / 2)
-            .innerRadius(self.height / 2 - thickness)
-            .startAngle(0)
-            .endAngle(endAngle);
-
-    path.attr('d', arc());
-
-}
-
-Spinner.prototype.start = function () {
-    var self = this;
-    self.run = true;
-
-    function rotate() {
-        self.spinner
-            .transition()
-            .duration(2000)
-            .ease('linear')
-            .attrTween('transform', rotateTween)
-            .each('end', rotate);
-    }
-
-    function rotateTween() {
-        return function(t) {
-            return 'translate(' + (self.width / 2 + 10) + ',' + (self.height / 2 + 10) + ') rotate(' + Math.round(t * 360) +')';
-        }
-    }
-    rotate();
-}
-
-Spinner.prototype.stop = function () {
-    var self = this;
-
-    self.spinner.select('path')
-        .transition(500)
-        .attr('fill-opacity', 0)
-        .each('end', function () {
-            self.spinner
-                .transition()
-                .duration(0);
-            self.spinner.remove();
-            self.svg.remove();
-        });
-}
-
-
-
-
 function TreeMap(container, data, labels, curvalue, curtype) {
 
     var self = this;
@@ -161,7 +92,7 @@ function TreeMap(container, data, labels, curvalue, curtype) {
     self.labels = labels;
     self.container = d3.select(container);
 
-    self.margin = {top: 40, right: 10, bottom: 10, left: 10};
+    self.margin = {top: 40, right: 10, bottom: 20, left: 10};
     self.updateSize();
     self.sidepanel_width = 0;
 
@@ -182,11 +113,18 @@ function TreeMap(container, data, labels, curvalue, curtype) {
     self.svg_container = self.container
         .append('svg');
 
-    self.svg = self.svg_container.append('g')
+    self.svg = self.svg_container
+        .append('g')
             .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
 
-    self.svg_labels = self.svg_container.append('g')
+    self.svg_labels = self.svg_container
+        .append('g')
             .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
+
+    self.svg_legend = self.svg_container
+        .append('g')
+            .attr('class', 'legend')
+            .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height) + ')');
 
     self.container.append('div')
         .attr('class', 'sidepanel');
@@ -206,15 +144,29 @@ function TreeMap(container, data, labels, curvalue, curtype) {
     self.click_timer = null;
     self.max_depth = d3.max(self.nodes, function (d) { return d.depth; });
 
+    var max_space = d3.max(self.nodes, function (d) { return d.total_space; });
+
     self.colors = {
-        free_space: d3.scale.linear()
-                        .domain([0, d3.max(self.nodes, function (d) { return d.total_space; })])
-                        .range([d3.rgb('#ff0000'), d3.rgb('#ffeeee')]),
-        free_space_label: [d3.rgb('#ff8888'), '#ffeeee', '#ff3333'],
+        free_space: d3.scale.threshold()
+                        .domain([max_space * 0.05, max_space * 0.10, max_space * 0.15,
+                                 max_space * 0.25, max_space * 0.50, max_space * 1.0])
+                        .range([d3.rgb('#a70000'),
+                                d3.rgb('#f22b00'),
+                                d3.rgb('#ff9000'),
+                                d3.rgb('#ffe000'),
+                                d3.rgb('#9fff00'),
+                                d3.rgb('#62ff58')]),
+        // free_space_label: [d3.rgb('#ff8888'), '#ffeeee', '#ff3333'],
+        free_space_legend_label: function (val) {
+            return Math.round((1 - val / max_space) * 100) + '%';
+        },
         couple_status: d3.scale.ordinal()
-                           .domain([null, 'OK', 'FROZEN', 'BAD', 'CLOSED'])
-                           .range([d3.rgb('#f2ee60'), d3.rgb('#4ec96a'), d3.rgb('#96c5ff'),
-                                   d3.rgb('#f04848'), d3.rgb('#bbb')])
+                           .domain(['OK', 'BAD', 'FROZEN', 'CLOSED', null])
+                           .range([d3.rgb('#4ec96a'), d3.rgb('#f04848'), d3.rgb('#96c5ff'),
+                                   d3.rgb('#bbb'), d3.rgb('#f2ee60')]),
+        couple_status_legend_label: function (val) {
+            return (val != null ) ? val : 'NOT COUPLED';
+        }
     };
 
     self.crumbs = [];
@@ -236,7 +188,7 @@ function TreeMap(container, data, labels, curvalue, curtype) {
             return null;
         })
         .attr('fill-opacity', function (d) {
-            if (d.depth == self.max_depth) return 0.7;
+            if (d.depth == self.max_depth) return 0.75;
             return 0;
         });
 
@@ -355,6 +307,7 @@ TreeMap.prototype.createSwitcher = function(default_val) {
         switcher.find('label[for=' + $(this).attr('id') + ']').addClass('selected');
 
         self.zoom(self.cur_node);
+        self.drawLegend();
     });
 
     switcher.find('input[name=type][value=' + default_val + ']').click();
@@ -369,6 +322,34 @@ TreeMap.prototype.updateSize = function() {
 }
 
 
+TreeMap.prototype.drawLegend = function() {
+
+    var self = this;
+
+    self.svg_legend.selectAll('g').remove();
+
+    self.colors[self.type].range().forEach(function (color, i) {
+        var g = self.svg_legend
+                    .append('g'),
+            val = self.colors[self.type].domain()[i];
+        g.append('rect')
+            .attr('class', 'legend-colorsample')
+            .attr('x', i * 100)
+            .attr('width', 10)
+            .attr('height', 10)
+            .attr('fill-opacity', 0.75)
+            .style('fill', color);
+
+        g.append('text')
+            .attr('class', 'legend-label')
+            .attr('class', 'label')
+            .attr('x', i * 100 + 15)
+            .attr('y', 4)
+            .text('— ' + self.colors[self.type + '_legend_label'](val));
+    });
+};
+
+
 TreeMap.prototype.resize = function () {
     var self = this;
 
@@ -377,6 +358,9 @@ TreeMap.prototype.resize = function () {
     self.svg_container
         .attr('width', self.width + self.margin.left + self.margin.right)
         .attr('height', self.height + self.margin.top + self.margin.bottom);
+
+    self.svg_legend
+        .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height) + ')');
 
     self.resizeTreeMap(false);
     self.renderCrumbs();

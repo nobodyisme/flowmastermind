@@ -167,3 +167,8 @@ div.switcher label.selected {
     border-bottom: 1px solid #333;
     margin: 0 10px;
 }
+
+.legend .label {
+    font-size: 12px;
+    alignment-baseline: central;
+}
