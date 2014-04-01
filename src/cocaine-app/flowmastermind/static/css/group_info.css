@@ -1,0 +1,76 @@
+div.group-info {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 730px;
+    height: 320px;
+
+    margin-left: -365px;
+    margin-top: -160px;
+
+    /*filter: blur(1px);*/
+    /*-webkit-filter: blur(0);*/
+
+    background-color: #fff;
+    /*opacity: 1.0;*/
+    border: 1px solid #aaa;
+}
+
+div.group-info svg {
+    display: inline-block;
+    width: 320px;
+    vertical-align: top;
+}
+
+path.couple-graph {
+/*    stroke: #585858;
+    stroke-dasharray: 5,2;
+    stroke-opacity: .9;
+    stroke-width: 1px;
+*/
+    fill-opacity: 0.75;
+}
+
+path.group-info {
+    fill-opacity: 0.75;
+}
+
+path.node-info {
+    stroke: #444;
+
+    fill-opacity: 0.75;
+}
+
+div.group-info .entity-data {
+    display: inline-block;
+    vertical-align: top;
+    width: 400px;
+    font-size: 12px;
+    padding: 40px 10px 20px 0;
+}
+
+div.group-info .entity-data .leftcolumn {
+    width: 90px;
+    float: left;
+    padding: 4px;
+    text-align: right;
+}
+
+div.group-info .entity-data .title {
+    font-size: 15px;
+}
+
+div.group-info .entity-data .rightcolumn {
+    margin-left: 100px;
+    padding: 4px;
+}
+
+div.group-info .entity-data .clear {
+    clear: both;
+}
+
+div.group-info .entity-data .splitter {
+    height: 0;
+    border-bottom: 1px solid #333;
+    margin: 0 10px;
+}

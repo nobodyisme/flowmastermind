@@ -1,3 +1,6 @@
+var treemap;
+
+
 function showDcTreeMap(dc, type) {
     var container = $('.inner-content'),
         layer = $('<div>');
@@ -156,7 +159,6 @@ function TreeMap(container, data, labels, curvalue, curtype) {
                                 d3.rgb('#ffe000'),
                                 d3.rgb('#9fff00'),
                                 d3.rgb('#62ff58')]),
-        // free_space_label: [d3.rgb('#ff8888'), '#ffeeee', '#ff3333'],
         free_space_legend_label: function (val) {
             return Math.round((1 - val / max_space) * 100) + '%';
         },
@@ -453,7 +455,8 @@ TreeMap.prototype.processSingleClick = function(node, newdepth) {
     var self = this;
 
     if (newdepth == self.max_depth) {
-        self.showSidePanel(node);
+        // self.showSidePanel(node);
+        showGroupInfo(node.name);
         return;
     }
 

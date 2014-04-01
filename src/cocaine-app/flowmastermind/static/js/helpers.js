@@ -130,3 +130,29 @@ function timedeltaToStr(sec) {
 
     return res;
 }
+
+var STATUS_LABELS = {
+    couple_labels: {
+        'OK': 'ОК',
+        'INIT': 'инициализируется',
+        'BAD': 'плохо',
+        'FROZEN': 'заморожен',
+        'RO': 'только чтение'
+    },
+
+    group_labels: {
+        'INIT': 'инициализируется',
+        'BAD': 'недоступна для записи',
+        'COUPLED': 'в капле',
+        'RO': 'только чтение'
+    },
+
+    node_labels: {
+        'BAD': 'уничтожена',
+        'INIT': 'отсутствует статистика',
+        'STALLED': 'устаревшая статистика',
+        'OK': 'ОК',
+        'RO': 'только чтение'
+    }
+}
+
