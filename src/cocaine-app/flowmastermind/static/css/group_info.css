@@ -33,6 +33,7 @@ div.group-info {
 div.group-info svg {
     display: inline-block;
     width: 320px;
+    height: 320px;
     vertical-align: top;
 }
 
