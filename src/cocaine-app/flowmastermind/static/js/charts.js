@@ -10,11 +10,17 @@
         ctxGDC = new GroupsBar('#dscGroupsChart', 'группы по датацентрам');
 
     ctxMDC.onBarClick(function (dc) {
-        window.location = window.location.pathname + '#groups-memory-' + dc;
+        PseudoURL.setPath('/map/')
+            .setParam('t', 'free_space')
+            .setParam('path', dc)
+            .load();
     });
 
     ctxGDC.onBarClick(function (dc) {
-        window.location = window.location.pathname + '#groups-couples-' + dc;
+        PseudoURL.setPath('/map/')
+            .setParam('t', 'couple_status')
+            .setParam('path', dc)
+            .load();
     });
 
     var ns_container = $('.namespaces'),
@@ -22,25 +28,50 @@
         namespaces = {};
 
     $(window).on('hashchange', function () {
+        PseudoURL.parse(window.location.hash);
         checkHash();
+    });
+
+    $('body').keyup(function (event) {
+        if (event.which == 27) {
+            if (PseudoURL.params['info']) {
+                PseudoURL.setParam('info', null).load();
+                return;
+            }
+            PseudoURL.setUrl('').load();
+        }
     });
 
 
     function checkHash() {
 
-        var popup = window.location.hash.split('-', 1)[0],
-            type = window.location.hash.split('-', 2)[1];
+        switch (PseudoURL.path) {
+            case '/map/':
+                var type = PseudoURL.params['t'],
+                    path = PseudoURL.params['path'],
+                    group_id = PseudoURL.params['info'],
+                    highlight = PseudoURL.params['highlight'];
 
-        switch (popup) {
-            case '#groups':
-                var curtype = (type == 'couples') ? 'couple_status' : 'free_space',
-                    value = window.location.hash.substr(popup.length + 1 + type.length + 1);
-                showDcTreeMap(value, curtype);
+                if (treemap) {
+                    treemap.paint(type);
+                    treemap.zoom_by_path(path);
+                    treemap.highlight(highlight);
+                } else {
+                    showDcTreeMap(path, type);
+                }
+                if (group_id) {
+                    showGroupInfo(group_id);
+                } else {
+                    hideGroupInfo();
+                }
                 break;
             case '':
+            case undefined:
                 hideDcTreeMap();
+                hideGroupInfo();
                 break;
         }
+
     }
 
     function nsChart(ns) {

@@ -25,27 +25,8 @@ function showDcTreeMap(dc, type) {
             method: 'get',
             dataType: 'json',
             success: function (data) {
-
-                var labels = {"types": {}};
-
-                $.ajax({
-                    url: '/external/labels.json',
-                    method: 'get',
-                    dataType: 'json',
-                    success: function (data) {
-                        labels = data;
-                        buildTreeMap();
-                    },
-                    error: function (data) {
-                        buildTreeMap();
-                    }
-                });
-
-                function buildTreeMap() {
-                    spinner.stop();
-                    treemap = new TreeMap('div.treemap', data, labels, dc, type);
-                }
-
+                spinner.stop();
+                treemap = new TreeMap('div.treemap', data, labels, dc, type);
             },
             error: function () {
                 tries += 1;
@@ -61,6 +42,7 @@ function showDcTreeMap(dc, type) {
 
 function hideDcTreeMap() {
     $('div.treemap').remove();
+    treemap = null;
 }
 
 
@@ -94,6 +76,7 @@ function TreeMap(container, data, labels, curvalue, curtype) {
     self.data = data;
     self.labels = labels;
     self.container = d3.select(container);
+    self.jqContainer = $(container);
 
     self.margin = {top: 40, right: 10, bottom: 20, left: 10};
     self.updateSize();
@@ -136,7 +119,6 @@ function TreeMap(container, data, labels, curvalue, curtype) {
     self.createTopline();
 
     d3.select(window).on('resize', self.resize.bind(self));
-    d3.select('body').on('keyup', self.close.bind(self));
 
     self.type = 'free_space';
 
@@ -197,11 +179,10 @@ function TreeMap(container, data, labels, curvalue, curtype) {
     self.resize();
     self.createSwitcher(curtype);
 
-    if (curvalue) {
-        self.nodes.forEach(function (d) {
-            if (d.name == curvalue) self.zoom(d);
-        });
-    };
+    if (curvalue == undefined)
+        curvalue = '';
+
+    self.zoom_by_path(curvalue);
 }
 
 TreeMap.prototype.close = function () {
@@ -250,6 +231,26 @@ TreeMap.prototype.createTopline = function () {
             .attr('clip-path', 'url(#topline_clippath)');
 };
 
+TreeMap.prototype.paint = function(type) {
+    var self = this,
+        switcher = self.jqContainer.find('div.switcher'),
+        radio = switcher.find('input[name=type][value=' + type + ']');
+
+    switch (type) {
+        case 'free_space':
+            self.type = type;
+            break;
+        case 'couple_status':
+            self.type = type;
+            break;
+    }
+
+    switcher.find('label').removeClass('selected');
+    switcher.find('label[for=' + radio.attr('id') + ']').addClass('selected');
+
+    self.drawLegend();
+}
+
 TreeMap.prototype.createSwitcher = function(default_val) {
 
     var self = this;
@@ -287,32 +288,15 @@ TreeMap.prototype.createSwitcher = function(default_val) {
         .attr('for', 'type2')
         .text('каплы');
 
-    var switcher = $('div.switcher');
+    var switcher = self.jqContainer.find('div.switcher');
 
     switcher.find('input[name=type]').on('click', function() {
-
-        switch (this.value) {
-            case 'free_space':
-                self.type = this.value;
-                // self.treemap
-                //     .value(function(d) { return d.total_space; });
-                break;
-            case 'couple_status':
-                self.type = this.value;
-                // self.treemap
-                //     .value(function(d) { return d.status; });
-                break;
-        }
-
-
-        switcher.find('label').removeClass('selected');
-        switcher.find('label[for=' + $(this).attr('id') + ']').addClass('selected');
-
-        self.zoom(self.cur_node);
-        self.drawLegend();
+        // self.paint(this.value);
+        PseudoURL.setParam('t', this.value).load();
     });
 
-    switcher.find('input[name=type][value=' + default_val + ']').click();
+    // switcher.find('input[name=type][value=' + default_val + ']').click();
+    self.paint(default_val);
 };
 
 
@@ -455,8 +439,7 @@ TreeMap.prototype.processSingleClick = function(node, newdepth) {
     var self = this;
 
     if (newdepth == self.max_depth) {
-        // self.showSidePanel(node);
-        showGroupInfo(node.name);
+        PseudoURL.setParam('info', node.name).load();
         return;
     }
 
@@ -467,8 +450,28 @@ TreeMap.prototype.processSingleClick = function(node, newdepth) {
     while (d.depth > newdepth) {
         d = d.parent;
     }
-    self.zoom(d);
+    self.go(d);
 };
+
+
+TreeMap.prototype.go = function(node, highlight_node) {
+    var self = this,
+        nodes_path = [],
+        x = node;
+
+    while (x.name != 'root') {
+        nodes_path.splice(0, 0, x.name);
+        x = x.parent;
+    }
+
+    PseudoURL.setParam('path', nodes_path.join('|'));
+    if (highlight_node) {
+        PseudoURL.setParam('highlight', highlight_node.name);
+    } else {
+        PseudoURL.setParam('highlight', null);
+    }
+    PseudoURL.load();
+}
 
 
 TreeMap.prototype.processDoubleClick = function(node, newdepth) {
@@ -483,7 +486,7 @@ TreeMap.prototype.processDoubleClick = function(node, newdepth) {
         d = d.parent;
     }
     self.hideSidePanel()
-    self.zoom(d);
+    self.go(d);
 };
 
 TreeMap.prototype.showSidePanel = function(node) {
@@ -569,6 +572,62 @@ TreeMap.prototype.hideSidePanel = function(node) {
 };
 
 
+TreeMap.prototype.zoom_by_name = function (name) {
+    var self = this;
+    if (name == '') {
+        // default empty name is root
+        self.zoom(self.nodes[0]);
+        return;
+    }
+    self.nodes.forEach(function (d) {
+        if (d.name == name) self.zoom(d);
+    });
+};
+
+TreeMap.prototype.zoom_by_path = function (path) {
+    var self = this,
+        node_names = path.split('|'),
+        curnode = self.nodes[0];
+
+    for (var i = 0; i < node_names.length; i++) {
+        var found = false;
+        for (var j = 0; j < curnode.children.length; j++) {
+            if (curnode.children[j].name == node_names[i]) {
+                curnode = curnode.children[j];
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            break;
+    }
+
+    self.zoom(curnode);
+}
+
+TreeMap.prototype.highlight = function(name) {
+    var self = this;
+
+    self.svg.selectAll('g.cell')
+        .select('rect')
+        .attr('stroke', function (d) {
+            if (d.depth == self.max_depth) {
+                if (d.name == name) {
+                    return '#444444';
+                }
+            }
+            return null;
+        })
+        .attr('stroke-width', function (d) {
+            if (d.depth == self.max_depth) {
+                if (d.name == name) {
+                    return 2;
+                }
+            }
+            return null;
+        });
+};
+
 TreeMap.prototype.zoom = function (node) {
     var self = this;
 
@@ -585,7 +644,6 @@ TreeMap.prototype.zoom = function (node) {
         .attr('height', function(d) { return ky * d.dy; })
         .attr('fill', function(d) {
             if (d.depth == self.max_depth) {
-                // return self.colors[self.type](self.treemap.value()(d));
                 return self.colors[self.type](d[self.type]);
             }
             return null;

@@ -61,20 +61,23 @@ BarColors = {
 
 
 var status_color = d3.scale.ordinal()
-    .domain(['OK', 'BAD', 'FROZEN', 'CLOSED', 'STALLED', 'INIT', null])
+    .domain(['OK', 'COUPLED', 'BAD', 'FROZEN', 'CLOSED', 'STALLED', 'INIT', null])
     .range([d3.rgb('#67e300'),
+            d3.rgb('#67e300'),
             d3.rgb('#ff0d00'),
-            d3.rgb('#077a21'),
+            d3.rgb('#0c5da5'),
             d3.rgb('#585a5c'),
             d3.rgb('#ff6400'),
             d3.rgb('#ffd100'),
             d3.rgb('#ffd100')]);
 
 var status_color_light = d3.scale.ordinal()
-    .domain(['OK', 'BAD', 'FROZEN', 'CLOSED', 'STALLED', 'INIT', null])
+    .domain(['OK', 'COUPLED', 'BAD', 'FROZEN', 'CLOSED', 'STALLED', 'INIT', null])
     .range([d3.rgb('#8ef13c'),
+            d3.rgb('#8ef13c'),
             d3.rgb('#ff4940'),
-            d3.rgb('#3ba3d0'),
+            d3.rgb('#408dd2'),
             d3.rgb('#686a6d'),
             d3.rgb('#ff8b40'),
+            d3.rgb('#ffdc40'),
             d3.rgb('#ffdc40')]);

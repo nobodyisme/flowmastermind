@@ -1,3 +1,17 @@
+div.group-info-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+div.block-layer {
+    width: 100%;
+    height: 100%;
+}
+
 div.group-info {
     position: fixed;
     top: 50%;
@@ -36,8 +50,7 @@ path.group-info {
 }
 
 path.node-info {
-    stroke: #444;
-
+    stroke: #777;
     fill-opacity: 0.75;
 }
 
