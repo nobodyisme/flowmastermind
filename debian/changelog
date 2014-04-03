@@ -1,3 +1,9 @@
+flowmastermind (0.25) lucid; urgency=low
+
+  * Namespace in couple info
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 03 Apr 2014 17:11:10 +0400
+
 flowmastermind (0.24) lucid; urgency=low
 
   * Namespace network maps
