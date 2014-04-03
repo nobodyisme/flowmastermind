@@ -285,6 +285,9 @@ GroupInfo.prototype.renderEntityData = function (data) {
     }
 
     renderField('Статус', entity_status(node_type, data['status']));
+    if (data['namespace']) {
+        renderField('Неймспейс', data['namespace']);
+    }
     if (data['dc']) {
         renderField('Датацентр', self.labels['types']['dc'] && self.labels['types']['dc'][data['dc']] || data['dc']);
         renderField('Хост', data['hostname']);
