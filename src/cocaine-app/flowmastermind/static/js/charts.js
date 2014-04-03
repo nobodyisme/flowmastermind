@@ -49,15 +49,18 @@
             case '/map/':
                 var type = PseudoURL.params['t'],
                     path = PseudoURL.params['path'],
+                    ns = PseudoURL.params['ns'],
                     group_id = PseudoURL.params['info'],
                     highlight = PseudoURL.params['highlight'];
 
-                if (treemap) {
+                if (treemap && treemap.ns == ns) {
+                    console.log(treemap.ns, ns);
                     treemap.paint(type);
                     treemap.zoom_by_path(path);
                     treemap.highlight(highlight);
                 } else {
-                    showDcTreeMap(path, type);
+                    hideDcTreeMap();
+                    showDcTreeMap(path, type, ns);
                 }
                 if (group_id) {
                     showGroupInfo(group_id);
@@ -98,6 +101,23 @@
                 'm_bars': m_bars,
                 'c_bars': c_bars
             };
+
+            m_bars.onBarClick(function (dc) {
+                PseudoURL.setPath('/map/')
+                    .setParam('t', 'free_space')
+                    .setParam('ns', ns)
+                    .setParam('path', dc)
+                    .load();
+            });
+
+            c_bars.onBarClick(function (dc) {
+                PseudoURL.setPath('/map/')
+                    .setParam('t', 'couple_status')
+                    .setParam('ns', ns)
+                    .setParam('path', dc)
+                    .load();
+            });
+
         }
 
         return namespaces[ns];

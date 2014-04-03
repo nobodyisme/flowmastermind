@@ -1,7 +1,7 @@
 var treemap;
 
 
-function showDcTreeMap(dc, type) {
+function showDcTreeMap(dc, type, ns) {
     var container = $('.inner-content'),
         layer = $('<div>');
 
@@ -18,15 +18,21 @@ function showDcTreeMap(dc, type) {
     spinner.start();
 
     var tries = 0,
-        max_tries = 3;
+        max_tries = 3,
+        url = '/json/map/';
+
+    if (ns) {
+        url += ns + '/';
+    }
+
     (function loadTreemap() {
         $.ajax({
-            url: '/json/treemap/',
+            url: url,
             method: 'get',
             dataType: 'json',
             success: function (data) {
                 spinner.stop();
-                treemap = new TreeMap('div.treemap', data, labels, dc, type);
+                treemap = new TreeMap('div.treemap', data, labels, dc, type, ns);
             },
             error: function () {
                 tries += 1;
@@ -69,11 +75,12 @@ function failTreemapLoad(layer) {
 }
 
 
-function TreeMap(container, data, labels, curvalue, curtype) {
+function TreeMap(container, data, labels, curvalue, curtype, ns) {
 
     var self = this;
 
     self.data = data;
+    self.ns = ns;
     self.labels = labels;
     self.container = d3.select(container);
     self.jqContainer = $(container);

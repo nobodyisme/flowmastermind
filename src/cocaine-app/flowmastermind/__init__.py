@@ -96,12 +96,13 @@ def json_commands_history(year, month):
         raise
 
 
-@app.route('/json/treemap/')
-def json_treemap():
+@app.route('/json/map/')
+@app.route('/json/map/<namespace>/')
+def json_treemap(namespace=None):
     try:
         m = Service('mastermind')
         resp = JsonResponse(json.dumps(m.enqueue('get_groups_tree',
-            '').get()))
+            msgpack.packb([namespace])).get()))
         return resp
     except Exception as e:
         logging.error(e)
