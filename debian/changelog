@@ -1,3 +1,9 @@
+flowmastermind (0.24) lucid; urgency=low
+
+  * Namespace network maps
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 03 Apr 2014 15:11:17 +0400
+
 flowmastermind (0.23) lucid; urgency=low
 
   * Firefox rendering fix for couple info
