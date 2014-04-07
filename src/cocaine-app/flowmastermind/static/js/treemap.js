@@ -152,9 +152,9 @@ function TreeMap(container, data, labels, curvalue, curtype, ns) {
             return Math.round((1 - val / max_space) * 100) + '%';
         },
         couple_status: d3.scale.ordinal()
-                           .domain(['OK', 'BAD', 'FROZEN', 'CLOSED', null])
+                           .domain(['OK', 'BAD', 'FROZEN', 'CLOSED', 'FULL', null])
                            .range([d3.rgb('#4ec96a'), d3.rgb('#f04848'), d3.rgb('#96c5ff'),
-                                   d3.rgb('#bbb'), d3.rgb('#f2ee60')]),
+                                   d3.rgb('#bbb'), d3.rgb('#bbb'), d3.rgb('#f2ee60')]),
         couple_status_legend_label: function (val) {
             return (val != null ) ? val : 'NOT COUPLED';
         }
