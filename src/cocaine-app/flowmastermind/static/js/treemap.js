@@ -565,10 +565,8 @@ TreeMap.prototype.processSingleClick = function(node, newdepth) {
     }
 
     // and here are falling through levels consisting of one child element
-    while (d.depth < self.max_depth - 1) {
-        if (d.children.length == 1) {
-            d = d.children[0];
-        }
+    while (d.depth < self.max_depth - 1 && d.children.length == 1) {
+        d = d.children[0];
     }
 
     self.go(d);
