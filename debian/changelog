@@ -1,3 +1,9 @@
+flowmastermind (0.27) lucid; urgency=low
+
+  * Fix for falling through nodes with single child
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 10 Apr 2014 17:17:54 +0400
+
 flowmastermind (0.26) lucid; urgency=low
 
   * Node search in a treemap
