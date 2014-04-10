@@ -38,6 +38,11 @@
                 PseudoURL.setParam('info', null).load();
                 return;
             }
+            var search_field = $('input.search-field');
+            if (search_field.is(':focus')) {
+                search_field.blur();
+                return;
+            }
             PseudoURL.setUrl('').load();
         }
     });
@@ -54,7 +59,6 @@
                     highlight = PseudoURL.params['highlight'];
 
                 if (treemap && treemap.ns == ns) {
-                    console.log(treemap.ns, ns);
                     treemap.paint(type);
                     treemap.zoom_by_path(path);
                     treemap.highlight(highlight);
@@ -166,18 +170,6 @@
         setTimeout(periodicTask, updatePeriod);
     }
     periodicTask();
-
-    $(document).on("mouseover", ".menu-item", function() {
-        // $(this).stop(true, true).animate({ borderBottomColor: "rgba(200, 200, 200, 1.0)",
-        //                                    borderTopColor: "rgba(200, 200, 200, 1.0)" }, 0.5);
-    });
-
-    $(document).on("mouseout", ".menu-item", function() {
-        // $(this).stop(true, true).animate({ borderColor: "rgba(200, 200, 200, 0.0)" }, 0.1);
-        // $(this).stop(true, true).animate({ borderBottomColor: "rgba(200, 200, 200, 0.0)",
-        //                                    borderTopColor: "rgba(200, 200, 200, 0.0)" }, 0.5);
-
-    });
 
     checkHash();
 

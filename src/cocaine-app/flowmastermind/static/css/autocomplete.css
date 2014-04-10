@@ -1,0 +1,61 @@
+div.search {
+    position: absolute;
+    top: 0;
+    padding: 5px;
+}
+
+div.search .search-field {
+    font-size: 17px;
+    height: 16px;
+    padding: 2px;
+    color: #444;
+}
+
+div.search img {
+    width: 21px;
+    height: 21px;
+    vertical-align: sub;
+    padding: 0 2px;
+}
+
+div.search .search-field:focus {
+    outline: #ddddff solid thin;
+}
+
+.autocomplete-suggestions {
+    overflow-y: scroll;
+}
+
+.autocomplete-suggestion {
+    height: 20px;
+    padding: 5px;
+    margin-top: -1px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    overflow: hidden;
+    padding: 8px 8px 7px 16px;
+}
+
+.autocomplete-selected {
+    background-color: #eeffee;
+}
+
+
+.autocomplete-suggestion .label {
+    display: block;
+    float: right;
+    text-align: right;
+    padding: 3px 3px 3px 10px;
+    font-size: 9px;
+    padding: 5px 0 0 10px;
+    color: #888;
+}
+
+.autocomplete-suggestion .value {
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 13px;
+    line-height: 18px;
+}

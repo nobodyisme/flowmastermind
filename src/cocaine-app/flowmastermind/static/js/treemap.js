@@ -183,14 +183,17 @@ function TreeMap(container, data, labels, curvalue, curtype, ns) {
             return 0;
         });
 
+    self.createSearch();
+
     self.resize();
     self.createSwitcher(curtype);
+
 
     if (curvalue == undefined)
         curvalue = '';
 
     self.zoom_by_path(curvalue);
-}
+};
 
 TreeMap.prototype.close = function () {
     var self = this;
@@ -256,7 +259,7 @@ TreeMap.prototype.paint = function(type) {
     switcher.find('label[for=' + radio.attr('id') + ']').addClass('selected');
 
     self.drawLegend();
-}
+};
 
 TreeMap.prototype.createSwitcher = function(default_val) {
 
@@ -306,13 +309,111 @@ TreeMap.prototype.createSwitcher = function(default_val) {
     self.paint(default_val);
 };
 
+TreeMap.prototype.createSearch = function() {
+    var self = this,
+        lookupData = [],
+        focus_time = 150,
+        right_margin = 200,
+        folded_width = 90,
+        full_width = 250;
+
+    self.nodes.forEach(function (node) {
+        if (node.type == 'root')
+            return;
+
+        lookupData.push({value: self.nameLabel(node.type, node.name),
+                         data: node});
+    });
+
+    self.search = $('<div>')
+        .addClass('search')
+        .css({right: right_margin,
+              width: folded_width + 40})
+        .appendTo(self.jqContainer);
+
+    $('<img>')
+        .addClass('search-icon')
+        .attr('src', '/static/img/find.png')
+        .appendTo(self.search);
+
+    self.search_field = $('<input>')
+        .attr('type', 'text')
+        .css('width', folded_width)
+        .addClass('search-field')
+        .appendTo(self.search);
+
+    self.search_field.on('focus', function () {
+        self.search.animate({
+            width: full_width + 40
+        }, focus_time);
+        self.search_field.animate({
+            width: full_width
+        }, focus_time, function () {
+            self.renderCrumbs();
+        });
+    });
+
+    $(window).blur(function () {
+        var search = $('input.search-field');
+        if (search.data('autocomplete')) {
+            search.data('autocomplete').hide();
+        }
+    });
+
+    self.search_field.on('focusout', function () {
+        self.search.animate({
+            width: folded_width + 40
+        }, focus_time);
+        self.search_field.animate({
+            width: folded_width
+        }, focus_time, function () {
+            self.renderCrumbs();
+        });
+    });
+
+    // setting up autocomplete
+    var ac = self.search_field.autocomplete({
+        width: full_width + 8,
+        maxHeight: 400,
+        onSelect: function (value) {
+            var node = value.data;
+            if (node.type == 'group') {
+                PseudoURL.setParam('info', node.name);
+                node = node.parent;
+                $(this).focusout();
+            } else {
+                PseudoURL.setParam('info', null);
+            }
+            self.go(node);
+        },
+        lookup: lookupData,
+        autoSelectFirst: false,
+        triggerSelectOnValidInput: false,
+        tabDisabled: true,
+        lookupFilter: function (suggestion, originalQuery, queryLowerCase) {
+            return suggestion.value.toLowerCase().indexOf(queryLowerCase) === 0;
+        },
+        formatResult: function (suggestion, currentValue) {
+            var pattern = '(' + $.Autocomplete.utils.escapeRegExChars(currentValue) + ')';
+
+            var type_label = '<span class="label">' + self.typeLabel(suggestion.data.type) + '</span>';
+            return type_label + '<span class="value">' +
+                   suggestion.value.replace(new RegExp(pattern, 'i'), '<strong>$1<\/strong>') +
+                   '</span>';
+        },
+        beforeRender: function (container) {
+            container.css({'margin-left': folded_width - full_width});
+        }
+    });
+};
+
 
 TreeMap.prototype.updateSize = function() {
     var self = this;
 
     self.width = parseInt(self.container.style('width')) - self.margin.left - self.margin.right;
     self.height = parseInt(self.container.style('height')) - self.margin.top - self.margin.bottom;
-}
+};
 
 
 TreeMap.prototype.drawLegend = function() {
@@ -446,6 +547,8 @@ TreeMap.prototype.processSingleClick = function(node, newdepth) {
     var self = this;
 
     if (newdepth == self.max_depth) {
+        if (node.depth != self.max_depth)
+            return;
         PseudoURL.setParam('info', node.name).load();
         return;
     }
@@ -478,7 +581,7 @@ TreeMap.prototype.go = function(node, highlight_node) {
         PseudoURL.setParam('highlight', null);
     }
     PseudoURL.load();
-}
+};
 
 
 TreeMap.prototype.processDoubleClick = function(node, newdepth) {
@@ -610,7 +713,7 @@ TreeMap.prototype.zoom_by_path = function (path) {
     }
 
     self.zoom(curnode);
-}
+};
 
 TreeMap.prototype.highlight = function(name) {
     var self = this;
@@ -723,12 +826,12 @@ TreeMap.prototype.zoom = function (node) {
 TreeMap.prototype.typeLabel = function(type) {
     var self = this;
     return self.labels['types'][type] || type;
-}
+};
 
 TreeMap.prototype.nameLabel = function(type, name) {
     var self = this;
     return self.labels[type] && self.labels[type][name] || name;
-}
+};
 
 
 TreeMap.prototype.renderCrumbs = function(additional) {
@@ -758,7 +861,8 @@ TreeMap.prototype.renderCrumbs = function(additional) {
 
     var text_length = self.svg_topline_text.node().getComputedTextLength() +
                       self.svg_topline_text_additional.node().getComputedTextLength() + 5,
-        available_length = parseInt(self.container.style('width')) - self.topline_margin.left - self.topline_margin.right,
+        available_length = parseInt(self.container.style('width')) - self.topline_margin.left -
+                           self.topline_margin.right - self.search.outerWidth(),
         offset = available_length - text_length;
 
     var text_offset = d3.min([offset, 0]);
@@ -775,7 +879,7 @@ TreeMap.prototype.renderCrumbs = function(additional) {
     self.svg_topline_text_additional
         .transition()
         .attr('dx', text_offset + 5);
-}
+};
 
 
 TreeMap.prototype.handleMouseEnter = function(selection) {
@@ -804,7 +908,7 @@ TreeMap.prototype.handleMouseEnter = function(selection) {
 
             self.renderCrumbs([self.typeLabel(node.type), self.nameLabel(node.type, node.name)]);
         });
-}
+};
 
 TreeMap.prototype.handleMouseLeave = function(selection) {
     var self = this;
@@ -814,5 +918,5 @@ TreeMap.prototype.handleMouseLeave = function(selection) {
             self.svg.selectAll('g.selection').remove();
             // self.renderCrumbs();
         });
-}
+};
 

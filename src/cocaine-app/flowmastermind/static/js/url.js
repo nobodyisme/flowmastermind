@@ -76,5 +76,3 @@ var PseudoURL = {
 };
 
 PseudoURL.parse(window.location.hash);
-
-console.log(PseudoURL);
