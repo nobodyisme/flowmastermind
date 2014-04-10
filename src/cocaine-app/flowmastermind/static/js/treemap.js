@@ -556,10 +556,21 @@ TreeMap.prototype.processSingleClick = function(node, newdepth) {
     if (self.cur_depth + 1 != newdepth) {
         return;
     }
+
+    // because actual click always happens on the lowest tree node,
+    // we need to traverse back to the next depth level
     var d = node;
     while (d.depth > newdepth) {
         d = d.parent;
     }
+
+    // and here are falling through levels consisting of one child element
+    while (d.depth < self.max_depth - 1) {
+        if (d.children.length == 1) {
+            d = d.children[0];
+        }
+    }
+
     self.go(d);
 };
 
