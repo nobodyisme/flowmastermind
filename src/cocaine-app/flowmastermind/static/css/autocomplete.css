@@ -2,6 +2,7 @@ div.search {
     position: absolute;
     top: 0;
     padding: 5px;
+    background-color: #fff;
 }
 
 div.search .search-field {

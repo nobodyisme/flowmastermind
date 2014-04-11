@@ -213,32 +213,13 @@ TreeMap.prototype.createTopline = function () {
             .attr('transform', 'translate(' + self.topline_margin.left + ',0)');
 
     self.svg_topline
-        .append('clipPath')
-            .attr('id', 'topline_clippath')
-            .attr('class', 'clippath')
-        .append('rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', parseInt(self.container.style('width')) - self.topline_margin.left - self.topline_margin.right)
-            .attr('height', 40);
-
-    self.svg_topline
         .append('rect')
             .attr('class', 'topline-bg')
             .attr('width', parseInt(self.container.style('width')) - self.margin.left - self.margin.right)
             .attr('height', 40);
 
-    self.svg_topline_text = self.svg_topline
-        .append('text')
-            .attr('class', 'crumbs')
-            .attr('y', self.margin.top / 2)
-            .attr('clip-path', 'url(#topline_clippath)');
-
-    self.svg_topline_text_additional = self.svg_topline
-        .append('text')
-            .attr('class', 'precrumbs')
-            .attr('y', self.margin.top / 2)
-            .attr('clip-path', 'url(#topline_clippath)');
+    self.svg_topline_g = self.svg_topline
+        .append('g');
 };
 
 TreeMap.prototype.paint = function(type) {
@@ -301,11 +282,9 @@ TreeMap.prototype.createSwitcher = function(default_val) {
     var switcher = self.jqContainer.find('div.switcher');
 
     switcher.find('input[name=type]').on('click', function() {
-        // self.paint(this.value);
         PseudoURL.setParam('t', this.value).load();
     });
 
-    // switcher.find('input[name=type][value=' + default_val + ']').click();
     self.paint(default_val);
 };
 
@@ -387,7 +366,7 @@ TreeMap.prototype.createSearch = function() {
             self.go(node);
         },
         lookup: lookupData,
-        autoSelectFirst: false,
+        autoSelectFirst: true,
         triggerSelectOnValidInput: false,
         tabDisabled: true,
         lookupFilter: function (suggestion, originalQuery, queryLowerCase) {
@@ -564,7 +543,7 @@ TreeMap.prototype.processSingleClick = function(node, newdepth) {
         d = d.parent;
     }
 
-    // and here are falling through levels consisting of one child element
+    // and here we fall through the levels consisting of one child element
     while (d.depth < self.max_depth - 1 && d.children.length == 1) {
         d = d.children[0];
     }
@@ -818,12 +797,12 @@ TreeMap.prototype.zoom = function (node) {
         node = self.cur_node;
 
     while (node.parent != undefined) {
-        crumbs.push([self.typeLabel(node.type), self.nameLabel(node.type, node.name)]);
+        crumbs.push([self.typeLabel(node.type), node]);
         node = node.parent;
     }
 
     if (node.type != 'root') {
-        crumbs.push([self.typeLabel(node.type), self.nameLabel(node.type, node.name)]);
+        crumbs.push([self.typeLabel(node.type), node]);
     }
 
     crumbs.reverse();
@@ -845,49 +824,60 @@ TreeMap.prototype.nameLabel = function(type, name) {
 
 TreeMap.prototype.renderCrumbs = function(additional) {
 
-    var self = this;
+    var self = this,
+        padding = 5;
 
-    var parts = [];
-    self.crumbs.forEach(function (p) {
-        parts.push(p.join(': '))
-    });
+    self.svg_topline_g.selectAll('*').remove();
+    var offset = 0;
 
+    function render(p, i, crumbClass) {
+        var link = (crumbClass == 'crumbs');
+        var node = p[1],
+            label = self.svg_topline_g
+            .append('text')
+            .attr('class', crumbClass)
+            .attr('y', self.margin.top / 2)
+            .attr('x', offset)
+            .text((i == 0) ? p[0] + ': ' : ' > ' + p[0] + ': ');
+        offset += label.node().getComputedTextLength() + padding;
 
-    self.svg_topline_text
-        .text(parts.join(' > '));
+        var value = self.svg_topline_g
+            .append('text')
+            .attr('class', link ? crumbClass + ' value' : crumbClass)
+            .attr('y', self.margin.top / 2)
+            .attr('x', offset)
+            .text(self.nameLabel(node.type, node.name));
 
-    if (additional != undefined) {
-        var prefix = '';
-        if (parts.length > 0) {
-            prefix = ' > ';
+        if (link) {
+            value.on('click', function () {
+                self.go(node);
+            });
         }
-        self.svg_topline_text_additional
-            .attr('x', self.svg_topline_text.attr('x') + self.svg_topline_text.node().getComputedTextLength())
-            .text(prefix + additional.join(': '));
-    } else {
-        self.svg_topline_text_additional.text('');
+
+        offset += value.node().getComputedTextLength() + padding;
+
     }
 
-    var text_length = self.svg_topline_text.node().getComputedTextLength() +
-                      self.svg_topline_text_additional.node().getComputedTextLength() + 5,
+    self.crumbs.forEach(function (p, i) {
+        render(p, i, 'crumbs');
+    });
+
+    if (additional) {
+        [additional].forEach(function (p, i) {
+            render(p, self.crumbs.length + i, 'precrumbs');
+        });
+    }
+
+    var text_length = self.svg_topline_g.node().getBBox().width,
         available_length = parseInt(self.container.style('width')) - self.topline_margin.left -
                            self.topline_margin.right - self.search.outerWidth(),
         offset = available_length - text_length;
 
     var text_offset = d3.min([offset, 0]);
 
-    self.svg_topline.select('.clippath').select('rect')
+    self.svg_topline_g
         .transition()
-        .attr('width', parseInt(self.container.style('width')) - self.topline_margin.left - self.topline_margin.right);
-    self.svg_topline.select('.topline-bg')
-        .transition()
-        .attr('width', parseInt(self.container.style('width')) - self.margin.left - self.margin.right);
-    self.svg_topline_text
-        .transition()
-        .attr('dx', text_offset);
-    self.svg_topline_text_additional
-        .transition()
-        .attr('dx', text_offset + 5);
+        .attr('transform', 'translate(' + text_offset + ',0)');
 };
 
 
@@ -915,7 +905,7 @@ TreeMap.prototype.handleMouseEnter = function(selection) {
                 .attr('fill', '#ccc')
                 .attr('fill-opacity', 0.5);
 
-            self.renderCrumbs([self.typeLabel(node.type), self.nameLabel(node.type, node.name)]);
+            self.renderCrumbs([self.typeLabel(node.type), node]);
         });
 };
 
@@ -925,7 +915,6 @@ TreeMap.prototype.handleMouseLeave = function(selection) {
     selection
         .on('mouseleave', function (d) {
             self.svg.selectAll('g.selection').remove();
-            // self.renderCrumbs();
         });
 };
 

@@ -96,6 +96,11 @@ g.topline text.crumbs {
     fill: #666;
 }
 
+g.topline text.value {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 g.topline text {
     fill: #999;
 }
@@ -169,6 +174,7 @@ div.switcher label.selected {
 }
 
 .legend .label {
-    font-size: 12px;
+    font-size: 9px;
+    fill: #555;
     alignment-baseline: central;
 }
