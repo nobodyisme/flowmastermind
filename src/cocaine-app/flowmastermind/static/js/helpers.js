@@ -2,6 +2,8 @@
 var prefixes = ['б', 'кб', 'Мб', 'Гб', 'Тб', 'Пб'],
     gb = 1024 * 1024 * 1024;
 
+var decimal_prefixes = ['', 'к', 'млн', 'млрд', 'трлн'];
+
 
 function prefixBytes(bytes) {
     var res = bytes;
@@ -23,6 +25,39 @@ function prefixBytesRound(bytes) {
         res = res / 1024;
     }
     return Math.round(res) + ' ' + prefixes[prefixes.length - 1];
+}
+
+function prefixNumRound(number, max_value) {
+    var res = number,
+        scaler = max_value,
+        large = false;
+
+    function render(number, i) {
+        return (scaler < 1000 && large) ?
+                   number.toFixed(2) + ' ' + decimal_prefixes[i] :
+                   Math.round(number) + ' ' + decimal_prefixes[i];
+    }
+
+    for (var i in prefixes) {
+        if (res < 1000) {
+            return render(res, i);
+        }
+        large = true;
+        res = res / 1000;
+        scaler = scaler / 1000;
+    }
+    return render(res, prefixes.length - 1);
+}
+
+Number.prototype.format = function(n, x, s, c) {
+    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+        num = this.toFixed(Math.max(0, ~~n));
+
+    return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+};
+
+function intGroupsDelimiter(number, delimiter) {
+    return number.format(0, 3, delimiter);
 }
 
 function SortByAlphanum(a, b){

@@ -157,6 +157,15 @@ function TreeMap(container, data, labels, curvalue, curtype, ns) {
                                    d3.rgb('#bbb'), d3.rgb('#bbb'), d3.rgb('#f2ee60')]),
         couple_status_legend_label: function (val) {
             return (val != null ) ? val : 'NOT COUPLED';
+        },
+        fragmentation: d3.scale.threshold()
+                        .domain([0.1, 0.15, 0.25, 0.4])
+                        .range([d3.rgb('#E7F8F2'),
+                                d3.rgb('#A6A59D'),
+                                d3.rgb('#645248'),
+                                d3.rgb('#1e1815')]),
+        fragmentation_legend_label: function (val) {
+            return (val * 100).toFixed(2) + '%';
         }
     };
 
@@ -205,7 +214,7 @@ TreeMap.prototype.close = function () {
 TreeMap.prototype.createTopline = function () {
     var self = this;
 
-    self.topline_margin = {left: self.margin.left, right: 200 + self.margin.right};
+    self.topline_margin = {left: self.margin.left, right: 300 + self.margin.right};
 
     self.svg_topline = self.svg_container
         .append('g')
@@ -232,6 +241,9 @@ TreeMap.prototype.paint = function(type) {
             self.type = type;
             break;
         case 'couple_status':
+            self.type = type;
+            break;
+        case 'fragmentation':
             self.type = type;
             break;
     }
@@ -279,6 +291,18 @@ TreeMap.prototype.createSwitcher = function(default_val) {
         .attr('for', 'type2')
         .text('каплы');
 
+    self.switcher
+        .append('input')
+        .attr('type', 'radio')
+        .attr('name', 'type')
+        .attr('value', 'fragmentation')
+        .attr('id', 'type3');
+
+    self.switcher
+        .append('label')
+        .attr('for', 'type3')
+        .text('фрагментация');
+
     var switcher = self.jqContainer.find('div.switcher');
 
     switcher.find('input[name=type]').on('click', function() {
@@ -292,7 +316,7 @@ TreeMap.prototype.createSearch = function() {
     var self = this,
         lookupData = [],
         focus_time = 150,
-        right_margin = 200,
+        right_margin = 300,
         folded_width = 90,
         full_width = 250;
 
@@ -779,7 +803,7 @@ TreeMap.prototype.zoom = function (node) {
                 .attr('y', self.yScale(d.y))
                 .attr('dy', 15)
                 .attr('dx', 15)
-                .style('fill', '#333')
+                .style('fill', (self.type == 'fragmentation') ? '#d57b23': '#333')
                 .style('alignment-baseline', 'central')
                 .style('text-anchor', 'start')
                 .style('font-size', '11px')

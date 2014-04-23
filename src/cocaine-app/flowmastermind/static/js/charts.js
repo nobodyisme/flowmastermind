@@ -7,11 +7,19 @@
         ctxRDEM = new EffectiveMemoryPie('#realDataEffMemoryChart', 'размер данных*', true),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxMDC = new MemoryBar('#dscMemoryChart', 'память по датацентрам'),
+        ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
         ctxGDC = new GroupsBar('#dscGroupsChart', 'группы по датацентрам');
 
     ctxMDC.onBarClick(function (dc) {
         PseudoURL.setPath('/map/')
             .setParam('t', 'free_space')
+            .setParam('path', dc)
+            .load();
+    });
+
+    ctxKDC.onBarClick(function (dc) {
+        PseudoURL.setPath('/map/')
+            .setParam('t', 'fragmentation')
             .setParam('path', dc)
             .load();
     });
@@ -89,8 +97,10 @@
                 clear2 = $('<span class="clear">').appendTo(chart_set);
 
             var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
+                k_chart = $('<div class="chart k-chart-' + ns + '">').appendTo(chart_set),
                 c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
                 m_bars = new MemoryBar('.m-chart-' + ns, 'память'),
+                k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new GroupsBar('.c-chart-' + ns, 'каплы'),
 
                 spanMenuItem = $('<span class="menu-item">').appendTo(namespaces_menu),
@@ -103,12 +113,21 @@
 
             namespaces[ns] = {
                 'm_bars': m_bars,
+                'k_bars': k_bars,
                 'c_bars': c_bars
             };
 
             m_bars.onBarClick(function (dc) {
                 PseudoURL.setPath('/map/')
                     .setParam('t', 'free_space')
+                    .setParam('ns', ns)
+                    .setParam('path', dc)
+                    .load();
+            });
+
+            k_bars.onBarClick(function (dc) {
+                PseudoURL.setPath('/map/')
+                    .setParam('t', 'fragmentation')
                     .setParam('ns', ns)
                     .setParam('path', dc)
                     .load();
@@ -145,6 +164,7 @@
                 ctxC.update(data);
 
                 ctxMDC.update(data['dc']);
+                ctxKDC.update(data['dc']);
                 ctxGDC.update(data['dc']);
 
                 var ns_items = iterItems(data['namespaces']);
@@ -156,6 +176,7 @@
                         ns_data = ns_items[idx][1];
 
                     ns.m_bars.update(ns_data);
+                    ns.k_bars.update(ns_data);
                     ns.c_bars.update(ns_data);
                 }
 

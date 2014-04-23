@@ -12,6 +12,18 @@ function GroupsBar(container, chartLabel) {
     self.constructor.super.call(self, container, chartLabel);
 }
 
+function KeysBar(container, chartLabel) {
+
+    var self = this;
+    self.constructor.super.call(self, container, chartLabel);
+
+    self.max_value = 0;
+
+    self.yAxis.tickFormat(function (val) {
+        return prefixNumRound(val, self.max_value);
+    });
+}
+
 
 function Bar(container, chartLabel) {
 
@@ -85,6 +97,7 @@ function extend(Child, Parent) {
 }
 
 extend(MemoryBar, Bar);
+extend(KeysBar, Bar);
 extend(GroupsBar, Bar);
 
 
@@ -164,6 +177,85 @@ MemoryBar.prototype.addLegend = function () {
 MemoryBar.prototype.tooltipFormatter = prefixBytes;
 MemoryBar.prototype.barLabelFormatter = prefixBytesRound;
 
+
+KeysBar.prototype.labels = {
+    keys: 'живые ключи',
+    removed_keys: 'удаленные ключи',
+};
+
+KeysBar.prototype.margin = {top: 50, right: 10, left: 70, bottom: 40};
+
+KeysBar.prototype.color = d3.scale.ordinal()
+    .domain(['keys', 'removed_keys'])
+    .range(['rgb(232,207,179)', 'rgb(121,146,155)']);
+
+
+KeysBar.prototype.prepareData = function (rawdata) {
+    rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
+
+    var data = [],
+        keys = rawdataEntries.map(function (d) { return d.key; });
+
+    self.max_value = d3.max(rawdataEntries.map(function (d) { return d.value['total_keys']; }));
+
+    rawdataEntries.forEach(function (d, i) {
+        var el = [];
+        el.push({x: d.key,
+                 y: d.value['removed_keys'],
+                 type: 'removed_keys'});
+        el.push({x: d.key,
+                 y: d.value['total_keys'] - d.value['removed_keys'],
+                 type: 'keys'});
+        data.push(el);
+    });
+
+    data = d3.transpose(
+        d3.layout.stack()(d3.transpose(data)));
+
+    return {data: data,
+            keys: keys};
+}
+
+KeysBar.prototype.addLegend = function () {
+
+    var self = this;
+
+    self.legend = self.svg_container
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', 'translate(' + self.margin.left + ',0)');
+
+    var labels = self.color.domain().slice(),
+        colors = self.color.range().slice();
+
+    var labelLength = 140;
+
+    d3.zip(colors, labels).reverse().forEach(function (cl, i) {
+        self.legend
+            .append('rect')
+            .attr('class', 'legend-colorsample')
+            .attr('height', 10)
+            .attr('width', 10)
+            .attr('transform', 'translate(' + (i * labelLength) + ',15)')
+            .style('fill', cl[0]);
+
+        self.legend
+            .append('text')
+            .attr('class', 'legend-label')
+            .attr('transform', 'translate(' + (i * labelLength + 15) + ',15)')
+            .attr('y', 4)
+            .text('— ' + self.labels[cl[1]]);
+    });
+};
+
+
+
+KeysBar.prototype.tooltipFormatter = function (val) {
+    return intGroupsDelimiter(val, ',');
+};
+KeysBar.prototype.barLabelFormatter = function (val) {
+    return prefixNumRound(val, self.max_value);
+};
 
 GroupsBar.prototype.color = d3.scale.ordinal()
     .domain(['bad_couples', 'closed_couples', 'frozen_couples',

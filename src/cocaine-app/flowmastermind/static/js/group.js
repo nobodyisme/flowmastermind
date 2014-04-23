@@ -72,7 +72,7 @@ GroupInfo.prototype.loadData = function () {
                 tries += 1;
                 if (tries >= max_tries) {
                     spinner.stop();
-                    failTreemapLoad(layer);
+                    // failTreemapLoad(layer);
                     return;
                 }
                 setTimeout(loadGroupInfo, 2000);
@@ -163,7 +163,8 @@ GroupInfo.prototype.renderCoupleGraph = function (data) {
 
         var node_start_angle = 0;
         group.nodes.forEach(function (node, j) {
-            var node_angle = node['stats']['used_space'] / group['stats']['used_space'] * (2 * Math.PI);
+            var node_angle = node['stats']['used_space'] / group['stats']['used_space'] * (2 * Math.PI),
+                fragm_angle = node_angle * node['stats']['fragmentation'];
 
             self.svg_couple_graph
                 .append('path')
@@ -177,6 +178,22 @@ GroupInfo.prototype.renderCoupleGraph = function (data) {
                 .attr('d', d3.svg.arc().innerRadius(r - 10).outerRadius(r)
                                       .startAngle(node_start_angle).endAngle(node_start_angle + node_angle)())
                 .style('fill', status_color(node['status']))
+                .on('mouseenter', function () { self.highlight.bind(self)(this); })
+                .on('mouseleave', self.cancelHighlight.bind(self))
+                .on('click', function () { self.treemapZoom.bind(self)(node, group); });
+
+            // fragmentation
+            self.svg_couple_graph
+                .append('path')
+                .datum(node)
+                .attr('transform', function (d) {
+                    if (!is_coupled) return null;
+                    return 'translate(' + (R * Math.sin(angle / 360 * 2 * Math.PI)) + ', '
+                                        + (-R * Math.cos(angle / 360 * 2 * Math.PI)) + ')';
+                })
+                .attr('d', d3.svg.arc().innerRadius(r - 4).outerRadius(r)
+                                      .startAngle(node_start_angle).endAngle(node_start_angle + fragm_angle)())
+                .style('fill', 'rgb(121,146,155)')
                 .on('mouseenter', function () { self.highlight.bind(self)(this); })
                 .on('mouseleave', self.cancelHighlight.bind(self))
                 .on('click', function () { self.treemapZoom.bind(self)(node, group); });
@@ -296,6 +313,10 @@ GroupInfo.prototype.renderEntityData = function (data) {
     renderField('Всего', prefixBytes(data['stats']['total_space']));
     renderField('Свободно', prefixBytes(data['stats']['free_space']));
     renderField('Занято', prefixBytes(data['stats']['used_space']));
+
+    if (data['stats']['fragmentation'] != undefined) {
+        renderField('Фрагментация', (data['stats']['fragmentation'] * 100).toFixed(2) + '%');
+    }
 };
 
 function entity_status(type, status) {
