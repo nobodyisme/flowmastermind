@@ -52,14 +52,57 @@ var Commands = (function() {
             cmd_startdt = $('<div class="cmd-startdt">').appendTo(cmd),
             cmd_mdashdt = $('<div class="cmd-mdash">').appendTo(cmd),
             cmd_finishdt = $('<div class="cmd-finishdt">').appendTo(cmd),
-            cmd_runtime = $('<div class="cmd-runtime">').appendTo(cmd),
-            cmd_uid = $('<div class="cmd-uid">').appendTo(cmd);
+            cmd_output = $('<div class="cmd-output">').appendTo(cmd),
+            cmd_uid = $('<div class="cmd-uid">').appendTo(cmd),
+            cmd_stdout = $('<div class="cmd-stdout">').appendTo(cmd),
+            cmd_stderr = $('<div class="cmd-stderr">').appendTo(cmd);
 
         cmd.attr('uid', uid);
         cmd.attr('host', host);
         cmd.attr('group', status.group);
         cmd.attr('stage', 'unknown');
         cmd.css({display: 'none'});
+
+        var stdout_switch = $('<a href="#">')
+                             .text('stdout')
+                             .addClass('cmd-std')
+                             .appendTo(cmd_output),
+            bar = $('<span>').text(' | ').appendTo(cmd_output),
+            stderr_switch = $('<a href="#">')
+                             .text('stderr')
+                             .addClass('cmd-std')
+                             .appendTo(cmd_output);
+
+        cmd_stdout.addClass('cmd-std-output');
+        cmd_stderr.addClass('cmd-std-output');
+
+        $('<div class="hr">').appendTo(cmd_stdout);
+        $('<textarea>').attr('readonly', 'readonly').appendTo(cmd_stdout);
+        $('<a href="#" class="cmd-std-close">').text('закрыть').appendTo(cmd_stdout);
+        $('<div class="hr">').appendTo(cmd_stderr);
+        $('<textarea>').attr('readonly', 'readonly').appendTo(cmd_stderr);
+        $('<a href="#" class="cmd-std-close">').text('закрыть').appendTo(cmd_stderr);
+
+        var self = this;
+
+        stdout_switch.on("click", (function(uid, cmd_stdout) { return function () {
+            self.showStdOutput.bind(self)(stdout_switch, uid, cmd_stdout);
+            return false;
+        } })(uid, cmd_stdout));
+        stderr_switch.on("click", (function(uid, cmd_stderr) { return function () {
+            self.showStdOutput.bind(self)(stderr_switch, uid, cmd_stderr);
+            return false;
+        } })(uid, cmd_stderr));
+
+        cmd.find('.cmd-std-close').on('click', function () {
+            var cmd_std_outputs = cmd.find('.cmd-std-output'),
+                cmd_output = cmd.find('.cmd-output');
+
+            cmd_output.find('.cmd-std').removeClass('cmd-std-selected');
+            cmd_std_outputs.css({display: 'none'});
+
+            return false;
+        });
 
         this.initCmd(cmd, host, uid, status);
 
@@ -73,22 +116,33 @@ var Commands = (function() {
         cmd.appendTo(this.unknown_cont);
     }
 
-    CommandsView.prototype.updateCmd = function(event, host, uid, status) {
-        console.log("Updating command for host " + host);
+    CommandsView.prototype.showStdOutput = function(sw, uid, cmd_std_output) {
+        var cmd = this.container.find('.cmd[uid='+uid+']'),
+            cmd_output = cmd.find('.cmd-output'),
+            cmd_std_outputs = cmd.find('.cmd-std-output');
 
-        console.log(status);
+        cmd_output.find('.cmd-std').removeClass('cmd-std-selected');
+
+        sw.addClass('cmd-std-selected');
+
+        cmd_std_outputs.css({display: 'none'});
+        cmd_std_output.css({display: 'block'});
+    }
+
+    CommandsView.prototype.updateCmd = function(event, host, uid, status) {
 
         var cmd = this.container.find('.cmd[uid='+uid+']'),
             cmd_progress = cmd.find('.progressBar'),
             cmd_mdash = cmd.find('.cmd-mdash'),
             cmd_finishdt = cmd.find('.cmd-finishdt'),
-            cmd_runtime = cmd.find('.cmd-runtime');
+            cmd_output = cmd.find('.cmd-output'),
+            cmd_stdout = cmd.find('.cmd-stdout'),
+            cmd_stderr = cmd.find('.cmd-stderr');
 
         if (status.progress < 1.0 && cmd.attr('stage') != 'executing') {
             cmd.attr('stage', 'executing');
             cmd.css({display: 'block'});
 
-            console.log('appending to executing');
             cmd.insertAfter(this.executing_header);
 
             this.updateContainers();
@@ -110,8 +164,11 @@ var Commands = (function() {
         }
 
         var progressVal = Math.round(status.progress * 100 * 100) / 100;
-        console.log(progressVal);
         progress(progressVal, cmd_progress);
+        cmd_stdout.find('textarea').text(status.output);
+        cmd_stderr.find('textarea').text(status.error_output);
+
+
     }
 
     function progress(percent, $element) {
@@ -155,9 +212,12 @@ var Commands = (function() {
     };
 
     CommandsView.prototype.addErrorData = function(cmd, status) {
-        var cmd_level_three = $('<div>').appendTo(cmd),
-            cmd_error_code = $('<div class="cmd-error-code">').appendTo(cmd),
-            cmd_error_message = $('<div class="cmd-error-message">').appendTo(cmd);
+        var cmd_stdout = cmd.find('.cmd-stdout');
+
+        var cmd_level_three = $('<div>').insertBefore(cmd_stdout),
+            cmd_error_code = $('<div class="cmd-error-code">').insertBefore(cmd_stdout),
+            cmd_error_message = $('<div class="cmd-error-message">').insertBefore(cmd_stdout);
+
 
         cmd_error_code.text('Код возврата: ' + status.exit_code);
         cmd_error_message.text(status.exit_message);
