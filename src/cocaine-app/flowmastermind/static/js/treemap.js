@@ -184,6 +184,22 @@ TreeMap.prototype.update = function (data) {
     self.data = data;
     self.nodes = self.treemap.sticky(true).nodes(self.data);
 
+    self.nodes.forEach(function (node) {
+        if (node.colors == undefined) {
+            node.colors = {
+                free_space: d3.scale.threshold()
+            }
+        }
+        node.colors.free_space.domain([node.total_space * 0.05, node.total_space * 0.10, node.total_space * 0.15,
+                                       node.total_space * 0.25, node.total_space * 0.50, node.total_space * 1.0])
+            .range([d3.rgb('#a70000'),
+                    d3.rgb('#f22b00'),
+                    d3.rgb('#ff9000'),
+                    d3.rgb('#ffe000'),
+                    d3.rgb('#9fff00'),
+                    d3.rgb('#62ff58')]);
+    });
+
     /// TODO: stupid crutch, fix it
     if (labels != self.labels) {
         self.labels = labels;
@@ -242,7 +258,12 @@ TreeMap.prototype.repaintNodes = function() {
 
     t.attr('fill', function(d) {
         if (d.depth == self.max_depth) {
-            return self.colors[self.type](d[self.type]);
+            if (self.type != 'free_space') {
+                return self.colors[self.type](d[self.type]);
+            } else {
+                // each node has custom scale of free_space
+                return d.colors[self.type](d[self.type]);
+            }
         }
         return null;
     });
@@ -723,7 +744,12 @@ TreeMap.prototype.zoom = function (node) {
         .attr('height', function(d) { return ky * d.dy; })
         .attr('fill', function(d) {
             if (d.depth == self.max_depth) {
-                return self.colors[self.type](d[self.type]);
+                if (self.type != 'free_space') {
+                    return self.colors[self.type](d[self.type]);
+                } else {
+                    // each node has custom scale of free_space
+                    return d.colors[self.type](d[self.type]);
+                }
             }
             return null;
         });
