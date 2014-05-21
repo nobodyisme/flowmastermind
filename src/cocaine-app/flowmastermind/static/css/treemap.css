@@ -178,3 +178,78 @@ div.switcher label.selected {
     fill: #555;
     alignment-baseline: central;
 }
+
+.context-menu {
+    position: fixed;
+    width: 150px;
+
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+
+    -webkit-transition: opacity .218s;
+    transition: opacity .218s;
+    background: rgba(255,255,255,1.0);
+
+    border: 1px solid rgba(0,0,0,.2);
+    cursor: default;
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
+    outline: none;
+}
+
+.context-menu .label {
+    font-size: 11px;
+    position: relative;
+    color: #222;
+    margin: 0 5px;
+    padding: 10px 0;
+    text-align: center;
+    white-space: nowrap;
+    border-bottom: 1px solid #888;
+]}
+
+.context-menu .item {
+    position: relative;
+    color: #333;
+    cursor: pointer;
+    margin: 0;
+    padding: 5px 8em 5px 0;
+    white-space: nowrap;
+]}
+
+.context-menu .item:hover {
+    background-color: #eee;
+}
+
+.context-menu .item .item-icon {
+    width: 30px;
+    height: 16px;
+    display: inline-block;
+    text-align: center;
+}
+
+.context-menu .item .item-label {
+    height: 16px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+body .o-notifications {
+    width: 300px;
+}
+
+/*body .o-notifications .o-notifications-default {
+    background: none;
+}*/
+
+body .o-notifications .o-notification-success {
+    background-color: #daffda;
+    border: 1px solid #799979;
+}
+
+body .o-notifications .o-notification-error {
+    background-color: #ffd5d5;
+    border: 1px solid #7f6565;
+}

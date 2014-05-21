@@ -347,7 +347,7 @@ span.chart-label-small {
 }
 
 .cmd-group, .cmd-command, .cmd-pid, .cmd-host, .cmd-startdt, .cmd-mdash,
-.cmd-finishdt, .cmd-runtime, .cmd-progress, .cmd-uid, .cmd-error-code,
+.cmd-finishdt, .cmd-output, .cmd-progress, .cmd-uid, .cmd-error-code,
 .cmd-error-message {
     display: inline-block;
     width:100px;
@@ -419,6 +419,48 @@ span.chart-label-small {
 
 .cmd-uid {
     font-size: 10px;
+}
+
+.cmd-output {
+    text-align: right;
+    width: 10%;
+    padding: 10px 0;
+    margin: 0 20px;
+    white-space: nowrap;
+}
+
+.cmd-std {
+    text-decoration: none;
+    border-bottom: 1px dashed #000;
+}
+
+.cmd-stdout, .cmd-stderr {
+    display: none;
+}
+
+a.cmd-std-selected {
+    border-bottom: none;
+}
+
+.cmd-std-close {
+    text-decoration: none;
+    border-bottom: 1px dashed #000;
+    vertical-align: top;
+    margin: 20px 0;
+    line-height: 50px;
+    font-size: 11px;
+}
+
+div.hr {
+    height: 15px;
+    margin: 0 20px;
+    border-bottom: 1px solid #666;
+}
+
+.cmd-std-output textarea {
+    width: 75%;
+    height: 150px;
+    margin: 20px;
 }
 
 .progressBar {
