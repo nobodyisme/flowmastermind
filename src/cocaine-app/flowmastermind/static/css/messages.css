@@ -1,0 +1,21 @@
+.messages-container {
+    position: fixed;
+    width: 300px;
+    min-height: 50px;
+    top: 0;
+    left: 50%;
+    margin-left: -100px;
+    background-color: #eee;
+
+    opacity: 0;
+
+    overflow: hidden;
+}
+
+.messages-container .message {
+    height: 20px;
+    line-height: 20px;
+    display: block;
+    margin-top: 0;
+    opacity: 1;
+}

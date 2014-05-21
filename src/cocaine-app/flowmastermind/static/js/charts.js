@@ -42,6 +42,10 @@
 
     $('body').keyup(function (event) {
         if (event.which == 27) {
+            if ($('div.context-menu').length) {
+                $('div.context-menu').remove();
+                return;
+            }
             if (PseudoURL.params['info']) {
                 PseudoURL.setParam('info', null).load();
                 return;

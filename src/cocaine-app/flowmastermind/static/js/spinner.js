@@ -4,7 +4,8 @@ function Spinner(container) {
         container = d3.select(container),
         thickness = 7,
         endAngle = Math.PI * 3 / 2;
-    self.svg = container.append('svg')
+
+    self.svg = container.insert('svg', ':first-child')
         .attr('width', '100%')
         .attr('height', '100%');
 

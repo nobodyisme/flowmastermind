@@ -39,8 +39,6 @@ var Commands = (function() {
 
     CommandsView.prototype.createCmd = function(event, host, uid, status) {
 
-        // console.log("Created element for host " + host);
-
         var cmd = $('<div class="cmd">'),
             cmd_level_one = $('<div>').appendTo(cmd),
             cmd_group = $('<div class="cmd-group">').appendTo(cmd),
@@ -100,7 +98,6 @@ var Commands = (function() {
             cmd.css({display: 'block'});
 
             cmd.insertAfter(this.finished_header);
-            console.log('appending to finished');
 
             if (status.exit_code != 0) {
                 this.addErrorData(cmd, status);

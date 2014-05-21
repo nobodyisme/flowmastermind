@@ -17,42 +17,24 @@ function showDcTreeMap(dc, type, ns) {
         .text('X')
         .appendTo(layer);
 
-    var spinner = new Spinner('div.treemap');
-    spinner.start();
-
-    var tries = 0,
-        max_tries = 3,
-        url = '/json/map/';
-
-    if (ns) {
-        url += ns + '/';
-    }
-
-    (function loadTreemap() {
-        $.ajax({
-            url: url,
-            method: 'get',
-            dataType: 'json',
-            success: function (data) {
-                spinner.stop();
-                treemap = new TreeMap('div.treemap', data, labels, dc, type, ns);
-            },
-            error: function () {
-                tries += 1;
-                if (tries >= max_tries) {
-                    failTreemapLoad(layer);
-                    return;
-                }
-                setTimeout(loadTreemap, 2000);
-            }
-        });
-    })();
+    treemap.map = new TreeMap('div.treemap', labels, dc, type, ns);
 }
 
 function hideDcTreeMap() {
     $('div.treemap').remove();
-    treemap = null;
+    treemap.map = null;
 }
+
+
+function hideNodeContextMenu() {
+    if (treemap.contextMenuVisible) {
+        $('.context-menu').remove();
+    }
+}
+
+$(document).on('click', function () {
+    hideNodeContextMenu();
+});
 
 
 function failTreemapLoad(layer) {
@@ -557,6 +539,8 @@ TreeMap.prototype.drawLegend = function() {
 TreeMap.prototype.resize = function () {
     var self = this;
 
+    hideNodeContextMenu();
+
     self.updateSize();
 
     self.svg_container
@@ -712,13 +696,24 @@ TreeMap.prototype.highlight = function(name) {
         });
 };
 
+
 TreeMap.prototype.zoom = function (node) {
     var self = this;
 
-    var kx = (self.width - self.sidepanel_width) / node.dx,
+    // check if needed
+    self.treemap.size([self.width, self.height]);
+
+    self.nodes = self.treemap.nodes(self.data);
+
+    // ----------------
+
+    var kx = self.width / node.dx,
         ky = self.height / node.dy;
-    self.xScale.domain([node.x, node.x + node.dx]);
-    self.yScale.domain([node.y, node.y + node.dy]);
+    self.xScale.domain([node.x, node.x + node.dx])
+        .range([0, self.width]);
+    self.yScale.domain([node.y, node.y + node.dy])
+        .range([0, self.height]);
+
 
     var t = self.svg.selectAll('g.cell').transition()
         .attr('transform', function(d) { return "translate(" + self.xScale(d.x) + "," + self.yScale(d.y) + ")"; });
@@ -805,6 +800,209 @@ TreeMap.prototype.typeLabel = function(type) {
 TreeMap.prototype.nameLabel = function(type, name) {
     var self = this;
     return self.labels[type] && self.labels[type][name] || name;
+};
+
+TreeMap.prototype.showNodeContextMenu = function(event) {
+    var self = this,
+        data = event.target.__data__;
+
+    treemap.contextMenuVisible = true;
+
+    hideNodeContextMenu();
+
+    var contextMenu = $('<div>').addClass('context-menu')
+        .css({top: event.clientY,
+              left: event.clientX})
+        .appendTo(self.jqContainer);
+
+    if (contextMenu.width() + event.clientX > $(window).width()) {
+        contextMenu.css({left: $(window).width() - contextMenu.width() - 3});
+    }
+
+    contextMenu.on('click', function (e) {
+        e.stopPropagation();
+    });
+
+    var label = $('<div>')
+        .addClass('label')
+        .text(data['node_addr'])
+        .appendTo(contextMenu);
+
+    var btn = $('<div>')
+        .addClass('item')
+        .appendTo(contextMenu);
+
+    var btn_icon = $('<div>')
+        .addClass('item-icon')
+        .appendTo(btn);
+
+    var btn_label = $('<div>')
+        .addClass('item-label')
+        .appendTo(btn);
+
+    if (data['node_status'] == 'OK' || data['node_status'] == 'RO') {
+        btn_label.text('Положить');
+        btn.on('click', self.bindShutdownNode(btn, data));
+    } else {
+        btn_label.text('Поднять');
+        btn.on('click', self.bindStartNode(btn, data));
+    }
+};
+
+TreeMap.prototype.bindShutdownNode = function (btn, node) {
+    var self = this;
+    return self.shutdownNode.bind(self, btn, node);
+};
+
+
+TreeMap.prototype.bindStartNode = function (btn, node) {
+    var self = this;
+    return self.startNode.bind(self, btn, node);
+};
+
+
+TreeMap.prototype.executeNodeCmd = function (url, type) {
+
+    var self = this;
+
+    return function (btn, node) {
+
+        var img = $('.img_container').find('.loader').clone(),
+            btn_label = btn.find('.item-label'),
+            btn_icon = btn.find('.item-icon');
+
+        btn_icon.append(img);
+
+        $.ajax(url, {
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                'node': node['node_addr']
+            },
+            success: function (data) {
+                console.log(data);
+                console.log(data['response']);
+                if (data['status'] != 'success') {
+                    console.log('error happened');
+                    console.log(data);
+                    cleanUp();
+                    return;
+                }
+
+                var uid = data.response,
+                    errors = 0;
+
+                function checkUid() {
+
+                    $.ajax('/json/commands/status/' + uid + '/', {
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data['status'] != 'success') {
+                                console.log('error happened');
+                                console.log(data);
+                                errors += 1;
+                                if (errors >= 3) {
+                                    console.log('Retry limit exceeded, stop checking');
+                                    window.oNotifications.createNotification({
+                                        title: 'Огого!',
+                                        text: 'Не удалось проверить ' +
+                                            'статус операции для ноды ' + node['node_addr'],
+                                        onBeforeShow: self.errorNotification});
+                                    cleanUp();
+                                    return;
+                                }
+                                setTimeout(checkUid, 200);
+                                return;
+                            }
+
+                            var status = data['response'];
+
+                            console.log(status);
+                            console.log(status['progress']);
+
+                            if (status.progress == 1) {
+                                console.log('completed');
+
+                                window.oNotifications.createNotification({
+                                    title: 'Огого!',
+                                    text: (type == 'shutdown' ?
+                                           'Нода ' + node['node_addr'] + ' опущена' :
+                                           'Нода ' + node['node_addr'] + ' поднята'),
+                                    onBeforeShow: self.successNotification
+                                    });
+                                cleanUp();
+
+                                // Resetting button
+                                btn_label.text(type == 'shutdown' ? 'Поднять' : 'Положить');
+                                btn.off('click');
+                                btn.on('click', (type == 'shutdown' ?
+                                    self.bindStartNode.bind(self)(btn, node) :
+                                    self.bindShutdownNode.bind(self)(btn, node)));
+
+                                node.node_status = (type == 'shutdown' ? 'STALLED' : 'OK');
+
+                                return;
+                            }
+
+                            console.log('Checking in 200ms again');
+                            setTimeout(checkUid, 1200);
+                        },
+                        error: function (data) {
+                            console.log('error while retrieving uid status');
+                            errors += 1;
+                            if (errors >= 3) {
+                                console.log('Retry limit exceeded, stop checking');
+                                window.oNotifications.createNotification({
+                                    title: 'Огого!',
+                                    text: 'Не удалось проверить ' +
+                                        'статус операции для ноды ' + node['node_addr'],
+                                    onBeforeShow: self.errorNotification});
+                                cleanUp();
+                                return;
+                            }
+                            setTimeout(checkUid, 200);
+                        }
+                    });
+
+                }
+
+                setTimeout(checkUid, 200);
+
+            },
+            error: function (data) {
+                console.log('error');
+                window.oNotifications.createNotification({
+                    title: 'Огого!',
+                    text: 'Не удалось отправить ' +
+                        'команду на ноду ' + node['node_addr'],
+                    onBeforeShow: self.errorNotification});
+
+                cleanUp();
+            }
+        });
+
+        function cleanUp() {
+            btn_icon.html('');
+        }
+    }
+}
+
+
+TreeMap.prototype.shutdownNode = TreeMap.prototype.executeNodeCmd(
+    '/json/commands/execute/node/shutdown/', 'shutdown');
+
+
+TreeMap.prototype.startNode = TreeMap.prototype.executeNodeCmd(
+    '/json/commands/execute/node/start/', 'start');
+
+
+TreeMap.prototype.successNotification = function (notification) {
+    $(notification).addClass('o-notification-success');
+};
+
+
+TreeMap.prototype.errorNotification = function (notification) {
+    $(notification).addClass('o-notification-error');
 };
 
 
