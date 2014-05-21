@@ -422,7 +422,7 @@ Bar.prototype.updateBars = function (data) {
         .selectAll('g.barpart')
         .data(function (d) { return d; });
 
-    new_bars = updated_bars
+    var new_bars = updated_bars
         .enter()
             .append('g')
             .attr('class', 'barpart');

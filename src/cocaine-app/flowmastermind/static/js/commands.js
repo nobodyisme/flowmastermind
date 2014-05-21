@@ -10,8 +10,6 @@
             dataType: 'json',
             success: function (data) {
 
-                console.log('processing commands');
-
                 for (var idx in data) {
                     var state = data[idx];
 

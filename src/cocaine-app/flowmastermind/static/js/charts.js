@@ -66,10 +66,10 @@
                     group_id = PseudoURL.params['info'],
                     highlight = PseudoURL.params['highlight'];
 
-                if (treemap && treemap.ns == ns) {
-                    treemap.paint(type);
-                    treemap.zoom_by_path(path);
-                    treemap.highlight(highlight);
+                if (treemap.map && treemap.map.ns == ns) {
+                    treemap.map.paint(type);
+                    treemap.map.zoom_by_path(path);
+                    treemap.map.highlight(highlight);
                 } else {
                     hideDcTreeMap();
                     showDcTreeMap(path, type, ns);

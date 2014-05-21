@@ -39,7 +39,7 @@ var Commands = (function() {
 
     CommandsView.prototype.createCmd = function(event, host, uid, status) {
 
-        console.log("Created element for host " + host);
+        // console.log("Created element for host " + host);
 
         var cmd = $('<div class="cmd">'),
             cmd_level_one = $('<div>').appendTo(cmd),

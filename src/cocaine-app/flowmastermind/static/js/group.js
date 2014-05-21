@@ -232,7 +232,7 @@ GroupInfo.prototype.treemapZoom = function (node, group) {
         host,
         node;
 
-    treemap.nodes.forEach(function (d) {
+    treemap.map.nodes.forEach(function (d) {
         if (d.name == host_name) {
             host = d;
         }
@@ -246,7 +246,7 @@ GroupInfo.prototype.treemapZoom = function (node, group) {
 
     if (node != undefined) {
         PseudoURL.setParam('info', null);
-        treemap.go(host, node);
+        treemap.map.go(host, node);
     }
 }
 

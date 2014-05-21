@@ -1,4 +1,7 @@
-var treemap;
+var treemap = {
+    contextMenuVisible: false,
+    map: null
+};
 
 
 function showDcTreeMap(dc, type, ns) {
@@ -75,19 +78,31 @@ function failTreemapLoad(layer) {
 }
 
 
-function TreeMap(container, data, labels, curvalue, curtype, ns) {
+function TreeMap(container, labels, curvalue, curtype, ns) {
 
     var self = this;
+    self.initvalue = (curvalue == undefined ? '' : curvalue);
 
-    self.data = data;
+    self.init(container, labels, ns, curtype);
+
+    d3.select(window).on('resize', self.resize.bind(self));
+};
+
+
+TreeMap.prototype.init = function (container, labels, ns, inittype) {
+    var self = this;
+
+    self.virgin = true;
     self.ns = ns;
     self.labels = labels;
     self.container = d3.select(container);
     self.jqContainer = $(container);
+    self.crumbs = [];
+    self.click_timer = null;
+    self.cur_depth = 0;
 
     self.margin = {top: 40, right: 10, bottom: 20, left: 10};
     self.updateSize();
-    self.sidepanel_width = 0;
 
     self.xScale = d3.scale.linear();
     self.yScale = d3.scale.linear();
@@ -103,45 +118,13 @@ function TreeMap(container, data, labels, curvalue, curtype, ns) {
         .value(function(d) { return d.total_space; })
         .padding(function (d) { return self.padding(d.depth); });
 
-    self.svg_container = self.container
-        .append('svg');
 
-    self.svg = self.svg_container
-        .append('g')
-            .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
-
-    self.svg_labels = self.svg_container
-        .append('g')
-            .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
-
-    self.svg_legend = self.svg_container
-        .append('g')
-            .attr('class', 'legend')
-            .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height) + ')');
-
-    self.container.append('div')
-        .attr('class', 'sidepanel');
-    self.sidepanel = $('div.sidepanel');
-
-    self.createTopline();
-
-    d3.select(window).on('resize', self.resize.bind(self));
-
-    self.type = 'free_space';
-
-
-    self.nodes = self.treemap.nodes(self.data);
-    self.cur_depth = 0;
-    self.cur_node = self.nodes[0];
-    self.click_timer = null;
-    self.max_depth = d3.max(self.nodes, function (d) { return d.depth; });
-
-    var max_space = d3.max(self.nodes, function (d) { return d.total_space; });
+    self.max_space = 100 * 1024 * 1024 * 1024;
 
     self.colors = {
         free_space: d3.scale.threshold()
-                        .domain([max_space * 0.05, max_space * 0.10, max_space * 0.15,
-                                 max_space * 0.25, max_space * 0.50, max_space * 1.0])
+                        .domain([self.max_space * 0.05, self.max_space * 0.10, self.max_space * 0.15,
+                                 self.max_space * 0.25, self.max_space * 0.50, self.max_space * 1.0])
                         .range([d3.rgb('#a70000'),
                                 d3.rgb('#f22b00'),
                                 d3.rgb('#ff9000'),
@@ -149,7 +132,7 @@ function TreeMap(container, data, labels, curvalue, curtype, ns) {
                                 d3.rgb('#9fff00'),
                                 d3.rgb('#62ff58')]),
         free_space_legend_label: function (val) {
-            return Math.round((1 - val / max_space) * 100) + '%';
+            return Math.round((1 - val / self.max_space) * 100) + '%';
         },
         couple_status: d3.scale.ordinal()
                            .domain(['OK', 'BAD', 'FROZEN', 'CLOSED', 'FULL', null])
@@ -169,9 +152,72 @@ function TreeMap(container, data, labels, curvalue, curtype, ns) {
         }
     };
 
-    self.crumbs = [];
+    self.svg_container = self.container
+        .append('svg');
 
-    var cell = self.svg.selectAll('g.cell')
+    self.svg = self.svg_container
+        .append('g')
+            .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
+
+    self.svg_labels = self.svg_container
+        .append('g')
+            .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
+
+    self.svg_legend = self.svg_container
+        .append('g')
+            .attr('class', 'legend')
+            .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height) + ')');
+
+    self.createTopline();
+
+    $(document).on('contextmenu', function (e) {
+        var target = d3.select(e.target);
+        if (target.attr('class') != 'cell-rect') {
+            return true;
+        }
+
+        var d = e.target.__data__;
+        while (d.depth > self.cur_depth) {
+            d = d.parent;
+        }
+
+        if (d.depth != self.max_depth - 1) {
+            return true;
+        }
+
+        self.showNodeContextMenu(e);
+        e.preventDefault();
+    });
+
+    self.createSwitcher(inittype);
+
+    self.periodicUpdate();
+};
+
+
+TreeMap.prototype.update = function (data) {
+
+    var self = this;
+
+    self.data = data;
+    self.nodes = self.treemap.sticky(true).nodes(self.data);
+
+    /// TODO: stupid crutch, fix it
+    if (labels != self.labels) {
+        self.labels = labels;
+    }
+
+    if (self.virgin) {
+        self.cur_node = self.nodes[0];
+    }
+    self.max_depth = d3.max(self.nodes, function (d) { return d.depth; });
+    self.max_space = d3.max(self.nodes, function (d) { return d.total_space; });
+
+    // updating colors
+    self.colors.free_space.domain([self.max_space * 0.05, self.max_space * 0.10, self.max_space * 0.15,
+                                   self.max_space * 0.25, self.max_space * 0.50, self.max_space * 1.0]);
+
+    var new_cell = self.svg.selectAll('g.cell')
         .data(self.nodes)
     .enter()
         .append('g')
@@ -180,29 +226,90 @@ function TreeMap(container, data, labels, curvalue, curtype, ns) {
         .call(self.handleMouseEnter.bind(self))
         .call(self.handleMouseLeave.bind(self));
 
-    cell.append('rect')
-        .attr('width', function (d) { return 0; })
-        .attr('height', function (d) { return 0; })
-        .attr('fill', function (d) {
-            if (d.depth == self.max_depth) return self.container.style('background-color');
-            return null;
-        })
+    new_cell.append('rect')
+        .attr('width', function (d) { return 20; })
+        .attr('height', function (d) { return 20; })
+        .attr('class', 'cell-rect')
         .attr('fill-opacity', function (d) {
             if (d.depth == self.max_depth) return 0.75;
             return 0;
+        })
+        .attr('fill', function (d) {
+            if (d.depth == self.max_depth) return self.container.style('background-color');
+            return null;
         });
 
-    self.createSearch();
+    self.svg.selectAll('g.cell')
+        .selectAll('rect')
+        .data(function (d) { return d; });
 
-    self.resize();
-    self.createSwitcher(curtype);
-
-
-    if (curvalue == undefined)
-        curvalue = '';
-
-    self.zoom_by_path(curvalue);
+    if (self.virgin) {
+        self.createSearch();
+        self.resize();
+        self.zoom_by_path(self.initvalue);
+    } else {
+        self.repaintNodes();
+    }
 };
+
+
+TreeMap.prototype.repaintNodes = function() {
+    var self = this;
+
+    var t = self.svg.selectAll('g.cell').select('rect').transition();
+
+    t.attr('fill', function(d) {
+        if (d.depth == self.max_depth) {
+            return self.colors[self.type](d[self.type]);
+        }
+        return null;
+    });
+};
+
+
+TreeMap.prototype.periodicUpdate = function () {
+
+    var self = this,
+        spinner = null;
+
+    if (self.virgin) {
+        spinner = new Spinner('div.treemap');
+        spinner.start();
+    }
+
+    var tries = 0,
+        max_tries = 3,
+        url = '/json/map/';
+
+    if (self.ns) {
+        url += self.ns + '/';
+    }
+
+    function loadTreemap() {
+        $.ajax({
+            url: url,
+            method: 'get',
+            dataType: 'json',
+            success: function (data) {
+                if (self.virgin) spinner.stop();
+                self.update(data);
+                self.virgin = false;
+            },
+            error: function () {
+                tries += 1;
+                if (tries >= max_tries) {
+                    if (self.virgin) failTreemapLoad(layer);
+                    return;
+                }
+                setTimeout(loadTreemap, 2000);
+            }
+        });
+    }
+
+    loadTreemap(spinner);
+
+    setTimeout(self.periodicUpdate.bind(self), 30000);
+}
 
 TreeMap.prototype.close = function () {
     var self = this;
@@ -459,61 +566,11 @@ TreeMap.prototype.resize = function () {
     self.svg_legend
         .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height) + ')');
 
-    self.resizeTreeMap(false);
+    self.zoom(self.cur_node);
+
     self.renderCrumbs();
 };
 
-TreeMap.prototype.resizeTreeMap = function (transition) {
-
-    var self = this;
-
-    self.treemap.size([self.width - self.sidepanel_width, self.height]);
-
-    self.nodes = self.treemap.nodes(self.data);
-
-    var kx = (self.width - self.sidepanel_width) / self.cur_node.dx,
-        ky = self.height / self.cur_node.dy;
-    self.xScale.domain([self.cur_node.x, self.cur_node.x + self.cur_node.dx])
-        .range([0, self.width - self.sidepanel_width]);
-    self.yScale.domain([self.cur_node.y, self.cur_node.y + self.cur_node.dy])
-        .range([0, self.height]);
-
-    var cell = self.svg.selectAll('g.cell')
-        .data(self.nodes);
-    if (transition) cell = cell.transition();
-
-    cell.attr('transform', function (d) { return 'translate(' + self.xScale(d.x) + ',' + self.yScale(d.y) + ')'; });
-
-    var rects = self.svg.selectAll('g.cell').selectAll('rect');
-    if (transition) rects = rects.transition();
-
-    rects
-        .attr('width', function (d) { return kx * d.dx; })
-        .attr('height', function (d) { return ky * d.dy; });
-
-    cell.select('rect')
-        .filter(function (d) { return (d.parent == self.cur_node);})
-        .each(function (d, i) {
-            var clippaths = self.svg_labels
-                .select('#node_clip' + i)
-                .select('rect');
-            if (transition) clippaths = clippaths.transition();
-
-            clippaths
-                .attr('x', self.xScale(d.x) + 4)
-                .attr('y', self.yScale(d.y) + 4)
-                .attr('width', kx * d.dx - 8)
-                .attr('height', ky * d.dy - 8);
-
-            var labels = self.svg_labels
-                .select('#node' + i);
-            if (transition) labels = labels.transition();
-
-            labels
-                .attr('x', self.xScale(d.x))
-                .attr('y', self.yScale(d.y));
-        });
-};
 
 TreeMap.prototype.handleClick = function(selection) {
     var self = this;
@@ -607,104 +664,9 @@ TreeMap.prototype.processDoubleClick = function(node, newdepth) {
     while (d.depth > newdepth) {
         d = d.parent;
     }
-    self.hideSidePanel()
     self.go(d);
 };
 
-TreeMap.prototype.showSidePanel = function(node) {
-
-    var self = this;
-
-    self.sidepanel
-        .css({display: 'block'})
-        .animate({opacity: 1});
-
-    self.sidepanel_width = 200;
-
-    self.sidepanel.find('div').remove();
-
-    $('<div>').addClass('leftcolumn')
-        .addClass('title')
-        .text(self.typeLabel(node.type) + ':')
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('rightcolumn')
-        .addClass('title')
-        .text(self.nameLabel(node.type, node.name))
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('clear')
-        .appendTo(self.sidepanel);
-
-    $('<div>').addClass('splitter')
-        .appendTo(self.sidepanel);
-
-    $('<div>').addClass('leftcolumn')
-        .text('капл:')
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('rightcolumn')
-        .text(node.couple || 'не в капле')
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('clear')
-        .appendTo(self.sidepanel);
-
-    if (node.couple) {
-        $('<div>').addClass('leftcolumn')
-            .text('статус капла:')
-            .appendTo(self.sidepanel);
-        $('<div>').addClass('rightcolumn')
-            .text(node.couple_status)
-            .appendTo(self.sidepanel);
-        $('<div>').addClass('clear')
-            .appendTo(self.sidepanel);
-
-    }
-
-    $('<div>').addClass('leftcolumn')
-        .text('всего:')
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('rightcolumn')
-        .text(prefixBytes(node.total_space))
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('clear')
-        .appendTo(self.sidepanel);
-
-    $('<div>').addClass('leftcolumn')
-        .text('свободно:')
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('rightcolumn')
-        .text(prefixBytes(node.free_space))
-        .appendTo(self.sidepanel);
-    $('<div>').addClass('clear')
-        .appendTo(self.sidepanel);
-
-    self.resizeTreeMap(true);
-};
-
-TreeMap.prototype.hideSidePanel = function(node) {
-
-    var self = this;
-
-    self.sidepanel
-        .animate({opacity: 0}, 300, function () {
-            self.sidepanel.css({display: 'none'});
-        });
-
-    self.sidepanel_width = 0;
-
-    self.resizeTreeMap(true);
-};
-
-
-TreeMap.prototype.zoom_by_name = function (name) {
-    var self = this;
-    if (name == '') {
-        // default empty name is root
-        self.zoom(self.nodes[0]);
-        return;
-    }
-    self.nodes.forEach(function (d) {
-        if (d.name == name) self.zoom(d);
-    });
-};
 
 TreeMap.prototype.zoom_by_path = function (path) {
     var self = this,
