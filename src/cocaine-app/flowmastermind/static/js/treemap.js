@@ -943,9 +943,6 @@ TreeMap.prototype.executeNodeCmd = function (url, type) {
 
                             var status = data['response'];
 
-                            console.log(status);
-                            console.log(status['progress']);
-
                             if (status.progress == 1) {
                                 console.log('completed');
 
@@ -974,7 +971,6 @@ TreeMap.prototype.executeNodeCmd = function (url, type) {
                             setTimeout(checkUid, 1200);
                         },
                         error: function (data) {
-                            console.log('error while retrieving uid status');
                             errors += 1;
                             if (errors >= 3) {
                                 console.log('Retry limit exceeded, stop checking');
@@ -996,7 +992,6 @@ TreeMap.prototype.executeNodeCmd = function (url, type) {
 
             },
             error: function (data) {
-                console.log('error');
                 window.oNotifications.createNotification({
                     title: 'Огого!',
                     text: 'Не удалось отправить ' +

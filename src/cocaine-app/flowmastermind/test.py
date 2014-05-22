@@ -4,8 +4,6 @@ import msgpack
 
 logging = Logger()
 
-logging.info('Test python module')
-
 @http
 def ping(request, response):
     headers = []

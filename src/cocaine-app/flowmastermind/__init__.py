@@ -10,6 +10,7 @@ from cocaine.logging import Logger
 from flask import Flask, Response, request
 from flask import abort, render_template
 
+from flowmastermind.error import ApiResponseError
 from flowmastermind.test import ping
 
 
@@ -25,10 +26,17 @@ def json_response(func):
         try:
             res = {'status': 'success',
                    'response': func(*args, **kwargs)}
+        except ApiResponseError as e:
+            logging.error('API error: {0}'.format(e))
+            logging.error(traceback.format_exc())
+            res = {'status': 'error',
+                   'error_code': e.code,
+                   'error_message': e.msg}
         except Exception as e:
             logging.error(e)
             logging.error(traceback.format_exc())
             res = {'status': 'error',
+                   'error_code': 'UNKNOWN',
                    'error_message': str(e)}
 
         return JsonResponse(json.dumps(res))
