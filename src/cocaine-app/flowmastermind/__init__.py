@@ -19,6 +19,9 @@ logging = Logger()
 app = Flask(__name__)
 
 
+DEFAULT_DT_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+
 def json_response(func):
 
     @wraps(func)
@@ -183,7 +186,7 @@ def json_commands_node_shutdown():
         raise ValueError('Node should be specified')
     m = Service('mastermind')
     cmd = mastermind_response(m.enqueue('shutdown_node_cmd',
-        msgpack.packb([node.encode('utf-8')])).get())
+        msgpack.packb([host.encode('utf-8'), int(port)])).get())
 
     resp = mastermind_response(m.enqueue('execute_cmd',
         msgpack.packb([host, cmd, {'node': node}])).get())
@@ -202,7 +205,7 @@ def json_commands_node_start():
         raise ValueError('Node should be specified')
     m = Service('mastermind')
     cmd = mastermind_response(m.enqueue('start_node_cmd',
-        msgpack.packb([node.encode('utf-8')])).get())
+        msgpack.packb([host.encode('utf-8'), int(port)])).get())
 
     resp = mastermind_response(m.enqueue('execute_cmd',
         msgpack.packb([host, cmd, {'node': node}])).get())

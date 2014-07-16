@@ -34,6 +34,23 @@ body {
     padding: 0;
 }
 
+div.close {
+    color: #444;
+    position: absolute;;
+    top: 0;
+    right: 0;
+    padding: 3px;
+    margin: 2px;
+    z-index: 10;
+    cursor: pointer;
+}
+
+div.close:hover {
+    background-color: #aaa;
+    color: #eee;
+    margin: 1px;
+    border: 1px solid #888;
+}
 
 h1.chart-header {
     margin-top: 30px;

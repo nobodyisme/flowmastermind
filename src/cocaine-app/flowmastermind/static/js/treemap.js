@@ -902,12 +902,11 @@ TreeMap.prototype.executeNodeCmd = function (url, type) {
         $.ajax(url, {
             type: 'POST',
             dataType: 'json',
+            timeout: 3000,
             data: {
                 'node': node['node_addr']
             },
             success: function (data) {
-                console.log(data);
-                console.log(data['response']);
                 if (data['status'] != 'success') {
                     console.log('error happened');
                     console.log(data);
@@ -922,6 +921,7 @@ TreeMap.prototype.executeNodeCmd = function (url, type) {
 
                     $.ajax('/json/commands/status/' + uid + '/', {
                         dataType: 'json',
+                        timeout: 3000,
                         success: function (data) {
                             if (data['status'] != 'success') {
                                 console.log('error happened');

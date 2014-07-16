@@ -310,9 +310,11 @@ GroupInfo.prototype.renderEntityData = function (data) {
         renderField('Хост', data['hostname']);
         renderField('Путь', data['path']);
     }
-    renderField('Всего', prefixBytes(data['stats']['total_space']));
-    renderField('Свободно', prefixBytes(data['stats']['free_space']));
-    renderField('Занято', prefixBytes(data['stats']['used_space']));
+    if (Object.getOwnPropertyNames(data['stats']).length) {
+        renderField('Всего', prefixBytes(data['stats']['total_space']));
+        renderField('Свободно', prefixBytes(data['stats']['free_space']));
+        renderField('Занято', prefixBytes(data['stats']['used_space']));
+    }
 
     if (data['stats']['fragmentation'] != undefined) {
         renderField('Фрагментация', (data['stats']['fragmentation'] * 100).toFixed(2) + '%');
