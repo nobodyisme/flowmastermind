@@ -1,3 +1,13 @@
+flowmastermind (0.29) lucid; urgency=low
+
+  * Json API minor fixes
+  * Updated css styles
+  * Treemap refactored
+  * Stdout and stderr output for minion commands added
+  * Fix for empty stats displaying
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 16 Jul 2014 15:34:04 +0400
+
 flowmastermind (0.28) lucid; urgency=low
 
   * Keys bars and defragmentation tree map
