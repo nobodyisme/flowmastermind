@@ -311,7 +311,7 @@ TreeMap.prototype.periodicUpdate = function () {
 
     loadTreemap(spinner);
 
-    setTimeout(self.periodicUpdate.bind(self), 30000);
+    // setTimeout(self.periodicUpdate.bind(self), 30000);
 }
 
 TreeMap.prototype.close = function () {
