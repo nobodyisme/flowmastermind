@@ -6,6 +6,16 @@ function MemoryBar(container, chartLabel) {
     self.yAxis.tickFormat(prefixBytesRound);
 }
 
+
+function TotalMemoryBar(container, chartLabel) {
+
+    var self = this;
+    self.constructor.super.call(self, container, chartLabel);
+
+    self.yAxis.tickFormat(prefixBytesRound);
+}
+
+
 function GroupsBar(container, chartLabel) {
 
     var self = this;
@@ -96,6 +106,7 @@ function extend(Child, Parent) {
     Child.super = Parent;
 }
 
+extend(TotalMemoryBar, Bar);
 extend(MemoryBar, Bar);
 extend(KeysBar, Bar);
 extend(GroupsBar, Bar);
@@ -176,6 +187,53 @@ MemoryBar.prototype.addLegend = function () {
 
 MemoryBar.prototype.tooltipFormatter = prefixBytes;
 MemoryBar.prototype.barLabelFormatter = prefixBytesRound;
+
+
+TotalMemoryBar.prototype.color = d3.scale.ordinal()
+    .domain(['occupied_space', 'free_space', 'uncoupled_space'])
+    .range(['rgb(200,200,200)', 'rgb(78,201,106)', 'rgb(242,238,96)']);
+
+TotalMemoryBar.prototype.labels = {
+    occupied_space: 'занято',
+    free_space: 'свободно',
+    uncoupled_space: 'не используется'
+};
+
+TotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+
+
+TotalMemoryBar.prototype.prepareData = function (rawdata) {
+    rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
+
+    var data = [],
+        keys = rawdataEntries.map(function (d) { return d.key; });
+
+    rawdataEntries.forEach(function (d, i) {
+        var el = [];
+        el.push({x: d.key,
+                 y: d.value['total_space'] - d.value['free_space'],
+                 type: 'occupied_space'});
+        el.push({x: d.key,
+                 y: d.value['free_space'],
+                 type: 'free_space'});
+        el.push({x: d.key,
+                 y: d.value['uncoupled_space'],
+                 type: 'uncoupled_space'});
+        data.push(el);
+    });
+
+    data = d3.transpose(
+        d3.layout.stack()(d3.transpose(data)));
+
+    return {data: data,
+            keys: keys};
+}
+
+TotalMemoryBar.prototype.addLegend = MemoryBar.prototype.addLegend;
+
+
+TotalMemoryBar.prototype.tooltipFormatter = prefixBytes;
+TotalMemoryBar.prototype.barLabelFormatter = prefixBytesRound;
 
 
 KeysBar.prototype.labels = {

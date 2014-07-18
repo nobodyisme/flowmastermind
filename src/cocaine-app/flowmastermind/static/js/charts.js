@@ -6,29 +6,21 @@
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
         ctxRDEM = new EffectiveMemoryPie('#realDataEffMemoryChart', 'размер данных*', true),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
-        ctxMDC = new MemoryBar('#dscMemoryChart', 'память по датацентрам'),
+        ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
         ctxGDC = new GroupsBar('#dscGroupsChart', 'группы по датацентрам');
 
-    ctxMDC.onBarClick(function (dc) {
-        PseudoURL.setPath('/map/')
-            .setParam('t', 'free_space')
-            .setParam('path', dc)
-            .load();
-    });
+    var barClicks = [[ctxEMDC, 'free_space'],
+                     [ctxKDC, 'fragmentation'],
+                     [ctxGDC, 'couple_status']];
 
-    ctxKDC.onBarClick(function (dc) {
-        PseudoURL.setPath('/map/')
-            .setParam('t', 'fragmentation')
-            .setParam('path', dc)
-            .load();
-    });
-
-    ctxGDC.onBarClick(function (dc) {
-        PseudoURL.setPath('/map/')
-            .setParam('t', 'couple_status')
-            .setParam('path', dc)
-            .load();
+    barClicks.forEach(function (el, idx) {
+        el[0].onBarClick(function (dc) {
+            PseudoURL.setPath('/map/')
+                .setParam('t', el[1])
+                .setParam('path', dc)
+                .load();
+        });
     });
 
     var ns_container = $('.namespaces'),
@@ -101,9 +93,11 @@
                 clear2 = $('<span class="clear">').appendTo(chart_set);
 
             var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
+                em_chart = $('<div class="chart em-chart-' + ns + '">').appendTo(chart_set),
                 k_chart = $('<div class="chart k-chart-' + ns + '">').appendTo(chart_set),
                 c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
-                m_bars = new MemoryBar('.m-chart-' + ns, 'память'),
+                m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
+                em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new GroupsBar('.c-chart-' + ns, 'каплы'),
 
@@ -117,34 +111,25 @@
 
             namespaces[ns] = {
                 'm_bars': m_bars,
+                'em_bars': em_bars,
                 'k_bars': k_bars,
                 'c_bars': c_bars
             };
 
-            m_bars.onBarClick(function (dc) {
-                PseudoURL.setPath('/map/')
-                    .setParam('t', 'free_space')
-                    .setParam('ns', ns)
-                    .setParam('path', dc)
-                    .load();
-            });
+            var barClicks = [[m_bars, 'free_space'],
+                             [em_bars, 'free_space'],
+                             [k_bars, 'fragmentation'],
+                             [c_bars, 'couple_status']];
 
-            k_bars.onBarClick(function (dc) {
-                PseudoURL.setPath('/map/')
-                    .setParam('t', 'fragmentation')
-                    .setParam('ns', ns)
-                    .setParam('path', dc)
-                    .load();
+            barClicks.forEach(function (el, idx) {
+                el[0].onBarClick(function (dc) {
+                    PseudoURL.setPath('/map/')
+                        .setParam('t', el[1])
+                        .setParam('ns', ns)
+                        .setParam('path', dc)
+                        .load();
+                });
             });
-
-            c_bars.onBarClick(function (dc) {
-                PseudoURL.setPath('/map/')
-                    .setParam('t', 'couple_status')
-                    .setParam('ns', ns)
-                    .setParam('path', dc)
-                    .load();
-            });
-
         }
 
         return namespaces[ns];
@@ -167,7 +152,7 @@
                 ctxRDEM.update(data['real_data']);
                 ctxC.update(data);
 
-                ctxMDC.update(data['dc']);
+                ctxEMDC.update(data['dc']);
                 ctxKDC.update(data['dc']);
                 ctxGDC.update(data['dc']);
 
@@ -180,6 +165,7 @@
                         ns_data = ns_items[idx][1];
 
                     ns.m_bars.update(ns_data);
+                    ns.em_bars.update(ns_data);
                     ns.k_bars.update(ns_data);
                     ns.c_bars.update(ns_data);
                 }
