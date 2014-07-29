@@ -60,6 +60,7 @@
                     path = PseudoURL.params['path'],
                     ns = PseudoURL.params['ns'],
                     group_id = PseudoURL.params['info'],
+                    filter = PseudoURL.params['filter'],
                     highlight = PseudoURL.params['highlight'];
 
                 if (treemap.map && treemap.map.ns == ns) {
@@ -68,7 +69,7 @@
                     treemap.map.highlight(highlight);
                 } else {
                     hideDcTreeMap();
-                    showDcTreeMap(path, type, ns);
+                    showDcTreeMap(path, type, ns, filter);
                 }
                 if (group_id) {
                     showGroupInfo(group_id);

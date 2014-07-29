@@ -139,13 +139,96 @@ def json_commands_history(year, month):
         raise
 
 
+def ts_to_dt(ts):
+    return datetime.datetime.fromtimestamp(float(ts)).strftime(DEFAULT_DT_FORMAT)
+
+@app.route('/json/jobs/')
+def json_jobs_list():
+    try:
+        m = Service('mastermind')
+        resp = m.enqueue('get_job_list', '').get()
+
+        def convert_tss_to_dt(d):
+            if d['start_ts']:
+                d['start_ts'] = ts_to_dt(d['start_ts'])
+            if d['finish_ts']:
+                d['finish_ts'] = ts_to_dt(d['finish_ts'])
+
+        for r in resp:
+            convert_tss_to_dt(r)
+            for task in r['tasks']:
+                convert_tss_to_dt(task)
+
+        return JsonResponse(json.dumps(resp))
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/jobs/retry/<job_id>/<task_id>/')
+def json_retry_task(job_id, task_id):
+    try:
+        m = Service('mastermind')
+        resp = m.enqueue('retry_failed_job_task', msgpack.packb([job_id, task_id])).get()
+
+        return JsonResponse(json.dumps(resp))
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/jobs/skip/<job_id>/<task_id>/')
+def json_skip_task(job_id, task_id):
+    try:
+        m = Service('mastermind')
+        resp = m.enqueue('skip_failed_job_task', msgpack.packb([job_id, task_id])).get()
+
+        return JsonResponse(json.dumps(resp))
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/jobs/cancel/<job_id>/')
+def json_cancel_job(job_id):
+    try:
+        m = Service('mastermind')
+        resp = m.enqueue('cancel_job', msgpack.packb([job_id])).get()
+
+        return JsonResponse(json.dumps(resp))
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/jobs/approve/<job_id>/')
+def json_approve_job(job_id):
+    try:
+        m = Service('mastermind')
+        resp = m.enqueue('approve_job', msgpack.packb([job_id])).get()
+
+        return JsonResponse(json.dumps(resp))
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
 @app.route('/json/map/')
 @app.route('/json/map/<namespace>/')
 def json_treemap(namespace=None):
     try:
         m = Service('mastermind')
+        options = {
+            'namespace': namespace,
+            'couple_status': request.args.get('couple_status')
+        }
         resp = JsonResponse(json.dumps(m.enqueue('get_groups_tree',
-            msgpack.packb([namespace])).get()))
+            msgpack.packb([options])).get()))
         return resp
     except Exception as e:
         logging.error(e)

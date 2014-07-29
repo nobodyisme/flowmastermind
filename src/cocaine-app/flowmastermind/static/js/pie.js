@@ -181,6 +181,7 @@ Pie.prototype.update = function (rawdata) {
 Pie.prototype.pieLabelFormatter = function (d) { return d; };
 Pie.prototype.tooltipFormatter = function (d) { return d; };
 Pie.prototype.legendLabelOffset = 5;
+Pie.prototype.defaultMapType = 'couple_status';
 
 Pie.prototype.updateSlices = function (data) {
 
@@ -193,7 +194,17 @@ Pie.prototype.updateSlices = function (data) {
             .append('g')
             .attr('class', 'arc')
             .style('fill', function (d, i) { return self.color(d.data.type); })
-            .style('fill-opacity', 0.6);
+            .style('fill-opacity', 0.6)
+            .on('click', function (d) {
+
+                self.hideTooltip();
+
+                PseudoURL.setPath('/map/')
+                    .setParam('t', self.defaultMapType)
+                    .setParam('filter', d.data.type)
+                    .setParam('path', '')
+                    .load();
+            });
     arcs
         .append('path')
         .attr('d', function () { return self.arc({startAngle: 0, endAngle: 0}); })
@@ -220,14 +231,7 @@ Pie.prototype.updateSlices = function (data) {
 
         self.tooltip.setSpaceLabel(self.labels[data.data.type] + ': ');
         self.tooltip.setSpaceValue(self.tooltipFormatter(data.data.value));
-    }).on('mouseleave', function () {
-
-        self.gpie.selectAll('g.arc').transition()
-            .duration(200)
-            .style('fill-opacity', 0.6);
-
-        self.tooltip.hide();
-    });
+    }).on('mouseleave', self.hideTooltip.bind(self));
 
     self.gpie.selectAll('g.arc path')
         .data(piedata)
@@ -242,6 +246,17 @@ Pie.prototype.updateSlices = function (data) {
         .text(function (d) { return (d.endAngle - d.startAngle > Math.PI/4) ? self.pieLabelFormatter(d.data.value) : ''; })
         .attrTween('transform', self.arcLabelTween(self));
 };
+
+Pie.prototype.hideTooltip = function () {
+
+    var self = this;
+
+    self.gpie.selectAll('g.arc').transition()
+        .duration(200)
+        .style('fill-opacity', 0.6);
+
+    self.tooltip.hide();
+}
 
 Pie.prototype.addLegend = function () {
 

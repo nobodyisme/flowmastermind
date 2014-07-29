@@ -4,7 +4,7 @@ var treemap = {
 };
 
 
-function showDcTreeMap(dc, type, ns) {
+function showDcTreeMap(dc, type, ns, filter) {
     var container = $('.inner-content'),
         layer = $('<div>');
 
@@ -17,7 +17,7 @@ function showDcTreeMap(dc, type, ns) {
         .text('X')
         .appendTo(layer);
 
-    treemap.map = new TreeMap('div.treemap', labels, dc, type, ns);
+    treemap.map = new TreeMap('div.treemap', labels, dc, type, ns, filter);
 }
 
 function hideDcTreeMap() {
@@ -60,11 +60,11 @@ function failTreemapLoad(layer) {
 }
 
 
-function TreeMap(container, labels, curvalue, curtype, ns) {
+function TreeMap(container, labels, curvalue, curtype, ns, filter) {
 
     var self = this;
     self.initvalue = (curvalue == undefined ? '' : curvalue);
-
+    self.filter = filter;
     self.init(container, labels, ns, curtype);
 
     d3.select(window).on('resize', self.resize.bind(self));
@@ -289,7 +289,7 @@ TreeMap.prototype.periodicUpdate = function () {
     }
 
     function loadTreemap() {
-        $.ajax({
+        var params = {
             url: url,
             method: 'get',
             dataType: 'json',
@@ -306,7 +306,25 @@ TreeMap.prototype.periodicUpdate = function () {
                 }
                 setTimeout(loadTreemap, 2000);
             }
-        });
+        };
+        var couple_status = undefined;
+        if (self.filter == 'uncoupled_space') {
+            couple_status = 'UNCOUPLED';
+        } else if (self.filter == 'free_space' || self.filter == 'open_couples') {
+            couple_status = 'OK';
+        } else if (self.filter == 'occupied_space' || self.filter == 'closed_couples') {
+            couple_status = 'FULL';
+        } else if (self.filter == 'bad_couples') {
+            couple_status = 'BAD';
+        } else if (self.filter == 'frozen_couples') {
+            couple_status = 'FROZEN';
+        }
+        if (couple_status) {
+            params.data = {
+                'couple_status': couple_status
+            };
+        }
+        $.ajax(params);
     }
 
     loadTreemap(spinner);
@@ -726,6 +744,11 @@ TreeMap.prototype.zoom = function (node) {
 
     self.nodes = self.treemap.nodes(self.data);
 
+    self.nodes.forEach(function (node) {
+        node.dx = Math.max(node.dx, 1);
+        node.dy = Math.max(node.dy, 1);
+    });
+
     // ----------------
 
     var kx = self.width / node.dx,
@@ -774,8 +797,8 @@ TreeMap.prototype.zoom = function (node) {
                 .append('rect')
                     .attr('x', self.xScale(d.x) + 4)
                     .attr('y', self.yScale(d.y) + 4)
-                    .attr('width', kx * d.dx - 8)
-                    .attr('height', ky * d.dy - 8);
+                    .attr('width', Math.max(kx * d.dx - 8, 0))
+                    .attr('height', Math.max(ky * d.dy - 8, 0));
 
             self.svg_labels
                 .append('text')
