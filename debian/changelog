@@ -1,3 +1,11 @@
+flowmastermind (0.31) lucid; urgency=low
+
+  * Clickable pie charts
+  * Outages bars
+  * Jobs menu link
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 30 Jul 2014 19:06:14 +0400
+
 flowmastermind (0.30) lucid; urgency=low
 
   * Total dc space bars per namespace
