@@ -1,31 +1,31 @@
-function MemoryBar(container, chartLabel) {
+function MemoryBar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
-    self.constructor.super.call(self, container, chartLabel);
+    self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
 
     self.yAxis.tickFormat(prefixBytesRound);
 }
 
 
-function TotalMemoryBar(container, chartLabel) {
+function TotalMemoryBar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
-    self.constructor.super.call(self, container, chartLabel);
+    self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
 
     self.yAxis.tickFormat(prefixBytesRound);
 }
 
 
-function GroupsBar(container, chartLabel) {
+function GroupsBar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
-    self.constructor.super.call(self, container, chartLabel);
+    self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
 }
 
-function KeysBar(container, chartLabel) {
+function KeysBar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
-    self.constructor.super.call(self, container, chartLabel);
+    self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
 
     self.max_value = 0;
 
@@ -34,8 +34,14 @@ function KeysBar(container, chartLabel) {
     });
 }
 
+function OutagesBar(container, chartLabel, chartLabelSmall) {
 
-function Bar(container, chartLabel) {
+    var self = this;
+    self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
+}
+
+
+function Bar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
 
@@ -60,6 +66,18 @@ function Bar(container, chartLabel) {
             .attr('fill-opacity', 0)
             .attr('x', 0)
             .text(chartLabel);
+
+    self.chart_label_small = undefined;
+    if (chartLabelSmall) {
+        self.chart_label_small = self.svg_container
+            .append('g')
+                .attr('class', 'chart-label-small')
+                .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height + 50) + ')')
+            .append('text')
+                .attr('fill-opacity', 0)
+                .attr('x', 0)
+                .text(chartLabelSmall);
+    }
 
     self.addLegend();
 
@@ -110,6 +128,7 @@ extend(TotalMemoryBar, Bar);
 extend(MemoryBar, Bar);
 extend(KeysBar, Bar);
 extend(GroupsBar, Bar);
+extend(OutagesBar, Bar);
 
 
 MemoryBar.prototype.color = d3.scale.ordinal()
@@ -122,7 +141,7 @@ MemoryBar.prototype.labels = {
     uncoupled_space: 'не используется'
 };
 
-MemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+MemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
 
 
 MemoryBar.prototype.prepareData = function (rawdata) {
@@ -199,7 +218,7 @@ TotalMemoryBar.prototype.labels = {
     uncoupled_space: 'не используется'
 };
 
-TotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+TotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
 
 
 TotalMemoryBar.prototype.prepareData = function (rawdata) {
@@ -241,7 +260,7 @@ KeysBar.prototype.labels = {
     removed_keys: 'удаленные ключи',
 };
 
-KeysBar.prototype.margin = {top: 50, right: 10, left: 70, bottom: 40};
+KeysBar.prototype.margin = {top: 50, right: 10, left: 70, bottom: 60};
 
 KeysBar.prototype.color = d3.scale.ordinal()
     .domain(['keys', 'removed_keys'])
@@ -329,7 +348,7 @@ GroupsBar.prototype.labels = {
     uncoupled_groups: 'не в капле'
 };
 
-GroupsBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+GroupsBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
 
 GroupsBar.prototype.addLegend = function () {
 
@@ -401,6 +420,88 @@ GroupsBar.prototype.prepareData = function (rawdata) {
             keys: keys};
 }
 
+OutagesBar.prototype.color = d3.scale.ordinal()
+    .domain(['bad_couples', 'closed_couples', 'frozen_couples',
+             'open_couples'])
+    .range(['rgb(240,72,72)', 'rgb(200,200,200)', 'rgb(150,197,255)',
+            'rgb(78,201,106)']);
+
+OutagesBar.prototype.labels = {
+    bad_couples: 'недоступно для записи',
+    closed_couples: 'заполнены',
+    frozen_couples: 'заморожено',
+    open_couples: 'открыто на запись'
+};
+
+OutagesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+
+OutagesBar.prototype.addLegend = function () {
+
+    var self = this;
+
+    self.legend = self.svg_container
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', 'translate(' + self.margin.left + ',0)');
+
+    var labels = self.color.domain().slice(),
+        colors = self.color.range().slice();
+
+    var labelLength = 170;
+    var flatcl = d3.zip(colors, labels).reverse();
+    var levelcl = [flatcl.slice(0, 3), flatcl.slice(3)];
+
+    levelcl.forEach(function (cl, j) {
+        cl.forEach(function (cl, i) {
+            self.legend
+                .append('rect')
+                .attr('class', 'legend-colorsample')
+                .attr('height', 10)
+                .attr('width', 10)
+                .attr('transform', 'translate(' + (i * labelLength) + ',' + (5 + (j * 15)) + ')')
+                .style('fill', cl[0]);
+
+            self.legend
+                .append('text')
+                .attr('class', 'legend-label')
+                .attr('transform', 'translate(' + (i * labelLength + 15) + ',' + (5 + (j * 15)) + ')')
+                .attr('y', 4)
+                .text('— ' + self.labels[cl[1]]);
+        });
+    });
+};
+
+
+OutagesBar.prototype.prepareData = function (rawdata) {
+    rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
+
+    var data = [],
+        keys = rawdataEntries.map(function (d) { return d.key; });
+
+    rawdataEntries.forEach(function (d, i) {
+        var el = [];
+        el.push({x: d.key,
+                 y: d.value['outages']['bad_couples'],
+                 type: 'bad_couples'});
+        el.push({x: d.key,
+                 y: d.value['outages']['closed_couples'],
+                 type: 'closed_couples'});
+        el.push({x: d.key,
+                 y: d.value['outages']['frozen_couples'],
+                 type: 'frozen_couples'});
+        el.push({x: d.key,
+                 y: d.value['outages']['open_couples'],
+                 type: 'open_couples'});
+        data.push(el);
+    });
+
+    data = d3.transpose(
+        d3.layout.stack()(d3.transpose(data)));
+
+    return {data: data,
+            keys: keys};
+}
+
 
 Bar.prototype.tooltipFormatter = function (d) { return d; };
 Bar.prototype.barLabelFormatter = function (d) { return d; };
@@ -437,6 +538,14 @@ Bar.prototype.updateSize = function (bars_num) {
         .duration(500)
         .attr('fill-opacity', 1)
         .attr('x', Math.round(self.width / 2));
+
+    if (self.chart_label_small) {
+        self.chart_label_small
+            .transition()
+            .duration(500)
+            .attr('fill-opacity', 1)
+            .attr('x', Math.round(self.width / 2));
+    }
 };
 
 Bar.prototype.updateAxes = function (data, keys) {

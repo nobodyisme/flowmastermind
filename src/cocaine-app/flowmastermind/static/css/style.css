@@ -573,3 +573,10 @@ g.chart-label text {
     alignment-baseline: central;
     text-anchor: middle;
 }
+
+g.chart-label-small text {
+    font-size: 10px;
+    fill: #555;
+    alignment-baseline: central;
+    text-anchor: middle;
+}

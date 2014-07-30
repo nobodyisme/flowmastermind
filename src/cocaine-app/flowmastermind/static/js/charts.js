@@ -97,10 +97,12 @@
                 em_chart = $('<div class="chart em-chart-' + ns + '">').appendTo(chart_set),
                 k_chart = $('<div class="chart k-chart-' + ns + '">').appendTo(chart_set),
                 c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
+                co_chart = $('<div class="chart co-chart-' + ns + '">').appendTo(chart_set),
                 m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
                 em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new GroupsBar('.c-chart-' + ns, 'каплы'),
+                co_bars = new OutagesBar('.co-chart-' + ns, 'отключение ДЦ*', '* что произойдет, если отключится конкретный ДЦ'),
 
                 spanMenuItem = $('<span class="menu-item">').appendTo(namespaces_menu),
                 menuItem = $('<a href="#' + ns + '">').appendTo(spanMenuItem);
@@ -114,13 +116,15 @@
                 'm_bars': m_bars,
                 'em_bars': em_bars,
                 'k_bars': k_bars,
-                'c_bars': c_bars
+                'c_bars': c_bars,
+                'co_bars': co_bars
             };
 
             var barClicks = [[m_bars, 'free_space'],
                              [em_bars, 'free_space'],
                              [k_bars, 'fragmentation'],
-                             [c_bars, 'couple_status']];
+                             [c_bars, 'couple_status'],
+                             [co_bars, 'couple_status']];
 
             barClicks.forEach(function (el, idx) {
                 el[0].onBarClick(function (dc) {
@@ -169,6 +173,7 @@
                     ns.em_bars.update(ns_data);
                     ns.k_bars.update(ns_data);
                     ns.c_bars.update(ns_data);
+                    ns.co_bars.update(ns_data);
                 }
 
                 // no more animation, i'm begging you
