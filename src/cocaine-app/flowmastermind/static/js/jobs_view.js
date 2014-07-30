@@ -139,18 +139,20 @@ var Jobs = (function () {
 
         // TODO: think about when to do insertAfter
         // and maybe fix this in commands_view.js as well
-        console.log(state['status'] == 'completed');
         if (state['status'] == 'completed' || state['status'] == 'cancelled') {
             if (!job.parent().hasClass('jobs-finished')) {
+                job_management.css('visibility', 'visible');
                 job.insertAfter(this.finished_header);
             }
         } else if (state['status'] == 'not_approved') {
             if (!job.parent().hasClass('jobs-not-approved')) {
+                job_management.css('visibility', 'visible');
                 job.insertAfter(this.not_approved_header);
             }
         } else {
             if (!job.parent().hasClass('jobs-executing')) {
-               job.insertAfter(this.executing_header);
+                job_management.css('visibility', 'visible');
+                job.insertAfter(this.executing_header);
             }
         }
 
@@ -165,8 +167,9 @@ var Jobs = (function () {
                 var approve_btn = $('<a href="#" class="task-management-btn job-approve-btn">').appendTo(job_management);
                 approve_btn.text('добро!');
 
-                function approveJob(job_id) {
+                function approveJob(job_id, job_management) {
                     return function () {
+                        job_management.css('visibility', 'hidden');
                         $.ajax({
                             url: '/json/jobs/approve/' + job_id + '/',
                             data: {ts: new Date().getTime()},
@@ -177,26 +180,30 @@ var Jobs = (function () {
                                     var state = response['response'];
                                     self.updateJob({}, state.id, state);
                                 }
+                            },
+                            error: function (response) {
+                                job_management.css('visibility', 'visible');
                             }
                         });
                         return false;
                     }
                 }
 
-                approve_btn.on('click', approveJob(uid));
+                approve_btn.on('click', approveJob(uid, job_management));
 
                 $('<br>').appendTo(job_management);
             }
 
-            console.log(state['status']);
-            console.log(job_management.children().length);
+            // console.log(state['status']);
+            // console.log(job_management.children().length);
             if (job_management.find('.job-cancel-btn').length == 0) {
 
                 var cancel_btn = $('<a href="#" class="task-management-btn job-cancel-btn">').appendTo(job_management);
                 cancel_btn.text('отменить');
 
-                function cancelJob(job_id) {
+                function cancelJob(job_id, job_management) {
                     return function () {
+                        job_management.css('visibility', 'hidden');
                         $.ajax({
                             url: '/json/jobs/cancel/' + job_id + '/',
                             data: {ts: new Date().getTime()},
@@ -207,13 +214,16 @@ var Jobs = (function () {
                                     var state = response['response'];
                                     self.updateJob({}, state.id, state);
                                 }
+                            },
+                            error: function (response) {
+                                job_management.css('visibility', 'visible');
                             }
                         });
                         return false;
                     }
                 }
 
-                cancel_btn.on('click', cancelJob(uid));
+                cancel_btn.on('click', cancelJob(uid, job_management));
             }
 
         }

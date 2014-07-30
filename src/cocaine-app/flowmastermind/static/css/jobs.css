@@ -191,10 +191,11 @@
     background-image: url('/static/img/unknown.png');
 }
 
-
 .task .task-title {
-    font-size: 15px;
+    font-size: 14px;
     padding: 0 10px;
+    width: 400px;
+    display: inline-block;
 }
 
 .task .task-additional-info {
@@ -204,10 +205,7 @@
 }
 
 .task .task-maintitle {
-    width: 400px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 17px;
 }
 
 .task .task-subtitle {

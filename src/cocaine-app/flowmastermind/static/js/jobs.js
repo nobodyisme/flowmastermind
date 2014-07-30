@@ -21,7 +21,6 @@
 
     function periodicTask() {
         updateStats();
-        // TODO: Uncomment
         setTimeout(periodicTask, updatePeriod);
     }
     periodicTask();
