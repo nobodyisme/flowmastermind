@@ -1,11 +1,10 @@
 (function() {
 
-    var updatePeriod = 5000,
-        commands = Commands($('.cmd-containers'));
+    var updatePeriod = 5000;
 
     function updateStats() {
         $.ajax({
-            url: '/json/commands/',
+            url: '/json/jobs/',
             data: {ts: new Date().getTime()},
             timeout: 3000,
             dataType: 'json',
@@ -14,7 +13,7 @@
                 for (var idx in data) {
                     var state = data[idx];
 
-                    Commands.model.update(state.host, state.uid, state);
+                    Jobs.model.update(state.id, state);
                 }
             }
         })
@@ -22,6 +21,7 @@
 
     function periodicTask() {
         updateStats();
+        // TODO: Uncomment
         setTimeout(periodicTask, updatePeriod);
     }
     periodicTask();

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Задачи{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/jobs.css" />
+{% endblock %}
+
+{% block content %}
+    <div class="inner-content">
+        <div class="jobs-containers">
+            <div class="jobs-not-approved">
+                <div class="jobs-header jobs-header-not-approved">ожидающие одобрения</div>
+            </div>
+            <div class="jobs-executing">
+                <div class="jobs-header jobs-header-executing">выполняющиеся задачи</div>
+            </div>
+            <div class="jobs-finished">
+                <div class="jobs-header jobs-header-finished">завершенные задачи</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="/static/js/helpers.js"></script>
+    <script src="/static/js/commands_view.js"></script>
+    <script src="/static/js/jobs_view.js"></script>
+    <script src="/static/js/jobs.js"></script>
+{% endblock %}

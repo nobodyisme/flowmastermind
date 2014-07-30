@@ -1,0 +1,253 @@
+.composite-line {
+    display: inline-block;
+    position: relative;
+}
+
+.composite-line-sub {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    /*font-size: 70%;*/
+    font-size: 11px;
+    line-height: 12px;
+}
+
+.jobs-header {
+    text-align: center;
+    font-size: 15px;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0 15px 0;
+    margin-right: 10px;
+    color: #eee;
+}
+
+.jobs-header-finished {
+    background-color: #999;
+}
+
+.jobs-header-executing {
+    background-color: #6b6;
+}
+
+.jobs-header-not-approved {
+    background-color: #f3f397;
+    color: #aaa;
+}
+
+.job {
+    margin: 10px 20px 10px 10px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+
+
+
+    border-color: #bce8f1;
+}
+
+.job-description-container {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.job.job-status-completed {
+    border-color: #d6e9c6;
+}
+
+.job.job-status-completed .job-description-container {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.job.job-status-pending {
+    border-color: #faebcc;
+}
+
+.job.job-status-pending .job-description-container {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.job.job-status-executing {
+    border-color: #bce8f1;
+}
+
+.job.job-status-executing .job-description-container {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.job.job-status-new {
+    border-color: #bce8f1;
+}
+
+.job.job-status-new .job-description-container {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.job.job-status-cancelled {
+    border-color: #ebccd1;
+}
+
+.job.job-status-cancelled .job-description-container {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.job-description {
+    margin-right: 200px;
+    display: block;
+}
+
+.job-management {
+    width: 100px;
+    display: block;
+    float: right;
+}
+
+.job-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+    line-height: 32px;
+}
+
+.job-title .composite-line-sub {
+    margin-top: -5px;
+}
+
+.job-tasklist {
+    padding: 15px;
+}
+
+
+.job-start-time-label, .job-start-time-val, .job-finish-time-label, .job-finish-time-val {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.job-start-time-val, .job-finish-time-val {
+    padding-right: 50px;
+}
+
+.job-tasklist {
+    display: none;
+}
+
+.task {
+    padding: 10px;
+}
+
+.task .task-status-icon, .task .task-title, .task .task-time,
+.task .task-start-time-label, .task .task-finish-time-label,
+.task .task-start-time-value, .task .task-finish-time-value,
+.task .task-additional-info, .task .task-management {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 15px;
+}
+
+.task .task-status-icon {
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.task.task-status-completed .task-status-icon {
+    background-image: url('/static/img/completed.png');
+}
+
+.task.task-status-executing .task-status-icon {
+    background-image: url('/static/img/executing.png');
+}
+
+.task.task-status-failed {
+    background-color: #ffdbdb;
+}
+
+.task.task-status-failed .task-status-icon {
+    background-image: url('/static/img/failed.png');
+}
+
+.task.task-status-skipped .task-status-icon {
+    background-image: url('/static/img/skipped.png');
+}
+
+.task.task-status-unknown .task-status-icon {
+    background-image: url('/static/img/unknown.png');
+}
+
+
+.task .task-title {
+    font-size: 15px;
+    padding: 0 10px;
+}
+
+.task .task-additional-info {
+    position: relative;
+    font-size: 12px;
+    width: 50px;
+}
+
+.task .task-maintitle {
+    width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task .task-subtitle {
+    font-size: 11px;
+    color: #555;
+}
+
+.task .task-subtitle .composite-line-sub {
+    font-size: 10px;
+    margin-top: -2px;
+}
+
+.task .task-start-time-label, .task .task-finish-time-label {
+    width: 70px;
+    padding: 5px 5px;
+}
+
+.task .task-start-time-value, .task .task-finish-time-value {
+    width: 170px;
+    padding: 5px 5px 5px 0;
+    font-size: 13px;
+}
+
+.task .task-management {
+    width: 100px;
+}
+
+.task-management-btn {
+    text-decoration: none;
+    color: #487EB8;
+    border-bottom: 1px dashed #487EB8;
+    font-size: 11px;
+}
+
+.task .task-cmd-stat {
+    position: absolute;
+    width: 800px;
+    left: -700px;
+    top: 20px;
+    background-color: #fff;
+    border: 1px solid #777;
+    z-index: 1;
+}

@@ -1,4 +1,4 @@
-var Commands = (function() {
+var Commands = (function(container) {
 
     function Commands() {
         this.hosts = {};
@@ -24,10 +24,10 @@ var Commands = (function() {
     commands = new Commands();
 
 
-    function CommandsView() {
+    function CommandsView(container) {
         this.eventer = commands.eventer;
 
-        this.container = $('.cmd-containers');
+        this.container = container;
         this.unknown_cont = $('.cmd-unknown');
         this.executing_cont = $('.cmd-executing');
         this.executing_header = this.executing_cont.find('.cmd-header');
@@ -37,7 +37,9 @@ var Commands = (function() {
         this.progress = {};
     };
 
-    CommandsView.prototype.createCmd = function(event, host, uid, status) {
+    CommandsView.prototype.createCmd = function(event, host, uid, status, container) {
+
+        var cmd_container = container || this.unknown_cont;
 
         var cmd = $('<div class="cmd">'),
             cmd_level_one = $('<div>').appendTo(cmd),
@@ -113,7 +115,7 @@ var Commands = (function() {
         cmd_host.html(host_txt);
         cmd_uid.text(uid);
 
-        cmd.appendTo(this.unknown_cont);
+        cmd.appendTo(cmd_container);
     }
 
     CommandsView.prototype.showStdOutput = function(sw, uid, cmd_std_output) {
@@ -143,7 +145,11 @@ var Commands = (function() {
             cmd.attr('stage', 'executing');
             cmd.css({display: 'block'});
 
-            cmd.insertAfter(this.executing_header);
+            if (this.executing_header.length) {
+                // Check should be false for standalone command status view (like one for the jobs page).
+                // TODO: Think of a better solution
+                cmd.insertAfter(this.executing_header);
+            }
 
             this.updateContainers();
 
@@ -151,7 +157,11 @@ var Commands = (function() {
             cmd.attr('stage', 'finished');
             cmd.css({display: 'block'});
 
-            cmd.insertAfter(this.finished_header);
+            if (this.finished_header.length) {
+                // Check should be false for standalone command status view (like one for the jobs page).
+                // TODO: Think of a better solution
+                cmd.insertAfter(this.finished_header);
+            }
 
             if (status.exit_code != 0) {
                 this.addErrorData(cmd, status);
@@ -224,7 +234,7 @@ var Commands = (function() {
         cmd.addClass('cmd-error');
     }
 
-    view = new CommandsView();
+    view = new CommandsView(container);
     view.eventer.on("create", view.createCmd.bind(view));
     view.eventer.on("update", view.updateCmd.bind(view));
 
@@ -233,4 +243,4 @@ var Commands = (function() {
         view: view
     }
 
-})();
+});
