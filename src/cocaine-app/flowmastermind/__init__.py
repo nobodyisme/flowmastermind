@@ -102,6 +102,17 @@ def history(year=None, month=None):
         raise
 
 
+@app.route('/jobs/')
+def jobs():
+    try:
+        return render_template('jobs.html', menu_page='jobs',
+                                            cur_page='jobs')
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
 @app.route('/json/stat/')
 def json_stat():
     try:
