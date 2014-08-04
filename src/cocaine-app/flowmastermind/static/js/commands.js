@@ -14,7 +14,7 @@
                 for (var idx in data) {
                     var state = data[idx];
 
-                    Commands.model.update(state.host, state.uid, state);
+                    commands.model.update(state.host, state.uid, state);
                 }
             }
         })

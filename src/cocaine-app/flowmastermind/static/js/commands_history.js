@@ -1,6 +1,7 @@
 (function() {
 
     var cmd_containers = $('.cmd-containers'),
+        commands = Commands(cmd_containers);
         year = cmd_containers.attr('year'),
         month = cmd_containers.attr('month');
 
@@ -12,12 +13,10 @@
             dataType: 'json',
             success: function (data) {
 
-                console.log('processing commands');
-
                 for (var idx in data) {
                     var state = data[idx];
 
-                    Commands.model.update(state.host, state.uid, state);
+                    commands.model.update(state.host, state.uid, state);
                 }
             }
         })
