@@ -78,6 +78,7 @@ var Jobs = (function () {
             job_start_time_val = $('<div class="job-start-time-val">').appendTo(job_desc),
             job_finish_time_label = $('<div class="job-finish-time-label">').appendTo(job_desc),
             job_finish_time_val = $('<div class="job-finish-time-val">').appendTo(job_desc),
+            job_id = $('<div class="job-id">').appendTo(job_desc),
             task_list = $('<div class="job-tasklist">').appendTo(job);
 
         job.attr('uid', uid);
@@ -100,6 +101,8 @@ var Jobs = (function () {
         for (idx in state['tasks']) {
             this.createTask(task_list, state['tasks'][idx]);
         }
+
+        job_id.text('id: ' + uid);
 
         job.appendTo(this.executing_cont);
     };
