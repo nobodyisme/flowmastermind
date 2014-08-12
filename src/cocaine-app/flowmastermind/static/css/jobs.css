@@ -67,6 +67,16 @@
     border-color: #d6e9c6;
 }
 
+.job.job-status-broken {
+    border-color: #debae2;
+}
+
+.job.job-status-broken .job-description-container {
+    color: #8d6592;
+    background-color: #edd8f0;
+    border-color: #debae2;
+}
+
 .job.job-status-pending {
     border-color: #faebcc;
 }
@@ -132,6 +142,27 @@
     padding: 15px;
 }
 
+.job-errorlist {
+    border: 1px solid #eee;
+    margin: 5px;
+    color: #444;
+}
+
+.job-errorlist .job-errorlist-header {
+    font-size: 14px;
+    padding: 5px 0 0 5px;
+}
+
+.job-errorlist .job-error {
+    padding: 5px;
+    font-size: 12px;
+}
+
+.job-errorlist .job-error .job-error-ts,
+.job-errorlist .job-error .job-error-msg {
+    display: inline-block;
+    padding: 5px;
+}
 
 .job-start-time-label, .job-start-time-val, .job-finish-time-label, .job-finish-time-val {
     display: inline-block;

@@ -167,6 +167,8 @@ def json_jobs_list():
 
         for r in resp:
             convert_tss_to_dt(r)
+            for error_msg in r.get('error_msg', []):
+                error_msg['ts'] = ts_to_dt(error_msg['ts'])
             for task in r['tasks']:
                 convert_tss_to_dt(task)
 

@@ -135,7 +135,8 @@ var Jobs = (function () {
             job_start_time_val = job.find('.job-start-time-val'),
             job_finish_time_label = job.find('.job-finish-time-label'),
             job_finish_time_val = job.find('.job-finish-time-val'),
-            job_management = job.find('.job-management');
+            job_management = job.find('.job-management'),
+            task_list = job.find('.job-tasklist');
 
         var job_status_cls = 'job-status-' + state['status'];
         job.removeClass().addClass('job').addClass(job_status_cls);
@@ -159,7 +160,7 @@ var Jobs = (function () {
             }
         }
 
-        if (state['status'] != 'pending' && state['status'] != 'not_approved') {
+        if (state['status'] != 'broken' && state['status'] != 'pending' && state['status'] != 'not_approved') {
             job_management.empty();
         } else {
 
@@ -236,9 +237,30 @@ var Jobs = (function () {
         this.renderTime(state['start_ts'], job_start_time_label, job_start_time_val);
         this.renderTime(state['finish_ts'], job_finish_time_label, job_finish_time_val);
 
+        task_list.find('.job-errorlist').remove();
+
+        if (state['error_msg'] && state['error_msg'].length) {
+            task_list.find('.job-errorlist').remove();
+            var error_list = $('<div class="job-errorlist">').prependTo(task_list),
+                error_list_header = $('<div class="job-errorlist-header">').appendTo(error_list);
+
+            error_list_header.text('Ошибки:');
+
+            for (var i = 0; i < state['error_msg'].length; i++) {
+                var job_error = $('<div class="job-error">'),
+                    job_error_ts = $('<div class="job-error-ts">').appendTo(job_error),
+                    job_error_msg = $('<div class="job-error-msg">').appendTo(job_error);
+
+                job_error_ts.text(state['error_msg'][i]['ts']);
+                job_error_msg.text(state['error_msg'][i]['msg']);
+
+                error_list.append(job_error);
+            }
+        }
+
         var tasks = job.find('.task');
         for (idx in state['tasks']) {
-            this.updateTask(tasks[idx], state['tasks'][idx], state['status'] == 'pending');
+            this.updateTask(tasks[idx], state['tasks'][idx], state['status'] == 'pending' || state['status'] == 'broken');
         }
     };
 
@@ -373,7 +395,7 @@ var Jobs = (function () {
     };
 
     JobsView.prototype.renderCustomTaskFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
-        if (task_state['type'] == 'minion_cmd') {
+        if (task_state['type'] == 'minion_cmd' || task_state['type'] == 'node_stop_task') {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
             this.renderHistoryRemoveNodeFields(task_state, task_maintitle, task_subtitle, task_additional_data);
