@@ -129,7 +129,7 @@
 }
 
 .job-title {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 8px;
     line-height: 32px;
 }
@@ -230,7 +230,7 @@
 .task .task-title {
     font-size: 14px;
     padding: 0 10px;
-    width: 400px;
+    width: 480px;
     display: inline-block;
 }
 
@@ -255,12 +255,13 @@
 }
 
 .task .task-start-time-label, .task .task-finish-time-label {
-    width: 70px;
+    width: 60px;
+    font-size: 13px;
     padding: 5px 5px;
 }
 
 .task .task-start-time-value, .task .task-finish-time-value {
-    width: 170px;
+    width: 160px;
     padding: 5px 5px 5px 0;
     font-size: 13px;
 }

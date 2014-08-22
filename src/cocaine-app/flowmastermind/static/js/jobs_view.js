@@ -48,9 +48,12 @@ var Jobs = (function () {
             title = 'Переезд группы ' + state['group'] + ' ' +
                     'с хоста <span class="composite-line">' + state['src_hostname'] +
                     ':' + state['src_port'] +
+                    (state['src_backend_id'] != undefined ? '/' + state['src_backend_id'] : '') +
                     '<span class="composite-line-sub">' + state['src_host'] + '</span></span> ' +
                     'на хост <span class="composite-line">' + state['dst_hostname'] +
-                    ':' + state['dst_port'] + '<span class="composite-line-sub">' +
+                    ':' + state['dst_port'] +
+                    (state['dst_backend_id'] != undefined ? '/' + state['dst_backend_id'] : '') +
+                    '<span class="composite-line-sub">' +
                     state['dst_host'] + '</span></span>';
         }
         return title;
@@ -420,6 +423,11 @@ var Jobs = (function () {
         var cleantitle = 'отвязывание ноды ' + task_state['hostname'] + ':' +
                         task_state['port'] + ' (' + task_state['host'] + ') ' +
                         'от группы ' + task_state['group'];
+        if (task_state['backend_id'] != undefined) {
+            cleantitle = 'отвязывание бэкенда ' + task_state['hostname'] + ':' +
+                        task_state['port'] + '/' + task_state['backend_id'] + ' (' +
+                        task_state['host'] + ') ' + 'от группы ' + task_state['group'];
+        }
         task_maintitle.html(cleantitle);
         task_maintitle.attr('title', cleantitle);
         task_subtitle.text('очистка истории');

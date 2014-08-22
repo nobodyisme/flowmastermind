@@ -126,8 +126,13 @@ GroupInfo.prototype.renderCoupleGraph = function (data) {
         r_max = (groups_num > 1) ? R * Math.sin((offset_angle / 2) / 180 * Math.PI) * groups_scale : R * groups_scale,
         max_used_space = d3.max(data.groups, function (d) { return d['stats']['used_space']; });
 
-
     data.groups.forEach(function (group, i) {
+
+        // Temporary fix for group.node_backends
+        if (group.nodes == undefined) {
+            group.nodes = group.node_backends;
+        }
+
         if (group.nodes.length == 1) {
             group['dc'] = group.nodes[0]['dc'];
             group['hostname'] = group.nodes[0]['hostname'];
@@ -136,6 +141,11 @@ GroupInfo.prototype.renderCoupleGraph = function (data) {
     });
 
     data.groups.forEach(function (group, i) {
+
+        // Temporary fix for group.node_backends
+        if (group.nodes == undefined) {
+            group.nodes = group.node_backends;
+        }
 
         var r = r_max * Math.sqrt(group['stats']['used_space'] / max_used_space),
             angle = start_offset_angle + offset_angle * i;
