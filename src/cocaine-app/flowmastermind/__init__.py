@@ -18,6 +18,8 @@ logging = Logger()
 
 app = Flask(__name__)
 
+MASTERMIND_APP_NAME = 'mastermind2.26'
+
 
 DEFAULT_DT_FORMAT = '%Y-%m-%d %H:%M:%S'
 
@@ -116,7 +118,7 @@ def jobs():
 @app.route('/json/stat/')
 def json_stat():
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = JsonResponse(json.dumps(m.enqueue('get_flow_stats', '').get()))
         return resp
     except Exception as e:
@@ -128,7 +130,7 @@ def json_stat():
 @app.route('/json/commands/')
 def json_commands():
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = JsonResponse(json.dumps(m.enqueue('get_commands', '').get()))
         return resp
     except Exception as e:
@@ -140,7 +142,7 @@ def json_commands():
 @app.route('/json/commands/history/<year>/<month>/')
 def json_commands_history(year, month):
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = JsonResponse(json.dumps(m.enqueue('minion_history_log',
             msgpack.packb([year, month])).get()))
         return resp
@@ -156,7 +158,7 @@ def ts_to_dt(ts):
 @app.route('/json/jobs/')
 def json_jobs_list():
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('get_job_list', '').get()
 
         def convert_tss_to_dt(d):
@@ -182,7 +184,7 @@ def json_jobs_list():
 @app.route('/json/jobs/retry/<job_id>/<task_id>/')
 def json_retry_task(job_id, task_id):
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('retry_failed_job_task', msgpack.packb([job_id, task_id])).get()
 
         return JsonResponse(json.dumps(resp))
@@ -195,7 +197,7 @@ def json_retry_task(job_id, task_id):
 @app.route('/json/jobs/skip/<job_id>/<task_id>/')
 def json_skip_task(job_id, task_id):
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('skip_failed_job_task', msgpack.packb([job_id, task_id])).get()
 
         return JsonResponse(json.dumps(resp))
@@ -208,7 +210,7 @@ def json_skip_task(job_id, task_id):
 @app.route('/json/jobs/cancel/<job_id>/')
 def json_cancel_job(job_id):
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('cancel_job', msgpack.packb([job_id])).get()
 
         return JsonResponse(json.dumps(resp))
@@ -221,7 +223,7 @@ def json_cancel_job(job_id):
 @app.route('/json/jobs/approve/<job_id>/')
 def json_approve_job(job_id):
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('approve_job', msgpack.packb([job_id])).get()
 
         return JsonResponse(json.dumps(resp))
@@ -235,7 +237,7 @@ def json_approve_job(job_id):
 @app.route('/json/map/<namespace>/')
 def json_treemap(namespace=None):
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         options = {
             'namespace': namespace,
             'couple_status': request.args.get('couple_status')
@@ -252,7 +254,7 @@ def json_treemap(namespace=None):
 @app.route('/json/group/<group_id>/')
 def json_group_info(group_id):
     try:
-        m = Service('mastermind')
+        m = Service(MASTERMIND_APP_NAME)
         group_info = m.enqueue('get_couple_statistics',
             msgpack.packb([int(group_id)])).get()
         resp = JsonResponse(json.dumps(group_info))
@@ -266,7 +268,7 @@ def json_group_info(group_id):
 @app.route('/json/commands/status/<uid>/')
 @json_response
 def json_command_status(uid):
-    m = Service('mastermind')
+    m = Service(MASTERMIND_APP_NAME)
     status = mastermind_response(m.enqueue('get_command',
         msgpack.packb([uid.encode('utf-8')])).get())
 
@@ -280,7 +282,7 @@ def json_commands_node_shutdown():
     host, port = node.split(':')
     if not node:
         raise ValueError('Node should be specified')
-    m = Service('mastermind')
+    m = Service(MASTERMIND_APP_NAME)
     cmd = mastermind_response(m.enqueue('shutdown_node_cmd',
         msgpack.packb([host.encode('utf-8'), int(port)])).get())
 
@@ -299,7 +301,7 @@ def json_commands_node_start():
     host, port = node.split(':')
     if not node:
         raise ValueError('Node should be specified')
-    m = Service('mastermind')
+    m = Service(MASTERMIND_APP_NAME)
     cmd = mastermind_response(m.enqueue('start_node_cmd',
         msgpack.packb([host.encode('utf-8'), int(port)])).get())
 
