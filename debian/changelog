@@ -1,3 +1,9 @@
+flowmastermind (0.34) lucid; urgency=low
+
+  * Mastermind application name changed
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 22 Aug 2014 13:20:32 +0400
+
 flowmastermind (0.33) lucid; urgency=low
 
   * Support for broken jobs and jobs error messages
