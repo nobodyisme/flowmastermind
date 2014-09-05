@@ -1,3 +1,9 @@
+flowmastermind (0.35) lucid; urgency=low
+
+  * Support of job types
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 05 Sep 2014 15:36:22 +0400
+
 flowmastermind (0.34) lucid; urgency=low
 
   * Mastermind application name changed
