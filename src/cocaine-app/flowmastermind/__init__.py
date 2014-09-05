@@ -105,10 +105,16 @@ def history(year=None, month=None):
 
 
 @app.route('/jobs/')
-def jobs():
+@app.route('/jobs/<job_type>/')
+def jobs(job_type=None):
+    if job_type is None:
+        job_type = 'move'
+    if job_type not in ('move', 'recovery'):
+        abort(404)
     try:
         return render_template('jobs.html', menu_page='jobs',
-                                            cur_page='jobs')
+                                            cur_page=job_type,
+                                            job_type=job_type)
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -155,11 +161,17 @@ def json_commands_history(year, month):
 def ts_to_dt(ts):
     return datetime.datetime.fromtimestamp(float(ts)).strftime(DEFAULT_DT_FORMAT)
 
-@app.route('/json/jobs/')
-def json_jobs_list():
+@app.route('/json/jobs/<job_type>/')
+def json_jobs_list(job_type):
+    if job_type not in ('move', 'recovery'):
+        abort(404)
+
+    mm_job_types = {'move': 'move_job',
+                    'recovery': 'recover_dc_job'}
+
     try:
         m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('get_job_list', '').get()
+        resp = m.enqueue('get_job_list', msgpack.packb([{'job_type': mm_job_types[job_type]}])).get()
 
         def convert_tss_to_dt(d):
             if d['start_ts']:
@@ -221,12 +233,13 @@ def json_cancel_job(job_id):
 
 
 @app.route('/json/jobs/approve/<job_id>/')
+@json_response
 def json_approve_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('approve_job', msgpack.packb([job_id])).get()
 
-        return JsonResponse(json.dumps(resp))
+        return resp
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())

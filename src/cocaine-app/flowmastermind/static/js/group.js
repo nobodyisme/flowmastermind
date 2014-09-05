@@ -320,6 +320,9 @@ GroupInfo.prototype.renderEntityData = function (data) {
         renderField('Хост', data['hostname']);
         renderField('Путь', data['path']);
     }
+    if (data['backend_id']) {
+        renderField('Бэкенд', data['backend_id']);
+    }
     if (Object.getOwnPropertyNames(data['stats']).length) {
         renderField('Всего', prefixBytes(data['stats']['total_space']));
         renderField('Свободно', prefixBytes(data['stats']['free_space']));

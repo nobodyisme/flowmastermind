@@ -33,6 +33,22 @@
         <a class="menu-page" href="/jobs/">
             Задачи
         </a>
+        {% if menu_page == 'jobs' %}
+            <span class="menu-page-item">
+                    {% if cur_page != 'move' %}
+                        <a href="/jobs/move/">переезд</a>
+                    {% else %}
+                        <span class="selected">переезд</span>
+                    {% endif %}
+                </span>
+                <span class="menu-page-item">
+                    {% if cur_page != 'recovery' %}
+                        <a href="/jobs/recovery/">восстановление</a>
+                    {% else %}
+                        <span class="selected">восстановление</span>
+                    {% endif %}
+                </span>
+        {% endif %}
         <a class="menu-page" href="/commands/">
             Команды
         </a>

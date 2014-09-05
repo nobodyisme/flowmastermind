@@ -55,6 +55,12 @@ var Jobs = (function () {
                     (state['dst_backend_id'] != undefined ? '/' + state['dst_backend_id'] : '') +
                     '<span class="composite-line-sub">' +
                     state['dst_host'] + '</span></span>';
+        } else if (state['type'] == 'recover_dc_job') {
+            title = 'Восстановление ключей группы ' + state['group'] + ' ' +
+                    'на хосте <span class="composite-line">' + state['hostname'] +
+                    ':' + state['port'] +
+                    (state['backend_id'] != undefined ? '/' + state['backend_id'] : '') +
+                    '<span class="composite-line-sub">' + state['host'] + '</span></span>';
         }
         return title;
     };
@@ -132,8 +138,25 @@ var Jobs = (function () {
         task.appendTo(task_list);
     };
 
+    JobsView.prototype.successNotification = function (notification) {
+        $(notification).addClass('o-notification-success');
+    };
+
+    JobsView.prototype.errorNotification = function (notification) {
+        $(notification).addClass('o-notification-error');
+    };
+
+    JobsView.prototype.renderError = function (error) {
+        var msg = error['msg'];
+        if (error.code == 22) {
+            msg = 'Некоторые из групп уже участвуют в задаче ' + error.holder_id;
+        }
+        return msg;
+    }
+
     JobsView.prototype.updateJob = function(event, uid, state) {
-        var job = this.container.find('.job[uid=' + uid + ']'),
+        var self = this,
+            job = this.container.find('.job[uid=' + uid + ']'),
             job_start_time_label = job.find('.job-start-time-label'),
             job_start_time_val = job.find('.job-start-time-val'),
             job_finish_time_label = job.find('.job-finish-time-label'),
@@ -185,7 +208,17 @@ var Jobs = (function () {
                             success: function (response) {
                                 if (response['status'] == 'success') {
                                     var state = response['response'];
+                                    job_management.css('visibility', 'visible');
                                     self.updateJob({}, state.id, state);
+                                    if (state['status'] == 'not_approved') {
+                                        var last_error = state['error_msg'][state['error_msg'].length - 1];
+                                        window.oNotifications.createNotification({
+                                            title: 'Огого!',
+                                            text: self.renderError(last_error),
+                                            onBeforeShow: self.errorNotification});
+                                    }
+                                } else {
+                                    job_management.css('visibility', 'visible');
                                 }
                             },
                             error: function (response) {
@@ -249,13 +282,13 @@ var Jobs = (function () {
 
             error_list_header.text('Ошибки:');
 
-            for (var i = 0; i < state['error_msg'].length; i++) {
+            for (var i = state['error_msg'].length - 1; i >= 0 ; i--) {
                 var job_error = $('<div class="job-error">'),
                     job_error_ts = $('<div class="job-error-ts">').appendTo(job_error),
                     job_error_msg = $('<div class="job-error-msg">').appendTo(job_error);
 
                 job_error_ts.text(state['error_msg'][i]['ts']);
-                job_error_msg.text(state['error_msg'][i]['msg']);
+                job_error_msg.text(self.renderError(state['error_msg'][i]));
 
                 error_list.append(job_error);
             }
@@ -398,7 +431,9 @@ var Jobs = (function () {
     };
 
     JobsView.prototype.renderCustomTaskFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
-        if (task_state['type'] == 'minion_cmd' || task_state['type'] == 'node_stop_task') {
+        if (task_state['type'] == 'minion_cmd' ||
+            task_state['type'] == 'node_stop_task' ||
+            task_state['type'] == 'recover_dc_group_task') {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
             this.renderHistoryRemoveNodeFields(task_state, task_maintitle, task_subtitle, task_additional_data);

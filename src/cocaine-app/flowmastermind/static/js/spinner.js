@@ -1,5 +1,5 @@
 
-function Spinner(container) {
+function Spinner(container, width) {
     var self = this,
         container = d3.select(container),
         thickness = 7,
@@ -9,7 +9,8 @@ function Spinner(container) {
         .attr('width', '100%')
         .attr('height', '100%');
 
-    self.width = 30;
+    self.width = width || 30;
+    console.log(width, self.width);
     self.height = 30;
 
     self.spinner = self.svg.append('g')
@@ -54,6 +55,9 @@ Spinner.prototype.start = function () {
 Spinner.prototype.stop = function () {
     var self = this;
 
+    if (!self.run) return;
+    self.run = false;
+
     self.spinner.select('path')
         .transition(500)
         .attr('fill-opacity', 0)
@@ -64,4 +68,19 @@ Spinner.prototype.stop = function () {
             self.spinner.remove();
             self.svg.remove();
         });
+}
+
+Spinner.prototype.blink = function (color, duration) {
+    var self = this;
+
+    if (!self.run) return;
+
+    var path = self.spinner.select('path'),
+        cur_color = path.style('fill');
+
+    path.transition()
+        .duration(duration || 300)
+        .style('fill', color)
+        .transition()
+        .style('fill', cur_color);
 }

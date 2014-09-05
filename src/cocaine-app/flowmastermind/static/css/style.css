@@ -580,3 +580,23 @@ g.chart-label-small text {
     alignment-baseline: central;
     text-anchor: middle;
 }
+
+body .o-notifications {
+    width: 360px;
+}
+
+body .o-notifications .o-notification-success {
+    background-color: #daffda;
+    border: 1px solid #799979;
+}
+
+body .o-notifications .o-notification-error {
+    background-color: #ffd5d5;
+    border: 1px solid #7f6565;
+}
+
+
+path.spinner {
+    fill: #2377A7;
+}
+
