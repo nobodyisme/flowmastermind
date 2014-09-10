@@ -154,12 +154,12 @@
 }
 
 .job-errorlist .job-error {
-    padding: 5px;
+    padding: 3px;
     font-size: 12px;
 }
 
-.job-errorlist .job-error .job-error-ts,
-.job-errorlist .job-error .job-error-msg {
+.job-errorlist div .job-error-ts,
+.job-errorlist div .job-error-msg {
     display: inline-block;
     padding: 5px;
 }
@@ -285,4 +285,19 @@
     background-color: #fff;
     border: 1px solid #777;
     z-index: 1;
+}
+
+.job-errorlist-showmore-btn {
+    display: block;
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid #A3AFEE;
+    width: 21px;
+    height: 7px;
+    line-height: 2px;
+    text-align: center;
+    border-radius: 6px;
+    text-decoration: none;
+    background-color: #E2EBFF;
+    color: #576BD5;
 }

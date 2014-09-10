@@ -273,30 +273,67 @@ var Jobs = (function () {
         this.renderTime(state['start_ts'], job_start_time_label, job_start_time_val);
         this.renderTime(state['finish_ts'], job_finish_time_label, job_finish_time_val);
 
-        task_list.find('.job-errorlist').remove();
-
         if (state['error_msg'] && state['error_msg'].length) {
+            self.updateJobErrors(task_list, state['error_msg'].reverse());
+        } else {
             task_list.find('.job-errorlist').remove();
-            var error_list = $('<div class="job-errorlist">').prependTo(task_list),
-                error_list_header = $('<div class="job-errorlist-header">').appendTo(error_list);
-
-            error_list_header.text('Ошибки:');
-
-            for (var i = state['error_msg'].length - 1; i >= 0 ; i--) {
-                var job_error = $('<div class="job-error">'),
-                    job_error_ts = $('<div class="job-error-ts">').appendTo(job_error),
-                    job_error_msg = $('<div class="job-error-msg">').appendTo(job_error);
-
-                job_error_ts.text(state['error_msg'][i]['ts']);
-                job_error_msg.text(self.renderError(state['error_msg'][i]));
-
-                error_list.append(job_error);
-            }
         }
 
         var tasks = job.find('.task');
         for (idx in state['tasks']) {
             this.updateTask(tasks[idx], state['tasks'][idx], state['status'] == 'pending' || state['status'] == 'broken');
+        }
+    };
+
+    JobsView.prototype.updateJobErrors = function(task_list, errors) {
+        var self = this,
+            error_list = task_list.find('.job-errorlist');
+        if (error_list.length == 0) {
+            error_list = $('<div class="job-errorlist">').prependTo(task_list);
+            var error_list_header = $('<div class="job-errorlist-header">').appendTo(error_list),
+                error_list_last = $('<div class="job-errorlist-last">').appendTo(error_list),
+                more_btn = $('<a href="#" class="job-errorlist-showmore-btn">').appendTo(error_list);
+                error_list_more = $('<div class="job-errorlist-more">').appendTo(error_list),
+            error_list_more.css('display', 'none');
+            error_list_header.text('Ошибки:');
+
+            more_btn.css('display', 'none');
+            more_btn.text('...');
+            more_btn.on('click', function () {
+                error_list_more.css('display', 'block');
+                more_btn.remove();
+                return false;
+            });
+        } else {
+            var error_list_header = error_list.find('.job-errorlist-header'),
+                error_list_last = error_list.find('.job-errorlist-last'),
+                more_btn = error_list.find('.job-errorlist-showmore-btn'),
+                error_list_more = error_list.find('.job-errorlist-more');
+        }
+
+        function make_job_error(error) {
+            var job_error = $('<div class="job-error">'),
+                job_error_ts = $('<div class="job-error-ts">').appendTo(job_error),
+                job_error_msg = $('<div class="job-error-msg">').appendTo(job_error);
+
+            job_error_ts.text(error['ts'] + ':');
+            job_error_msg.text(self.renderError(error));
+            return job_error;
+        }
+
+        var errors_count = error_list_last.children().length + error_list_more.children().length;
+
+        for (var i = errors.length - errors_count - 1; i >= 0; i--) {
+            make_job_error(errors[i]).prependTo(error_list_last);
+        }
+
+        if (error_list_last.children().length > 5 && error_list_more.css('display') == 'none') {
+            more_btn.css('display', 'block');
+        }
+
+        var error_list_last_messages = error_list_last.children();
+        for (var i = error_list_last_messages.length - 1; i >= 5; i--) {
+            $(error_list_last_messages[i]).prependTo(error_list_more);
         }
     };
 
