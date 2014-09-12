@@ -1,3 +1,9 @@
+flowmastermind (0.36) lucid; urgency=low
+
+  * Changes for recovery jobs display format
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 12 Sep 2014 15:32:30 +0400
+
 flowmastermind (0.35) lucid; urgency=low
 
   * Support of job types
