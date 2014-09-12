@@ -174,6 +174,8 @@ def json_jobs_list(job_type):
         resp = m.enqueue('get_job_list', msgpack.packb([{'job_type': mm_job_types[job_type]}])).get()
 
         def convert_tss_to_dt(d):
+            if d.get('create_ts'):
+                d['create_ts'] = ts_to_dt(d['create_ts'])
             if d['start_ts']:
                 d['start_ts'] = ts_to_dt(d['start_ts'])
             if d['finish_ts']:

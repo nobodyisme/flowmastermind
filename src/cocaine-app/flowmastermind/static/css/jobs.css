@@ -164,7 +164,9 @@
     padding: 5px;
 }
 
-.job-start-time-label, .job-start-time-val, .job-finish-time-label, .job-finish-time-val {
+.job-create-time-label, .job-create-time-val,
+.job-start-time-label, .job-start-time-val,
+.job-finish-time-label, .job-finish-time-val {
     display: inline-block;
     padding: 5px 10px;
     font-size: 12px;

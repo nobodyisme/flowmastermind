@@ -60,7 +60,8 @@ var Jobs = (function () {
                     'на хосте <span class="composite-line">' + state['hostname'] +
                     ':' + state['port'] +
                     (state['backend_id'] != undefined ? '/' + state['backend_id'] : '') +
-                    '<span class="composite-line-sub">' + state['host'] + '</span></span>';
+                    '<span class="composite-line-sub">' + state['host'] + '</span></span>' +
+                    (state['keys'] ? ', ключей в группах: [' + state['keys'].join(', ') + ']' : '');
         }
         return title;
     };
@@ -83,6 +84,8 @@ var Jobs = (function () {
             job_management = $('<div class="job-management">').appendTo(job_desc_cont),
             job_desc = $('<div class="job-description">').appendTo(job_desc_cont),
             job_title = $('<div class="job-title">').appendTo(job_desc),
+            job_create_time_label = $('<div class="job-create-time-label">').appendTo(job_desc),
+            job_create_time_val = $('<div class="job-create-time-val">').appendTo(job_desc),
             job_start_time_label = $('<div class="job-start-time-label">').appendTo(job_desc),
             job_start_time_val = $('<div class="job-start-time-val">').appendTo(job_desc),
             job_finish_time_label = $('<div class="job-finish-time-label">').appendTo(job_desc),
@@ -94,6 +97,7 @@ var Jobs = (function () {
 
         job_title.html(this.taskTitle(state));
 
+        job_create_time_label.text('Создание:');
         job_start_time_label.text('Начало:');
         job_finish_time_label.text('Конец:');
 
@@ -157,6 +161,8 @@ var Jobs = (function () {
     JobsView.prototype.updateJob = function(event, uid, state) {
         var self = this,
             job = this.container.find('.job[uid=' + uid + ']'),
+            job_create_time_label = job.find('.job-create-time-label'),
+            job_create_time_val = job.find('.job-create-time-val'),
             job_start_time_label = job.find('.job-start-time-label'),
             job_start_time_val = job.find('.job-start-time-val'),
             job_finish_time_label = job.find('.job-finish-time-label'),
@@ -270,6 +276,7 @@ var Jobs = (function () {
 
         this.updateContainers();
 
+        this.renderTime(state['create_ts'], job_create_time_label, job_create_time_val);
         this.renderTime(state['start_ts'], job_start_time_label, job_start_time_val);
         this.renderTime(state['finish_ts'], job_finish_time_label, job_finish_time_val);
 
