@@ -162,6 +162,7 @@ def ts_to_dt(ts):
     return datetime.datetime.fromtimestamp(float(ts)).strftime(DEFAULT_DT_FORMAT)
 
 @app.route('/json/jobs/<job_type>/')
+@json_response
 def json_jobs_list(job_type):
     if job_type not in ('move', 'recovery'):
         abort(404)
@@ -188,7 +189,7 @@ def json_jobs_list(job_type):
             for task in r['tasks']:
                 convert_tss_to_dt(task)
 
-        return JsonResponse(json.dumps(resp))
+        return resp
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -222,12 +223,13 @@ def json_skip_task(job_id, task_id):
 
 
 @app.route('/json/jobs/cancel/<job_id>/')
+@json_response
 def json_cancel_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('cancel_job', msgpack.packb([job_id])).get()
 
-        return JsonResponse(json.dumps(resp))
+        return resp
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())

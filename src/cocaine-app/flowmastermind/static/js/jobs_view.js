@@ -28,6 +28,7 @@ var Jobs = (function () {
         this.executing_header = this.executing_cont.find('.jobs-header');
         this.finished_cont = this.container.find('.jobs-finished');
         this.finished_header = this.finished_cont.find('.jobs-header');
+        this.job_action_pb = $('.job-action-pb');
 
         var self = this;
 
@@ -81,7 +82,6 @@ var Jobs = (function () {
 
         var job = $('<div class="job">'),
             job_desc_cont = $('<div class="job-description-container">').appendTo(job)
-            job_management = $('<div class="job-management">').appendTo(job_desc_cont),
             job_desc = $('<div class="job-description">').appendTo(job_desc_cont),
             job_title = $('<div class="job-title">').appendTo(job_desc),
             job_create_time_label = $('<div class="job-create-time-label">').appendTo(job_desc),
@@ -90,7 +90,9 @@ var Jobs = (function () {
             job_start_time_val = $('<div class="job-start-time-val">').appendTo(job_desc),
             job_finish_time_label = $('<div class="job-finish-time-label">').appendTo(job_desc),
             job_finish_time_val = $('<div class="job-finish-time-val">').appendTo(job_desc),
-            job_id = $('<div class="job-id">').appendTo(job_desc),
+            job_management = $('<div class="job-management">').appendTo(job_desc),
+            job_id = $('<div class="job-id">').appendTo(job_management),
+            job_management_btns = $('<div class="job-management-btns">').appendTo(job_management),
             task_list = $('<div class="job-tasklist">').appendTo(job);
 
         job.attr('uid', uid);
@@ -156,7 +158,93 @@ var Jobs = (function () {
             msg = 'Некоторые из групп уже участвуют в задаче ' + error.holder_id;
         }
         return msg;
-    }
+    };
+
+    JobsView.prototype.renderApiError = function (error) {
+        var msg = error['error_message'];
+        return msg;
+    };
+
+    JobsView.prototype.updateJobBtns = {
+        approve: {
+            text: 'добро!',
+            url: '/json/jobs/approve/{job_id}/',
+            postprocess: function (self, state) {
+                if (state['status'] == 'not_approved') {
+                    var last_error = state['error_msg'][state['error_msg'].length - 1];
+                    window.oNotifications.createNotification({
+                        title: 'Огого!',
+                        text: self.renderError(last_error),
+                        onBeforeShow: self.errorNotification});
+                }
+            }
+        },
+        cancel: {
+            text: 'отменить',
+            url: '/json/jobs/cancel/{job_id}/'
+        }
+    };
+
+    JobsView.prototype.statusButtons = {
+        broken: ['cancel'],
+        pending: ['cancel'],
+        not_approved: ['approve', 'cancel']
+    };
+
+    JobsView.prototype.renderJobButtons = function(job, uid, job_management_btns, state) {
+        var self = this;
+
+        if (self.statusButtons[state['status']] == undefined) {
+            job_management_btns.empty();
+        } else if (status != state['status']) {
+
+            job_management_btns.empty();
+
+            var btn_ids = self.statusButtons[state['status']];
+            for (var i = 0; i < btn_ids.length; i++) {
+                var btn_data = self.updateJobBtns[btn_ids[i]],
+                    btn = $('<a href="#" class="task-management-btn">').appendTo(job_management_btns);
+
+                btn.text(btn_data.text);
+                function process(btn_data, job_id, job_management_btns) {
+                    return function () {
+                        job_management_btns.empty();
+                        job_management_btns.append(self.job_action_pb.clone());
+                        $.ajax({
+                            url: btn_data.url.replace('{job_id}', job_id),
+                            data: {ts: new Date().getTime()},
+                            timeout: 3000,
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response['status'] == 'success') {
+                                    var new_state = response['response'];
+                                    self.updateJob({}, new_state.id, new_state);
+                                    if (btn_data.postprocess) {
+                                        btn_data.postprocess(self, new_state);
+                                    }
+                                } else {
+                                    window.oNotifications.createNotification({
+                                        title: 'Что-то пошло не так!',
+                                        text: self.renderApiError(response),
+                                        onBeforeShow: self.errorNotification});
+                                    self.renderJobButtons(job, uid, job_management_btns, state);
+                                }
+                            },
+                            error: function (response) {
+                                window.oNotifications.createNotification({
+                                        title: 'Что-то пошло не так!',
+                                        text: self.renderApiError(response),
+                                        onBeforeShow: self.errorNotification});
+                                self.renderJobButtons(job, uid, job_management_btns, state);
+                            }
+                        });
+                        return false;
+                    }
+                }
+                btn.on('click', process(btn_data, uid, job_management_btns));
+            }
+        }
+    };
 
     JobsView.prototype.updateJob = function(event, uid, state) {
         var self = this,
@@ -167,8 +255,9 @@ var Jobs = (function () {
             job_start_time_val = job.find('.job-start-time-val'),
             job_finish_time_label = job.find('.job-finish-time-label'),
             job_finish_time_val = job.find('.job-finish-time-val'),
-            job_management = job.find('.job-management'),
-            task_list = job.find('.job-tasklist');
+            job_management_btns = job.find('.job-management-btns'),
+            task_list = job.find('.job-tasklist'),
+            status = job.attr('status');
 
         var job_status_cls = 'job-status-' + state['status'];
         job.removeClass().addClass('job').addClass(job_status_cls);
@@ -177,108 +266,30 @@ var Jobs = (function () {
         // and maybe fix this in commands_view.js as well
         if (state['status'] == 'completed' || state['status'] == 'cancelled') {
             if (!job.parent().hasClass('jobs-finished')) {
-                job_management.css('visibility', 'visible');
+                job_management_btns.css('visibility', 'visible');
                 job.insertAfter(this.finished_header);
             }
         } else if (state['status'] == 'not_approved') {
             if (!job.parent().hasClass('jobs-not-approved')) {
-                job_management.css('visibility', 'visible');
+                job_management_btns.css('visibility', 'visible');
                 job.insertAfter(this.not_approved_header);
             }
         } else {
             if (!job.parent().hasClass('jobs-executing')) {
-                job_management.css('visibility', 'visible');
+                job_management_btns.css('visibility', 'visible');
                 job.insertAfter(this.executing_header);
             }
         }
 
-        if (state['status'] != 'broken' && state['status'] != 'pending' && state['status'] != 'not_approved') {
-            job_management.empty();
-        } else {
-
-            if (state['status'] == 'not_approved' && job_management.find('.job-approve-btn').length == 0) {
-
-                job_management.empty();
-
-                var approve_btn = $('<a href="#" class="task-management-btn job-approve-btn">').appendTo(job_management);
-                approve_btn.text('добро!');
-
-                function approveJob(job_id, job_management) {
-                    return function () {
-                        job_management.css('visibility', 'hidden');
-                        $.ajax({
-                            url: '/json/jobs/approve/' + job_id + '/',
-                            data: {ts: new Date().getTime()},
-                            timeout: 3000,
-                            dataType: 'json',
-                            success: function (response) {
-                                if (response['status'] == 'success') {
-                                    var state = response['response'];
-                                    job_management.css('visibility', 'visible');
-                                    self.updateJob({}, state.id, state);
-                                    if (state['status'] == 'not_approved') {
-                                        var last_error = state['error_msg'][state['error_msg'].length - 1];
-                                        window.oNotifications.createNotification({
-                                            title: 'Огого!',
-                                            text: self.renderError(last_error),
-                                            onBeforeShow: self.errorNotification});
-                                    }
-                                } else {
-                                    job_management.css('visibility', 'visible');
-                                }
-                            },
-                            error: function (response) {
-                                job_management.css('visibility', 'visible');
-                            }
-                        });
-                        return false;
-                    }
-                }
-
-                approve_btn.on('click', approveJob(uid, job_management));
-
-                $('<br>').appendTo(job_management);
-            }
-
-            // console.log(state['status']);
-            // console.log(job_management.children().length);
-            if (job_management.find('.job-cancel-btn').length == 0) {
-
-                var cancel_btn = $('<a href="#" class="task-management-btn job-cancel-btn">').appendTo(job_management);
-                cancel_btn.text('отменить');
-
-                function cancelJob(job_id, job_management) {
-                    return function () {
-                        job_management.css('visibility', 'hidden');
-                        $.ajax({
-                            url: '/json/jobs/cancel/' + job_id + '/',
-                            data: {ts: new Date().getTime()},
-                            timeout: 3000,
-                            dataType: 'json',
-                            success: function (response) {
-                                if (response['status'] == 'success') {
-                                    var state = response['response'];
-                                    self.updateJob({}, state.id, state);
-                                }
-                            },
-                            error: function (response) {
-                                job_management.css('visibility', 'visible');
-                            }
-                        });
-                        return false;
-                    }
-                }
-
-                cancel_btn.on('click', cancelJob(uid, job_management));
-            }
-
-        }
+        self.renderJobButtons(job, uid, job_management_btns, state);
 
         this.updateContainers();
 
         this.renderTime(state['create_ts'], job_create_time_label, job_create_time_val);
         this.renderTime(state['start_ts'], job_start_time_label, job_start_time_val);
         this.renderTime(state['finish_ts'], job_finish_time_label, job_finish_time_val);
+
+        job.attr('status', state['status']);
 
         if (state['error_msg'] && state['error_msg'].length) {
             self.updateJobErrors(task_list, state['error_msg'].reverse());
@@ -443,7 +454,7 @@ var Jobs = (function () {
         if (task_state['status'] == 'failed' && manageable) {
             if (task_management.children().length == 0) {
                 var retry_btn = $('<a href="#" class="task-management-btn">').appendTo(task_management),
-                    br = $('<br>').appendTo(task_management),
+                    // br = $('<br>').appendTo(task_management),
                     skip_btn = $('<a href="#" class="task-management-btn">').appendTo(task_management);
                 retry_btn.text('перезапустить');
                 skip_btn.text('пропустить');

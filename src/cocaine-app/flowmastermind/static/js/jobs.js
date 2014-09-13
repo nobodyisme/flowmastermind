@@ -14,14 +14,19 @@
             data: {ts: new Date().getTime()},
             timeout: 3000,
             dataType: 'json',
-            success: function (data) {
+            success: function (response) {
 
-                spinner.stop();
+                if (response['status'] == 'success') {
+                    spinner.stop();
+                    var data = response['response'];
 
-                for (var idx in data) {
-                    var state = data[idx];
+                    for (var idx in data) {
+                        var state = data[idx];
 
-                    Jobs.model.update(state.id, state);
+                        Jobs.model.update(state.id, state);
+                    }
+                } else {
+                    spinner.blink('#ab2d2d');
                 }
             },
             error: function (data) {
