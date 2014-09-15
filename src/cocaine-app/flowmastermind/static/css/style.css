@@ -121,6 +121,7 @@ span.chart-label-small {
     width: 200px;
     float: left;
     padding-left: 10px;
+    overflow-x: scroll;
     overflow-y: scroll;
 }
 
@@ -217,7 +218,7 @@ span.chart-label-small {
 
     margin-top: -1px;
 
-    /*border-color: rgba(200, 200, 200, 0.0);*/
+    white-space: nowrap;
 }
 
 .menu-item a {
@@ -595,8 +596,6 @@ body .o-notifications .o-notification-error {
     border: 1px solid #7f6565;
 }
 
-
 path.spinner {
     fill: #2377A7;
 }
-
