@@ -1,3 +1,10 @@
+flowmastermind (0.37) lucid; urgency=low
+
+  * Fix for long namespace names
+  * Refactored job buttons rendering and error notifications for jobs
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Mon, 15 Sep 2014 16:35:13 +0400
+
 flowmastermind (0.36) lucid; urgency=low
 
   * Changes for recovery jobs display format
