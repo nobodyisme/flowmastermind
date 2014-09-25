@@ -183,7 +183,7 @@ var Commands = (function(container) {
 
     function progress(percent, $element) {
         var progressBarWidth = percent;
-        $element.find('div').animate({ width: progressBarWidth + '%' }, 500).html(percent + "%&nbsp;");
+        $element.find('div').css('width', progressBarWidth + '%').html(percent + "%&nbsp;");
     }
 
     CommandsView.prototype.initCmd = function(cmd, host, uid, status) {
