@@ -127,6 +127,7 @@ span.chart-label-small {
 
 .menu::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
 }
 
 .menu::-webkit-scrollbar-track {
