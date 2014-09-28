@@ -22,13 +22,11 @@ var Jobs = (function () {
         this.eventer = eventer;
 
         this.container = $('.jobs-containers');
-        this.not_approved_cont = this.container.find('.jobs-not-approved');
-        this.not_approved_header = this.not_approved_cont.find('.jobs-header');
-        this.executing_cont = this.container.find('.jobs-executing');
-        this.executing_header = this.executing_cont.find('.jobs-header');
-        this.finished_cont = this.container.find('.jobs-finished');
-        this.finished_header = this.finished_cont.find('.jobs-header');
+        this.not_approved_cont = this.container.find('#jobs-not-approved');
+        this.executing_cont = this.container.find('#jobs-executing');
+        this.finished_cont = this.container.find('#jobs-finished');
         this.job_action_pb = $('.job-action-pb');
+        this.job_list_empty = $('.job-list-empty');
 
         var self = this;
 
@@ -40,6 +38,13 @@ var Jobs = (function () {
 
         $(document).mouseup(function (event) {
             self.closeCmdStatus();
+        });
+
+        this.container.find('label').on('click', function () {
+            var type = $(this).parent().attr('class').substr(5);
+            PseudoURL.setParam('type', type).setParam('job_id', null);
+            PseudoURL.load();
+            return false;
         });
     }
 
@@ -267,17 +272,17 @@ var Jobs = (function () {
         if (state['status'] == 'completed' || state['status'] == 'cancelled') {
             if (!job.parent().hasClass('jobs-finished')) {
                 job_management_btns.css('visibility', 'visible');
-                job.insertAfter(this.finished_header);
+                job.prependTo(this.finished_cont);
             }
         } else if (state['status'] == 'not_approved') {
             if (!job.parent().hasClass('jobs-not-approved')) {
                 job_management_btns.css('visibility', 'visible');
-                job.insertAfter(this.not_approved_header);
+                job.prependTo(this.not_approved_cont);
             }
         } else {
             if (!job.parent().hasClass('jobs-executing')) {
                 job_management_btns.css('visibility', 'visible');
-                job.insertAfter(this.executing_header);
+                job.prependTo(this.executing_cont);
             }
         }
 
@@ -528,14 +533,25 @@ var Jobs = (function () {
         for (var idx in containers) {
             var container = containers[idx];
 
-            if (container.find('.job').length) {
-                container.css({display: 'block'});
-            } else {
-                container.css({display: 'none'});
+            if (container.find('.job').length != 0 &&
+                container.find('.job-list-empty').length != 0) {
+                container.find('.job-list-empty').remove();
+            } else if (container.find('.job').length == 0 &&
+                       container.find('.job-list-empty').length == 0) {
+                container.append(this.job_list_empty.clone());
             }
         }
     };
 
+    JobsView.prototype.checkHash = function() {
+        var type = PseudoURL.params['type'] || 'not-approved',
+            job_id = PseudoURL.params['job_id'];
+
+        if (type) {
+            var radio = this.container.find('#tab-switch-jobs-' + type);
+            radio.prop('checked', true);
+        }
+    }
 
     var jobs = new Jobs();
     var view = new JobsView(jobs.eventer);
@@ -543,6 +559,12 @@ var Jobs = (function () {
     view.eventer.on("create", view.createJob.bind(view));
     view.eventer.on("update", view.updateJob.bind(view));
 
+    $(window).on('hashchange', function () {
+        PseudoURL.parse(window.location.hash);
+        view.checkHash();
+    });
+
+    view.checkHash();
 
     return {
         model: jobs,

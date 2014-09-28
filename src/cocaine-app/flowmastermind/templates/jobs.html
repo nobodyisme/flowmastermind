@@ -7,18 +7,32 @@
 {% block content %}
     <div class="inner-content">
         <div class="jobs-containers" job-type="{{ job_type }}">
-            <div class="jobs-not-approved" style="display: none">
-                <div class="jobs-header jobs-header-not-approved">ожидающие одобрения</div>
-            </div>
-            <div class="jobs-executing" style="display: none">
-                <div class="jobs-header jobs-header-executing">выполняющиеся задачи</div>
-            </div>
-            <div class="jobs-finished" style="display: none">
-                <div class="jobs-header jobs-header-finished">завершенные задачи</div>
-            </div>
+            <ul class="tabs">
+                <li class="jobs-not-approved">
+                    <input type="radio" name="jobs-tabs" id="tab-switch-jobs-not-approved" />
+                    <label for="tab-switch-jobs-not-approved">ожидающие одобрения</label>
+                    <div id="jobs-not-approved" class="tab-content">
+                    </div>
+                </li>
+                <li class="jobs-executing">
+                    <input type="radio" name="jobs-tabs" id="tab-switch-jobs-executing" />
+                    <label for="tab-switch-jobs-executing">выполняющиеся задачи</label>
+                    <div id="jobs-executing" class="tab-content">
+                    </div>
+                </li>
+                <li class="jobs-finished">
+                    <input type="radio" name="jobs-tabs" id="tab-switch-jobs-finished" />
+                    <label for="tab-switch-jobs-finished">завершенные задачи</label>
+                    <div id="jobs-finished" class="tab-content">
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="job-init-spinner">
         </div>
         <div class="helpers" style="display:none;">
             <img class="job-action-pb" src="/static/img/job_action.gif" width="220" height="19" />
+            <div class="job-list-empty">пусто</div>
         </div>
     </div>
 {% endblock %}
@@ -26,6 +40,7 @@
 
 {% block js %}
     <script src="/static/js/helpers.js"></script>
+    <script src="/static/js/url.js"></script>
     <script src="/static/js/spinner.js"></script>
     <script src="/static/js/commands_view.js"></script>
     <script src="/static/js/jobs_view.js"></script>

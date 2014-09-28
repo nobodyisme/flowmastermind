@@ -1,10 +1,9 @@
 (function() {
 
     var updatePeriod = 5000,
-        jobs_container_path = 'div.jobs-containers',
-        jobs_container = $(jobs_container_path),
+        jobs_container = $('.jobs-containers'),
         job_type = jobs_container.attr('job-type'),
-        spinner = new Spinner(jobs_container_path, jobs_container.width());
+        spinner = new Spinner('div.job-init-spinner', jobs_container.width());
 
     spinner.start();
 
