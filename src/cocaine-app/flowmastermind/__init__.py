@@ -180,7 +180,7 @@ def ts_to_dt(ts):
 @app.route('/json/jobs/<job_type>/')
 @app.route('/json/jobs/<job_type>/<tag>/')
 @json_response
-def json_jobs_list(job_type, tag):
+def json_jobs_list(job_type, tag=None):
     if job_type not in ('move', 'recovery'):
         abort(404)
 
