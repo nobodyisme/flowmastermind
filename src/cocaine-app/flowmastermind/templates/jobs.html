@@ -6,7 +6,8 @@
 
 {% block content %}
     <div class="inner-content">
-        <div class="jobs-containers" job-type="{{ job_type }}">
+        <a href="/jobs/{{ job_type }}/{{ previous_year }}/{{ previous_month }}/" class="jobs-previous-month">за предыдущий месяц</a>
+        <div class="jobs-containers" job-type="{{ job_type }}" job-tag="{{ tag }}">
             <ul class="tabs">
                 <li class="jobs-not-approved">
                     <input type="radio" name="jobs-tabs" id="tab-switch-jobs-not-approved" />

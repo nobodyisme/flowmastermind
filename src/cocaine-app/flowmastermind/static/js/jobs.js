@@ -1,17 +1,18 @@
 (function() {
 
-    var updatePeriod = 5000,
+    var updatePeriod = 15000,
         jobs_container = $('.jobs-containers'),
         job_type = jobs_container.attr('job-type'),
+        job_tag = jobs_container.attr('job-tag'),
         spinner = new Spinner('div.job-init-spinner', jobs_container.width());
 
     spinner.start();
 
     function updateStats() {
         $.ajax({
-            url: '/json/jobs/' + job_type + '/',
+            url: '/json/jobs/' + job_type + '/' + job_tag + '/',
             data: {ts: new Date().getTime()},
-            timeout: 3000,
+            timeout: 8000,
             dataType: 'json',
             success: function (response) {
 

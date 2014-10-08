@@ -106,15 +106,31 @@ def history(year=None, month=None):
 
 @app.route('/jobs/')
 @app.route('/jobs/<job_type>/')
-def jobs(job_type=None):
+@app.route('/jobs/<job_type>/<year>/<month>/')
+def jobs(job_type=None, year=None, month=None):
+
     if job_type is None:
         job_type = 'move'
     if job_type not in ('move', 'recovery'):
         abort(404)
+    tag = None
+
     try:
+
+        if not month:
+            dt = datetime.datetime.now().replace(day=1)
+        else:
+            dt = datetime.date(int(year), int(month), 1)
+
+        tag = dt.strftime('%Y-%m')
+        prev_dt = dt - datetime.timedelta(days=1)
+
         return render_template('jobs.html', menu_page='jobs',
                                             cur_page=job_type,
-                                            job_type=job_type)
+                                            job_type=job_type,
+                                            tag=tag,
+                                            previous_year=prev_dt.year,
+                                            previous_month='{0:02d}'.format(prev_dt.month))
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -162,8 +178,9 @@ def ts_to_dt(ts):
     return datetime.datetime.fromtimestamp(float(ts)).strftime(DEFAULT_DT_FORMAT)
 
 @app.route('/json/jobs/<job_type>/')
+@app.route('/json/jobs/<job_type>/<tag>/')
 @json_response
-def json_jobs_list(job_type):
+def json_jobs_list(job_type, tag):
     if job_type not in ('move', 'recovery'):
         abort(404)
 
@@ -172,7 +189,10 @@ def json_jobs_list(job_type):
 
     try:
         m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('get_job_list', msgpack.packb([{'job_type': mm_job_types[job_type]}])).get()
+        resp = m.enqueue('get_job_list', msgpack.packb([
+            {'job_type': mm_job_types[job_type],
+             'tag': tag}
+        ])).get()
 
         def convert_tss_to_dt(d):
             if d.get('create_ts'):
