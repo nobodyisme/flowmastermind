@@ -1,3 +1,9 @@
+flowmastermind (0.40) lucid; urgency=low
+
+  * Pagination for jobs
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 08 Oct 2014 17:45:21 +0400
+
 flowmastermind (0.39) lucid; urgency=low
 
   * Jobs separated by status
