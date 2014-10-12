@@ -544,12 +544,23 @@ var Jobs = (function () {
     };
 
     JobsView.prototype.checkHash = function() {
-        var type = PseudoURL.params['type'] || 'not-approved',
+        var self = this,
+            type = PseudoURL.params['type'] || 'not-approved',
             job_id = PseudoURL.params['job_id'];
 
         if (type) {
             var radio = this.container.find('#tab-switch-jobs-' + type);
             radio.prop('checked', true);
+
+            self.container.find('.tab-content').each(function () {
+                var $this = $(this);
+                console.log($this.attr('id'));
+                if ($this.attr('id') == 'jobs-' + type) {
+                    $this.css('display', 'block');
+                } else {
+                    $this.css('display', 'none');
+                }
+            });
         }
     }
 
