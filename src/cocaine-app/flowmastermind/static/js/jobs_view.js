@@ -493,10 +493,13 @@ var Jobs = (function () {
     JobsView.prototype.renderCustomTaskFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         if (task_state['type'] == 'minion_cmd' ||
             task_state['type'] == 'node_stop_task' ||
+            task_state['type'] == 'node_backend_defrag_task' ||
             task_state['type'] == 'recover_dc_group_task') {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
             this.renderHistoryRemoveNodeFields(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'couple_defrag_state_check') {
+            this.renderCoupleDefragStateCheck(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -526,6 +529,12 @@ var Jobs = (function () {
         task_maintitle.html(cleantitle);
         task_maintitle.attr('title', cleantitle);
         task_subtitle.text('очистка истории');
+    }
+
+    JobsView.prototype.renderCoupleDefragStateCheck = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var cleantitle = 'ожидание окончания дефрагментации групп';
+        task_maintitle.html(cleantitle);
+        task_maintitle.attr('title', cleantitle);
     }
 
     JobsView.prototype.updateContainers = function() {
