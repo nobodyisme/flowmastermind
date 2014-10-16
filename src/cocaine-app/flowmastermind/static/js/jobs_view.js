@@ -68,6 +68,13 @@ var Jobs = (function () {
                     (state['backend_id'] != undefined ? '/' + state['backend_id'] : '') +
                     '<span class="composite-line-sub">' + state['host'] + '</span></span>' +
                     (state['keys'] ? ', ключей в группах: [' + state['keys'].join(', ') + ']' : '');
+        } else if (state['type'] == 'couple_defrag_job') {
+            var fragmentation = [];
+            state['fragmentation'].forEach(function (data) {
+                fragmentation.push(parseFloat(data * 100).toFixed(2) + '%');
+            });
+            title = 'Дефрагментация капла ' + state['couple'] +
+                    ', фрагментация: [' + fragmentation.join(', ') + ']';
         }
         return title;
     };

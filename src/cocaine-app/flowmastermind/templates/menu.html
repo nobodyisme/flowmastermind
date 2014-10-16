@@ -48,6 +48,13 @@
                         <span class="selected">восстановление</span>
                     {% endif %}
                 </span>
+                <span class="menu-page-item">
+                    {% if cur_page != 'defrag' %}
+                        <a href="/jobs/defrag/">дефрагментация</a>
+                    {% else %}
+                        <span class="selected">дефрагментация</span>
+                    {% endif %}
+                </span>
         {% endif %}
         <a class="menu-page" href="/commands/">
             Команды
