@@ -9,7 +9,7 @@
         $.ajax({
             url: '/json/commands/history/' + year + '/' + month + '/',
             data: {ts: new Date().getTime()},
-            timeout: 3000,
+            timeout: 60000,
             dataType: 'json',
             success: function (data) {
 
