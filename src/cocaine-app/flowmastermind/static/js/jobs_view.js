@@ -156,24 +156,11 @@ var Jobs = (function () {
         task.appendTo(task_list);
     };
 
-    JobsView.prototype.successNotification = function (notification) {
-        $(notification).addClass('o-notification-success');
-    };
-
-    JobsView.prototype.errorNotification = function (notification) {
-        $(notification).addClass('o-notification-error');
-    };
-
     JobsView.prototype.renderError = function (error) {
         var msg = error['msg'];
         if (error.code == 22) {
             msg = 'Некоторые из групп уже участвуют в задаче ' + error.holder_id;
         }
-        return msg;
-    };
-
-    JobsView.prototype.renderApiError = function (error) {
-        var msg = error['error_message'];
         return msg;
     };
 
@@ -187,7 +174,7 @@ var Jobs = (function () {
                     window.oNotifications.createNotification({
                         title: 'Огого!',
                         text: self.renderError(last_error),
-                        onBeforeShow: self.errorNotification});
+                        onBeforeShow: errorNotification});
                 }
             }
         },
@@ -222,31 +209,17 @@ var Jobs = (function () {
                     return function () {
                         job_management_btns.empty();
                         job_management_btns.append(self.job_action_pb.clone());
-                        $.ajax({
+                        json_ajax({
                             url: btn_data.url.replace('{job_id}', job_id),
-                            data: {ts: new Date().getTime()},
-                            timeout: 3000,
-                            dataType: 'json',
+                            timeout: 10000,
                             success: function (response) {
-                                if (response['status'] == 'success') {
-                                    var new_state = response['response'];
-                                    self.updateJob({}, new_state.id, new_state);
-                                    if (btn_data.postprocess) {
-                                        btn_data.postprocess(self, new_state);
-                                    }
-                                } else {
-                                    window.oNotifications.createNotification({
-                                        title: 'Что-то пошло не так!',
-                                        text: self.renderApiError(response),
-                                        onBeforeShow: self.errorNotification});
-                                    self.renderJobButtons(job, uid, job_management_btns, state);
+                                var new_state = response;
+                                self.updateJob({}, new_state.id, new_state);
+                                if (btn_data.postprocess) {
+                                    btn_data.postprocess(self, new_state);
                                 }
                             },
                             error: function (response) {
-                                window.oNotifications.createNotification({
-                                        title: 'Что-то пошло не так!',
-                                        text: self.renderApiError(response),
-                                        onBeforeShow: self.errorNotification});
                                 self.renderJobButtons(job, uid, job_management_btns, state);
                             }
                         });
@@ -408,54 +381,44 @@ var Jobs = (function () {
 
                 var task_cmd_state = $('<div class="task-cmd-stat">').appendTo(task_additional_data);
 
-                $.ajax({
+                json_ajax({
                     url: '/json/commands/status/' + task_state['minion_cmd_id'] + '/',
-                    data: {ts: new Date().getTime()},
                     timeout: 3000,
-                    dataType: 'json',
-                    success: function (response) {
+                    success: function (cmd_status) {
 
-                        if (response['status'] == 'success') {
-                            var cmd_status = response['response'];
-                            commands.view.createCmd(undefined, task_state['host'], task_state['id'], cmd_status, task_cmd_state);
-                            commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
+                        commands.view.createCmd(undefined, task_state['host'], task_state['id'], cmd_status, task_cmd_state);
+                        commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
 
-                            var closeBtn = $('<div>').addClass('close')
-                                .on('click', function () { task_cmd_state.remove(); })
-                                .text('X')
-                                .appendTo(task_cmd_state);
+                        var closeBtn = $('<div>').addClass('close')
+                            .on('click', function () { task_cmd_state.remove(); })
+                            .text('X')
+                            .appendTo(task_cmd_state);
 
-                            task_cmd_state.mouseup(function (e) {
-                                e.stopPropagation();
-                            });
+                        task_cmd_state.mouseup(function (e) {
+                            e.stopPropagation();
+                        });
 
-                            function updateCmdStatus() {
+                        function updateCmdStatus() {
 
-                                if (cmd_status.progress < 1.0) {
-                                    // setting cmd status updater
+                            if (cmd_status.progress < 1.0) {
+                                // setting cmd status updater
 
-                                    $.ajax({
-                                        url: '/json/commands/status/' + task_state['minion_cmd_id'] + '/',
-                                        data: {ts: new Date().getTime()},
-                                        timeout: 3000,
-                                        dataType: 'json',
-                                        success: function (response) {
-                                            if (response['status'] == 'success') {
-                                                cmd_status = response['response'];
-                                                commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
-                                            }
-                                            setTimeout(updateCmdStatus, 3000);
-                                        },
-                                        error: function () {
-                                            setTimeout(updateCmdStatus, 3000);
-                                        }
-                                    });
+                                json_ajax({
+                                    url: '/json/commands/status/' + task_state['minion_cmd_id'] + '/',
+                                    timeout: 3000,
+                                    success: function (cmd_status) {
+                                        commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
+                                        setTimeout(updateCmdStatus, 3000);
+                                    },
+                                    error: function () {
+                                        setTimeout(updateCmdStatus, 3000);
+                                    }
+                                });
 
-                                }
                             }
-
-                            setTimeout(updateCmdStatus, 3000);
                         }
+
+                        setTimeout(updateCmdStatus, 3000);
                     }
                 });
 
@@ -473,16 +436,11 @@ var Jobs = (function () {
 
                 function applyAction(action, job_id, task_id) {
                     return function () {
-                        $.ajax({
+                        json_ajax({
                             url: '/json/jobs/' + action + '/' + job_id + '/' + task_id + '/',
-                            data: {ts: new Date().getTime()},
-                            timeout: 3000,
-                            dataType: 'json',
-                            success: function (response) {
-                                if (response['status'] == 'success') {
-                                    var state = response['response'];
-                                    self.updateJob({}, state.id, state);
-                                }
+                            timeout: 10000,
+                            success: function (state) {
+                                self.updateJob({}, state.id, state);
                             }
                         });
                         return false;

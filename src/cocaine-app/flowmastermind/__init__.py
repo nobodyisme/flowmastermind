@@ -7,10 +7,13 @@ import msgpack
 
 from cocaine.services import Service
 from cocaine.logging import Logger
-from flask import Flask, Response, request
+from flask import Flask, request
 from flask import abort, render_template
 
-from flowmastermind.error import ApiResponseError
+from flowmastermind.auth import auth_controller
+from flowmastermind.config import config
+from flowmastermind.error import ApiResponseError, AuthenticationError, AuthorizationError
+from flowmastermind.response import JsonResponse
 from flowmastermind.test import ping
 
 
@@ -19,7 +22,6 @@ logging = Logger()
 app = Flask(__name__)
 
 MASTERMIND_APP_NAME = 'mastermind2.26'
-
 
 DEFAULT_DT_FORMAT = '%Y-%m-%d %H:%M:%S'
 
@@ -31,6 +33,19 @@ def json_response(func):
         try:
             res = {'status': 'success',
                    'response': func(*args, **kwargs)}
+        except AuthenticationError as e:
+            logging.error('User is not authenticated, request: {0}'.format(dir(request)))
+            res = {'status': 'error',
+                   'error_code': 'AUTHENTICATION_FAILED',
+                   'error_message': 'authentication required'}
+            if e.url:
+                res['url'] = e.url
+        except AuthorizationError as e:
+            logging.error('User is not authorized, request: {0}'.format(dir(request)))
+            res = {'status': 'error',
+                   'error_code': 'AUTHORIZATION_FAILED',
+                   'error_message': str(e),
+                   'login': e.login}
         except ApiResponseError as e:
             logging.error('API error: {0}'.format(e))
             logging.error(traceback.format_exc())
@@ -47,13 +62,6 @@ def json_response(func):
         return JsonResponse(json.dumps(res))
 
     return wrapper
-
-
-class JsonResponse(Response):
-    def __init__(self, *args, **kwargs):
-        super(JsonResponse, self).__init__(*args, **kwargs)
-        self.headers['Cache-Control'] = 'no-cache, must-revalidate'
-        self.headers['Content-Type'] = 'application/json'
 
 
 def mastermind_response(response):
@@ -218,12 +226,14 @@ def json_jobs_list(job_type, tag=None):
 
 
 @app.route('/json/jobs/retry/<job_id>/<task_id>/')
+@json_response
+@auth_controller.check_auth
 def json_retry_task(job_id, task_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('retry_failed_job_task', msgpack.packb([job_id, task_id])).get()
 
-        return JsonResponse(json.dumps(resp))
+        return resp
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -231,12 +241,14 @@ def json_retry_task(job_id, task_id):
 
 
 @app.route('/json/jobs/skip/<job_id>/<task_id>/')
+@json_response
+@auth_controller.check_auth
 def json_skip_task(job_id, task_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
         resp = m.enqueue('skip_failed_job_task', msgpack.packb([job_id, task_id])).get()
 
-        return JsonResponse(json.dumps(resp))
+        return resp
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -245,6 +257,7 @@ def json_skip_task(job_id, task_id):
 
 @app.route('/json/jobs/cancel/<job_id>/')
 @json_response
+@auth_controller.check_auth
 def json_cancel_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
@@ -259,6 +272,7 @@ def json_cancel_job(job_id):
 
 @app.route('/json/jobs/approve/<job_id>/')
 @json_response
+@auth_controller.check_auth
 def json_approve_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
@@ -273,6 +287,7 @@ def json_approve_job(job_id):
 
 @app.route('/json/map/')
 @app.route('/json/map/<namespace>/')
+@json_response
 def json_treemap(namespace=None):
     try:
         m = Service(MASTERMIND_APP_NAME)
@@ -280,8 +295,8 @@ def json_treemap(namespace=None):
             'namespace': namespace,
             'couple_status': request.args.get('couple_status')
         }
-        resp = JsonResponse(json.dumps(m.enqueue('get_groups_tree',
-            msgpack.packb([options])).get()))
+        resp = m.enqueue('get_groups_tree',
+            msgpack.packb([options])).get()
         return resp
     except Exception as e:
         logging.error(e)

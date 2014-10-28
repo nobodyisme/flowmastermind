@@ -9,5 +9,5 @@ Vcs-Git: git://github.com/nobodyisme/flowmastermind.git
 
 Package: flowmastermind
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, cocaine-framework-python (>= 0.11.1), cocaine-native-proxy (>= 0.11.1), cocaine-framework-native (>= 0.11.1), cocaine-tools (>= 0.11.0), python-flask, python-msgpack | msgpack-python
+Depends: ${shlibs:Depends}, ${misc:Depends}, cocaine-framework-python (>= 0.11.1.7), cocaine-native-proxy (>= 0.11.1), cocaine-framework-native (>= 0.11.1), cocaine-tools (>= 0.11.0), python-flask, python-msgpack | msgpack-python
 Description: Frontend for mastermind storage statistics display
