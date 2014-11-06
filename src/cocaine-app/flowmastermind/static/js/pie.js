@@ -141,13 +141,14 @@ TotalMemoryPie.prototype.tooltipFormatter = prefixBytes;
 GroupsPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
 GroupsPie.prototype.color = d3.scale.ordinal()
-    .domain(['bad_couples', 'closed_couples', 'frozen_couples',
-             'open_couples'])
-    .range(['rgb(240,72,72)', 'rgb(200,200,200)', 'rgb(150,197,255)',
-            'rgb(78,201,106)']);
+    .domain(['broken_couples', 'closed_couples',
+             'frozen_couples', 'bad_couples', 'open_couples'])
+    .range(['rgb(150,35,0)', 'rgb(200,200,200)',
+            'rgb(150,197,255)', 'rgb(240,72,72)', 'rgb(78,201,106)']);
 
 GroupsPie.prototype.labels = {
     bad_couples: 'недоступно для записи',
+    broken_couples: 'конфигурация',
     closed_couples: 'заполнено',
     frozen_couples: 'заморожено',
     open_couples: 'открыто',
@@ -158,12 +159,14 @@ GroupsPie.prototype.prepareData = function(rawdata) {
 
     data.push({value: rawdata['open_couples'],
                type: 'open_couples'});
+    data.push({value: rawdata['bad_couples'],
+               type: 'bad_couples'});
     data.push({value: rawdata['frozen_couples'],
                type: 'frozen_couples'});
     data.push({value: rawdata['closed_couples'],
                type: 'closed_couples'});
-    data.push({value: rawdata['bad_couples'],
-               type: 'bad_couples'});
+    data.push({value: rawdata['broken_couples'],
+               type: 'broken_couples'});
 
     return {data: data};
 }

@@ -10,7 +10,6 @@ function Spinner(container, width) {
         .attr('height', '100%');
 
     self.width = width || 30;
-    console.log(width, self.width);
     self.height = 30;
 
     self.spinner = self.svg.append('g')

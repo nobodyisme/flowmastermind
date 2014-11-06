@@ -305,13 +305,13 @@ def json_treemap(namespace=None):
 
 
 @app.route('/json/group/<group_id>/')
+@json_response
 def json_group_info(group_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
         group_info = m.enqueue('get_couple_statistics',
             msgpack.packb([int(group_id)])).get()
-        resp = JsonResponse(json.dumps(group_info))
-        return resp
+        return group_info
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())

@@ -335,13 +335,14 @@ KeysBar.prototype.barLabelFormatter = function (val) {
 };
 
 GroupsBar.prototype.color = d3.scale.ordinal()
-    .domain(['bad_couples', 'closed_couples', 'frozen_couples',
+    .domain(['bad_couples', 'broken_couples', 'closed_couples', 'frozen_couples',
              'open_couples', 'uncoupled_groups'])
-    .range(['rgb(240,72,72)', 'rgb(200,200,200)', 'rgb(150,197,255)',
+    .range(['rgb(240,72,72)', 'rgb(150,35,0)', 'rgb(200,200,200)', 'rgb(150,197,255)',
             'rgb(78,201,106)', 'rgb(242,238,96)']);
 
 GroupsBar.prototype.labels = {
     bad_couples: 'в капле, недоступно для записи',
+    broken_couples: 'в капле, ошибка конфигурации',
     closed_couples: 'в капле, заполнены',
     frozen_couples: 'в капле, заморожено',
     open_couples: 'в капле, открыто на запись',
@@ -362,7 +363,7 @@ GroupsBar.prototype.addLegend = function () {
     var labels = self.color.domain().slice(),
         colors = self.color.range().slice();
 
-    var labelLength = 170;
+    var labelLength = 185;
     var flatcl = d3.zip(colors, labels).reverse();
     var levelcl = [flatcl.slice(0, 3), flatcl.slice(3)];
 
@@ -399,6 +400,9 @@ GroupsBar.prototype.prepareData = function (rawdata) {
                  y: d.value['bad_couples'],
                  type: 'bad_couples'});
         el.push({x: d.key,
+                 y: d.value['broken_couples'],
+                 type: 'broken_couples'});
+        el.push({x: d.key,
                  y: d.value['closed_couples'],
                  type: 'closed_couples'});
         el.push({x: d.key,
@@ -421,13 +425,14 @@ GroupsBar.prototype.prepareData = function (rawdata) {
 }
 
 OutagesBar.prototype.color = d3.scale.ordinal()
-    .domain(['bad_couples', 'closed_couples', 'frozen_couples',
+    .domain(['bad_couples', 'broken_couples', 'closed_couples', 'frozen_couples',
              'open_couples'])
-    .range(['rgb(240,72,72)', 'rgb(200,200,200)', 'rgb(150,197,255)',
+    .range(['rgb(240,72,72)', 'rgb(150,35,0)', 'rgb(200,200,200)', 'rgb(150,197,255)',
             'rgb(78,201,106)']);
 
 OutagesBar.prototype.labels = {
     bad_couples: 'недоступно для записи',
+    broken_couples: 'ошибка конфигурации',
     closed_couples: 'заполнены',
     frozen_couples: 'заморожено',
     open_couples: 'открыто на запись'
@@ -483,6 +488,9 @@ OutagesBar.prototype.prepareData = function (rawdata) {
         el.push({x: d.key,
                  y: d.value['outages']['bad_couples'],
                  type: 'bad_couples'});
+        el.push({x: d.key,
+                 y: d.value['outages']['broken_couples'],
+                 type: 'broken_couples'});
         el.push({x: d.key,
                  y: d.value['outages']['closed_couples'],
                  type: 'closed_couples'});

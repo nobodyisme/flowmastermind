@@ -324,7 +324,7 @@ TreeMap.prototype.periodicUpdate = function () {
                 'couple_status': couple_status
             };
         }
-        $.ajax(params);
+        json_ajax(params);
     }
 
     loadTreemap(spinner);

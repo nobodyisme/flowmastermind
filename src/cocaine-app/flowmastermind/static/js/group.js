@@ -53,7 +53,7 @@ GroupInfo.prototype.loadData = function () {
     spinner.start();
 
     (function loadGroupInfo() {
-        $.ajax({
+        json_ajax({
             url: '/json/group/' + self.group_id + '/',
             method: 'get',
             dataType: 'json',
