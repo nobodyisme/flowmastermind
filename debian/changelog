@@ -1,3 +1,9 @@
+flowmastermind (0.46) lucid; urgency=low
+
+  * Support for broken couples
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 06 Nov 2014 18:11:03 +0300
+
 flowmastermind (0.45) lucid; urgency=low
 
   * Increased commands timeout
