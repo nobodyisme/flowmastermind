@@ -117,9 +117,10 @@ TreeMap.prototype.init = function (container, labels, ns, inittype) {
             return Math.round((1 - val / self.max_space) * 100) + '%';
         },
         couple_status: d3.scale.ordinal()
-                           .domain(['OK', 'BAD', 'FROZEN', 'CLOSED', 'FULL', null])
-                           .range([d3.rgb('#4ec96a'), d3.rgb('#f04848'), d3.rgb('#96c5ff'),
-                                   d3.rgb('#bbb'), d3.rgb('#bbb'), d3.rgb('#f2ee60')]),
+                           .domain(['OK', 'BAD', 'BROKEN', 'FROZEN', 'CLOSED', 'FULL', null])
+                           .range([d3.rgb('#4ec96a'), d3.rgb('#f04848'), d3.rgb('#962300'),
+                                   d3.rgb('#96c5ff'), d3.rgb('#bbb'), d3.rgb('#bbb'),
+                                   d3.rgb('#f2ee60')]),
         couple_status_legend_label: function (val) {
             return (val != null ) ? val : 'NOT COUPLED';
         },
@@ -316,6 +317,8 @@ TreeMap.prototype.periodicUpdate = function () {
             couple_status = 'FULL';
         } else if (self.filter == 'bad_couples') {
             couple_status = 'BAD';
+        } else if (self.filter == 'broken_couples') {
+            couple_status = 'BROKEN';
         } else if (self.filter == 'frozen_couples') {
             couple_status = 'FROZEN';
         }
