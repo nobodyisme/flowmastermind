@@ -75,6 +75,11 @@ var Jobs = (function () {
             });
             title = 'Дефрагментация капла ' + state['couple'] +
                     ', фрагментация: [' + fragmentation.join(', ') + ']';
+        } else if (state['type'] == 'restore_group_job') {
+            title = 'Восстановление группы ' + state['group'];
+            if (state['uncoupled_group']) {
+                title += ' в пустую группу ' + state['uncoupled_group'];
+            }
         }
         return title;
     };
@@ -459,7 +464,8 @@ var Jobs = (function () {
         if (task_state['type'] == 'minion_cmd' ||
             task_state['type'] == 'node_stop_task' ||
             task_state['type'] == 'node_backend_defrag_task' ||
-            task_state['type'] == 'recover_dc_group_task') {
+            task_state['type'] == 'recover_dc_group_task' ||
+            task_state['type'] == 'rsync_backend_task') {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
             this.renderHistoryRemoveNodeFields(task_state, task_maintitle, task_subtitle, task_additional_data);

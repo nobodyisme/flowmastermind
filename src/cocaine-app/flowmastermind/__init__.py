@@ -119,7 +119,7 @@ def jobs(job_type=None, year=None, month=None):
 
     if job_type is None:
         job_type = 'move'
-    if job_type not in ('move', 'recovery', 'defrag'):
+    if job_type not in ('move', 'recovery', 'defrag', 'restore'):
         abort(404)
     tag = None
 
@@ -189,12 +189,13 @@ def ts_to_dt(ts):
 @app.route('/json/jobs/<job_type>/<tag>/')
 @json_response
 def json_jobs_list(job_type, tag=None):
-    if job_type not in ('move', 'recovery', 'defrag'):
+    if job_type not in ('move', 'recovery', 'defrag', 'restore'):
         abort(404)
 
     mm_job_types = {'move': 'move_job',
                     'recovery': 'recover_dc_job',
-                    'defrag': 'couple_defrag_job'}
+                    'defrag': 'couple_defrag_job',
+                    'restore': 'restore_group_job'}
 
     try:
         m = Service(MASTERMIND_APP_NAME)
