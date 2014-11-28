@@ -1,3 +1,9 @@
+flowmastermind (0.48) lucid; urgency=low
+
+  * Support for new recover group jobs
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 28 Nov 2014 16:19:10 +0300
+
 flowmastermind (0.47) lucid; urgency=low
 
   * Treemap displays broken couples and groups appropriately
