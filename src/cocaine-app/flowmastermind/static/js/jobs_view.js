@@ -477,7 +477,12 @@ var Jobs = (function () {
     };
 
     JobsView.prototype.renderMinionCmdFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
-        task_maintitle.text(task_state['cmd']);
+        var cmdTitle = task_state['cmd'];
+        if (task_state['params']['merged_to']) {
+            cmdTitle += ', слияние группы ' + task_state['params']['group'] +
+                ' c группой ' + task_state['params']['merged_to'];
+        }
+        task_maintitle.text(cmdTitle);
         task_maintitle.attr('title', task_state['cmd']);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
             task_state['hostname'] + '<span class="composite-line-sub">' +
