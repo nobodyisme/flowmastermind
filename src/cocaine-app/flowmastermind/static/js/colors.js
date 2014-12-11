@@ -61,7 +61,7 @@ BarColors = {
 
 
 var status_color = d3.scale.ordinal()
-    .domain(['OK', 'COUPLED', 'BAD', 'FROZEN', 'CLOSED', 'FULL', 'STALLED', 'INIT', 'BROKEN', null])
+    .domain(['OK', 'COUPLED', 'BAD', 'FROZEN', 'CLOSED', 'FULL', 'STALLED', 'INIT', 'BROKEN', 'RO', 'MIGRATING', null])
     .range([d3.rgb('#67e300'),
             d3.rgb('#67e300'),
             d3.rgb('#ff0d00'),
@@ -71,10 +71,12 @@ var status_color = d3.scale.ordinal()
             d3.rgb('#ff6400'),
             d3.rgb('#ffd100'),
             d3.rgb('#962300'),
+            d3.rgb('#c7fffd'),
+            d3.rgb('#12f5f5'),
             d3.rgb('#ffd100')]);
 
 var status_color_light = d3.scale.ordinal()
-    .domain(['OK', 'COUPLED', 'BAD', 'FROZEN', 'CLOSED', 'FULL', 'STALLED', 'INIT', 'BROKEN', null])
+    .domain(['OK', 'COUPLED', 'BAD', 'FROZEN', 'CLOSED', 'FULL', 'STALLED', 'INIT', 'BROKEN', 'RO', 'MIGRATING', null])
     .range([d3.rgb('#8ef13c'),
             d3.rgb('#8ef13c'),
             d3.rgb('#ff4940'),
@@ -84,4 +86,6 @@ var status_color_light = d3.scale.ordinal()
             d3.rgb('#ff8b40'),
             d3.rgb('#ffdc40'),
             d3.rgb('#b44530'),
+            d3.rgb('#c7fffd'),
+            d3.rgb('#12f5f5'),
             d3.rgb('#ffdc40')]);
