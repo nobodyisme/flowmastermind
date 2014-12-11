@@ -1,3 +1,9 @@
+flowmastermind (0.50) lucid; urgency=low
+
+  * Added colors for RO and MIGRATING statuses
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 11 Dec 2014 14:56:15 +0300
+
 flowmastermind (0.49) lucid; urgency=low
 
   * Fix for uncoupled groups merging task title
