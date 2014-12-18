@@ -2,31 +2,26 @@
 {% block title %}Задачи{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="/static/css/jobs.css" />
+    <link rel="stylesheet" href="/static/css/paginator.css" />
 {% endblock %}
 
 {% block content %}
     <div class="inner-content">
-        <a href="/jobs/{{ job_type }}/{{ previous_year }}/{{ previous_month }}/" class="jobs-previous-month">за предыдущий месяц</a>
-        <div class="jobs-containers" job-type="{{ job_type }}" job-tag="{{ tag }}">
+        <a href="/jobs/{{ job_type }}/{{ job_status }}/{{ previous_year }}/{{ previous_month }}/" class="jobs-previous-month">за предыдущий месяц</a>
+        <div class="jobs-containers" job-type="{{ job_type }}" job-tag="{{ tag }}" job-limit="{{ limit }}" job-offset="{{ offset }}" job-status="{{ job_status }}" job-cur-year="{{ cur_year }}" job-cur-month="{{ cur_month }}">
             <ul class="tabs">
                 <li class="jobs-not-approved">
-                    <input type="radio" name="jobs-tabs" id="tab-switch-jobs-not-approved" />
-                    <label for="tab-switch-jobs-not-approved">ожидающие одобрения</label>
+                    <a href="/jobs/{{ job_type }}/not-approved/{{ cur_year }}/{{ cur_month }}/">выполняющиеся задачи</a>
                 </li>
                 <li class="jobs-executing">
-                    <input type="radio" name="jobs-tabs" id="tab-switch-jobs-executing" />
-                    <label for="tab-switch-jobs-executing">выполняющиеся задачи</label>
+                    <a href="/jobs/{{ job_type }}/executing/{{ cur_year }}/{{ cur_month }}/">выполняющиеся задачи</a>
                 </li>
                 <li class="jobs-finished">
-                    <input type="radio" name="jobs-tabs" id="tab-switch-jobs-finished" />
-                    <label for="tab-switch-jobs-finished">завершенные задачи</label>
+                    <a href="/jobs/{{ job_type }}/finished/{{ cur_year }}/{{ cur_month }}/">завершенные задачи</a>
                 </li>
             </ul>
-            <div id="jobs-not-approved" class="tab-content">
-            </div>
-            <div id="jobs-executing" class="tab-content">
-            </div>
-            <div id="jobs-finished" class="tab-content">
+            <div class="paginator_container"></div>
+            <div id="jobs-list" class="tab-content">
             </div>
         </div>
         <div class="job-init-spinner">
@@ -42,6 +37,7 @@
 {% block js %}
     <script src="/static/js/helpers.js"></script>
     <script src="/static/js/url.js"></script>
+    <script src="/static/js/paginator.js"></script>
     <script src="/static/js/spinner.js"></script>
     <script src="/static/js/error.js"></script>
     <script src="/static/js/ajax.js"></script>

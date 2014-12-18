@@ -313,7 +313,7 @@
     left: -9999px;
 }
 
-.jobs-containers .tabs label {
+.jobs-containers .tabs a {
     z-index: 5;
     display: block;
     padding: 10px 20px;
@@ -367,7 +367,11 @@
     background: rgba(153,153,153, 1.0);
 }
 
-.jobs-containers .tabs .jobs-finished [id^=tab-switch]:checked + label {
+.jobs-containers .tabs .jobs-finished  a {
+    background: rgba(153,153,153, 0.75);
+}
+
+.jobs-containers .tabs .jobs-finished  a:hover {
     background: rgba(153,153,153, 1.0);
 }
 
@@ -383,7 +387,11 @@
     background: rgba(102,187,102, 1.0);
 }
 
-.jobs-containers .tabs .jobs-executing [id^=tab-switch]:checked + label {
+.jobs-containers .tabs .jobs-executing a {
+    background: rgba(102,187,102, 0.75);
+}
+
+.jobs-containers .tabs .jobs-executing a:hover {
     background: rgba(102,187,102, 1.0);
 }
 
@@ -400,7 +408,11 @@
     background-color: rgba(243,243,151, 1.0);
 }
 
-.jobs-containers .tabs .jobs-not-approved [id^=tab-switch]:checked + label {
+.jobs-containers .tabs .jobs-not-approved a {
+    background: rgba(243,243,151, 0.75);
+}
+
+.jobs-containers .tabs .jobs-not-approved a:hover {
     background: rgba(243,243,151, 1.0);
 }
 

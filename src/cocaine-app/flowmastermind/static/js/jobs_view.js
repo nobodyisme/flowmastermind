@@ -8,6 +8,9 @@ var Jobs = (function () {
     };
 
     Jobs.prototype.update = function(uid, state) {
+        if (uid == undefined) {
+            console.log('undefined', state);
+        }
         if (this.jobs[uid] == undefined) {
             this.jobs[uid] = {};
             this.eventer.trigger("create", [uid, state]);
@@ -22,9 +25,8 @@ var Jobs = (function () {
         this.eventer = eventer;
 
         this.container = $('.jobs-containers');
-        this.not_approved_cont = this.container.find('#jobs-not-approved');
-        this.executing_cont = this.container.find('#jobs-executing');
-        this.finished_cont = this.container.find('#jobs-finished');
+        this.cont = this.container.find('#jobs-list');
+        this.jobs_status = this.container.attr('job-status');
         this.job_action_pb = $('.job-action-pb');
         this.job_list_empty = $('.job-list-empty');
 
@@ -136,7 +138,7 @@ var Jobs = (function () {
 
         job_id.text('id: ' + uid);
 
-        job.appendTo(this.executing_cont);
+        job.appendTo(this.cont);
     };
 
     JobsView.prototype.createTask = function(task_list, task_state) {
@@ -254,26 +256,26 @@ var Jobs = (function () {
 
         // TODO: think about when to do insertAfter
         // and maybe fix this in commands_view.js as well
-        if (state['status'] == 'completed' || state['status'] == 'cancelled') {
-            if (!job.parent().hasClass('jobs-finished')) {
-                job_management_btns.css('visibility', 'visible');
-                job.prependTo(this.finished_cont);
-            }
-        } else if (state['status'] == 'not_approved') {
-            if (!job.parent().hasClass('jobs-not-approved')) {
-                job_management_btns.css('visibility', 'visible');
-                job.prependTo(this.not_approved_cont);
-            }
-        } else {
-            if (!job.parent().hasClass('jobs-executing')) {
-                job_management_btns.css('visibility', 'visible');
-                job.prependTo(this.executing_cont);
-            }
+        if ((this.jobs_status == 'not-approved' &&
+             state['status'] != 'not_approved') ||
+            (this.jobs_status == 'executing' &&
+             state['status'] != 'new' &&
+             state['status'] != 'executing' &&
+             state['status'] != 'pending' &&
+             state['status'] != 'broken') ||
+            (this.jobs_status == 'finished' &&
+             state['status'] != 'completed' &&
+             state['status'] != 'cancelled')) {
+
+            // move this to method or do it inside Jobs.prototype.update
+            delete jobs.jobs[state['uid']];
+            job.remove();
+
+            return;
+
         }
 
         self.renderJobButtons(job, uid, job_management_btns, state);
-
-        this.updateContainers();
 
         this.renderTime(state['create_ts'], job_create_time_label, job_create_time_val);
         this.renderTime(state['start_ts'], job_start_time_label, job_start_time_val);
@@ -514,7 +516,7 @@ var Jobs = (function () {
     }
 
     JobsView.prototype.updateContainers = function() {
-        var containers = [this.not_approved_cont, this.executing_cont, this.finished_cont];
+        var containers = [this.cont];
         for (var idx in containers) {
             var container = containers[idx];
 
@@ -528,39 +530,11 @@ var Jobs = (function () {
         }
     };
 
-    JobsView.prototype.checkHash = function() {
-        var self = this,
-            type = PseudoURL.params['type'] || 'not-approved',
-            job_id = PseudoURL.params['job_id'];
-
-        if (type) {
-            var radio = this.container.find('#tab-switch-jobs-' + type);
-            radio.prop('checked', true);
-
-            self.container.find('.tab-content').each(function () {
-                var $this = $(this);
-                console.log($this.attr('id'));
-                if ($this.attr('id') == 'jobs-' + type) {
-                    $this.css('display', 'block');
-                } else {
-                    $this.css('display', 'none');
-                }
-            });
-        }
-    }
-
     var jobs = new Jobs();
     var view = new JobsView(jobs.eventer);
 
     view.eventer.on("create", view.createJob.bind(view));
     view.eventer.on("update", view.updateJob.bind(view));
-
-    $(window).on('hashchange', function () {
-        PseudoURL.parse(window.location.hash);
-        view.checkHash();
-    });
-
-    view.checkHash();
 
     return {
         model: jobs,

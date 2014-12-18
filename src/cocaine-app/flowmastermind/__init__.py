@@ -114,16 +114,27 @@ def history(year=None, month=None):
 
 @app.route('/jobs/')
 @app.route('/jobs/<job_type>/')
-@app.route('/jobs/<job_type>/<year>/<month>/')
-def jobs(job_type=None, year=None, month=None):
+@app.route('/jobs/<job_type>/<job_status>/')
+@app.route('/jobs/<job_type>/<job_status>/<year>/<month>/')
+def jobs(job_type=None, job_status=None, year=None, month=None):
 
     if job_type is None:
         job_type = 'move'
+
+    if job_status is None:
+        job_status = 'not-approved'
+
     if job_type not in ('move', 'recovery', 'defrag', 'restore'):
         abort(404)
+    if job_status not in ('not-approved', 'executing', 'finished'):
+        abort(404)
+
     tag = None
 
     try:
+
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
 
         if not month:
             dt = datetime.datetime.now().replace(day=1)
@@ -136,9 +147,15 @@ def jobs(job_type=None, year=None, month=None):
         return render_template('jobs.html', menu_page='jobs',
                                             cur_page=job_type,
                                             job_type=job_type,
+                                            job_status=job_status,
                                             tag=tag,
                                             previous_year=prev_dt.year,
-                                            previous_month='{0:02d}'.format(prev_dt.month))
+                                            previous_month='{0:02d}'.format(prev_dt.month),
+                                            cur_year=dt.year,
+                                            cur_month='{0:02d}'.format(dt.month),
+                                            limit=limit,
+                                            offset=offset,
+                                            next_offset=limit + offset)
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -185,23 +202,18 @@ def json_commands_history(year, month):
 def ts_to_dt(ts):
     return datetime.datetime.fromtimestamp(float(ts)).strftime(DEFAULT_DT_FORMAT)
 
-@app.route('/json/jobs/<job_type>/')
-@app.route('/json/jobs/<job_type>/<tag>/')
-@json_response
-def json_jobs_list(job_type, tag=None):
-    if job_type not in ('move', 'recovery', 'defrag', 'restore'):
-        abort(404)
 
-    mm_job_types = {'move': 'move_job',
-                    'recovery': 'recover_dc_job',
-                    'defrag': 'couple_defrag_job',
-                    'restore': 'restore_group_job'}
+@app.route('/json/jobs/update/', methods=['POST'])
+@json_response
+def json_jobs_update():
 
     try:
+        job_ids = request.form.getlist('jobs[]')
+        logging.info('Job ids: {0}'.format(job_ids))
+
         m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('get_job_list', msgpack.packb([
-            {'job_type': mm_job_types[job_type],
-             'tag': tag}
+        resp = m.enqueue('get_jobs_status', msgpack.packb([
+            job_ids
         ])).get()
 
         def convert_tss_to_dt(d):
@@ -213,6 +225,60 @@ def json_jobs_list(job_type, tag=None):
                 d['finish_ts'] = ts_to_dt(d['finish_ts'])
 
         for r in resp:
+            convert_tss_to_dt(r)
+            for error_msg in r.get('error_msg', []):
+                error_msg['ts'] = ts_to_dt(error_msg['ts'])
+            for task in r['tasks']:
+                convert_tss_to_dt(task)
+
+        return resp
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/jobs/<job_type>/<job_status>/')
+@app.route('/json/jobs/<job_type>/<job_status>/<tag>/')
+@json_response
+def json_jobs_list(job_type, job_status, tag=None):
+    if job_type not in ('move', 'recovery', 'defrag', 'restore'):
+        abort(404)
+    if job_status not in ('not-approved', 'executing', 'finished'):
+        abort(404)
+
+    mm_job_types = {'move': 'move_job',
+                    'recovery': 'recover_dc_job',
+                    'defrag': 'couple_defrag_job',
+                    'restore': 'restore_group_job'}
+
+    mm_job_statuses = {'not-approved': ['not_approved'],
+                       'executing': ['new', 'executing', 'pending', 'broken'],
+                       'finished': ['completed', 'cancelled'] }
+
+    try:
+
+        limit = request.args.get('limit', 50)
+        offset = request.args.get('offset', 0)
+
+        m = Service(MASTERMIND_APP_NAME)
+        resp = m.enqueue('get_job_list', msgpack.packb([
+            {'job_type': mm_job_types[job_type],
+             'tag': tag,
+             'statuses': mm_job_statuses[job_status],
+             'limit': limit,
+             'offset': offset}
+        ])).get()
+
+        def convert_tss_to_dt(d):
+            if d.get('create_ts'):
+                d['create_ts'] = ts_to_dt(d['create_ts'])
+            if d['start_ts']:
+                d['start_ts'] = ts_to_dt(d['start_ts'])
+            if d['finish_ts']:
+                d['finish_ts'] = ts_to_dt(d['finish_ts'])
+
+        for r in resp['jobs']:
             convert_tss_to_dt(r)
             for error_msg in r.get('error_msg', []):
                 error_msg['ts'] = ts_to_dt(error_msg['ts'])
