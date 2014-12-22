@@ -64,12 +64,17 @@ var Jobs = (function () {
                     '<span class="composite-line-sub">' +
                     state['dst_host'] + '</span></span>';
         } else if (state['type'] == 'recover_dc_job') {
-            title = 'Восстановление ключей группы ' + state['group'] + ' ' +
-                    'на хосте <span class="composite-line">' + state['hostname'] +
-                    ':' + state['port'] +
-                    (state['backend_id'] != undefined ? '/' + state['backend_id'] : '') +
-                    '<span class="composite-line-sub">' + state['host'] + '</span></span>' +
-                    (state['keys'] ? ', ключей в группах: [' + state['keys'].join(', ') + ']' : '');
+            if (state['couple']) {
+                title = 'Восстановление ключей капла ' + state['couple'];
+            } else {
+                title = 'Восстановление ключей группы ' + state['group'];
+            }
+            title += ' ' +
+                     'на хосте <span class="composite-line">' + state['hostname'] +
+                     ':' + state['port'] +
+                     (state['backend_id'] != undefined ? '/' + state['backend_id'] : '') +
+                     '<span class="composite-line-sub">' + state['host'] + '</span></span>' +
+                     (state['keys'] ? ', ключей в группах: [' + state['keys'].join(', ') + ']' : '');
         } else if (state['type'] == 'couple_defrag_job') {
             var fragmentation = [];
             state['fragmentation'].forEach(function (data) {
