@@ -1,3 +1,9 @@
+flowmastermind (0.53) lucid; urgency=low
+
+  * Response wrapper for exceptions handling
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 23 Dec 2014 14:33:32 +0300
+
 flowmastermind (0.52) lucid; urgency=low
 
   * New recover dc jobs title
