@@ -298,7 +298,8 @@ def json_jobs_list(job_type, job_status, tag=None):
 def json_retry_task(job_id, task_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('retry_failed_job_task', msgpack.packb([job_id, task_id])).get()
+        resp = mastermind_response(m.enqueue('retry_failed_job_task',
+                                   msgpack.packb([job_id, task_id])).get())
 
         return resp
     except Exception as e:
@@ -313,7 +314,8 @@ def json_retry_task(job_id, task_id):
 def json_skip_task(job_id, task_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('skip_failed_job_task', msgpack.packb([job_id, task_id])).get()
+        resp = mastermind_response(m.enqueue('skip_failed_job_task',
+                                   msgpack.packb([job_id, task_id])).get())
 
         return resp
     except Exception as e:
@@ -328,7 +330,8 @@ def json_skip_task(job_id, task_id):
 def json_cancel_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('cancel_job', msgpack.packb([job_id])).get()
+        resp = mastermind_response(m.enqueue('cancel_job',
+                                   msgpack.packb([job_id])).get())
 
         return resp
     except Exception as e:
@@ -343,7 +346,8 @@ def json_cancel_job(job_id):
 def json_approve_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('approve_job', msgpack.packb([job_id])).get()
+        resp = mastermind_response(m.enqueue('approve_job',
+                                   msgpack.packb([job_id])).get())
 
         return resp
     except Exception as e:
