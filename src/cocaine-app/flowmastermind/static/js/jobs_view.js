@@ -395,7 +395,7 @@ var Jobs = (function () {
 
                 json_ajax({
                     url: '/json/commands/status/' + task_state['minion_cmd_id'] + '/',
-                    timeout: 3000,
+                    timeout: 10000,
                     success: function (cmd_status) {
 
                         commands.view.createCmd(undefined, task_state['host'], task_state['id'], cmd_status, task_cmd_state);
