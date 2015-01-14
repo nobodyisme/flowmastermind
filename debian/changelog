@@ -1,3 +1,9 @@
+flowmastermind (0.54) lucid; urgency=low
+
+  * Increased minion cmd view status timeout
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 14 Jan 2015 16:52:20 +0300
+
 flowmastermind (0.53) lucid; urgency=low
 
   * Response wrapper for exceptions handling
