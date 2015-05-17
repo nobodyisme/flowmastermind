@@ -222,6 +222,14 @@ span.chart-label-small {
     white-space: nowrap;
 }
 
+.menu-item.ns-menu-item label {
+    cursor: pointer;
+}
+
+.menu-item.ns-menu-item label input {
+    margin-right: 8px;
+}
+
 .menu-item a {
     text-decoration: none;
     border-bottom: 1px dashed #333;

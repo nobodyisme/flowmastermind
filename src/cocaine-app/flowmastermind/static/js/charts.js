@@ -25,7 +25,23 @@
 
     var ns_container = $('.namespaces'),
         namespaces_menu = $('.namespaces-menu'),
-        namespaces = {};
+        namespaces = {},
+        namespaces_data = {},
+        namespaces_menus = {};
+
+    var selectAllMI = $('<span class="menu-item ns-menu-item">'),
+        selectAllL = $('<label>').appendTo(selectAllMI),
+        selectAllCb = $('<input type="checkbox" value="">').appendTo(selectAllL);
+
+    namespaces_menu.append(selectAllMI);
+    selectAllCb.change(function () {
+        var self = this;
+        namespaces_menu.find('.ns-display-cb').each(function () {
+            $(this).prop('checked', self.checked).trigger('change');
+        });
+    });
+
+    selectAllL.append(document.createTextNode('выбрать все'));
 
     $(window).on('hashchange', function () {
         PseudoURL.parse(window.location.hash);
@@ -86,12 +102,92 @@
 
     }
 
+    function nsMenuItem(ns) {
+        if (namespaces_menus[ns]) return;
+
+        var spanMenuItem = $('<span class="menu-item ns-menu-item">'),
+            menuItem = $('<label>').appendTo(spanMenuItem),
+            menuItemCb = $('<input class="ns-display-cb" type="checkbox" value="' + ns + '">').appendTo(menuItem);
+
+        insertAlphabetically(spanMenuItem, namespaces_menu, function (el) {
+            return el.find('input').attr('value');
+        });
+
+        menuItem.append(document.createTextNode(ns));
+
+        checked = (localStorage === undefined ||
+                   localStorage['ns'] && JSON.parse(localStorage['ns'])[ns]);
+        menuItemCb.attr('checked', checked ? 'checked' : null);
+
+        if (localStorage !== undefined) {
+            menuItemCb.change(function () {
+                var settings = (localStorage['ns'] &&
+                                JSON.parse(localStorage['ns']) ||
+                                {});
+                if (this.checked) {
+                    settings[$(this).val()] = true;
+                    var all_checked = true;
+                    namespaces_menu.find('.ns-display-cb').each(function () {
+                        if (!this.checked) all_checked = false;
+                        return false;
+                    });
+                    if (all_checked) {
+                        selectAllCb.prop('checked', true);
+                    }
+                } else {
+                    delete settings[$(this).val()];
+                    selectAllCb.prop('checked', false);
+                }
+                localStorage['ns'] = JSON.stringify(settings);
+                display_ns(ns);
+            });
+        }
+        namespaces_menus[ns] = true;
+    }
+
+    function display_ns(ns) {
+        if (localStorage === undefined ||
+            localStorage['ns'] &&
+            JSON.parse(localStorage['ns'])[ns] == true) {
+
+            var ns_chart = nsChart(ns),
+                ns_data = namespaces_data[ns];
+
+            ns_chart.m_bars.update(ns_data);
+            ns_chart.em_bars.update(ns_data);
+            ns_chart.k_bars.update(ns_data);
+            ns_chart.c_bars.update(ns_data);
+            ns_chart.co_bars.update(ns_data);
+        } else {
+            delete namespaces[ns];
+            $('.namespaces #' + ns).remove();
+        }
+    }
+
+    function insertAlphabetically(child, parent, key) {
+        var inserted = false;
+        parent.children().each(function () {
+            if (key($(this)) > key(child)) {
+                child.insertBefore($(this));
+                inserted = true;
+                return false;
+            }
+        });
+        if (!inserted) parent.append(child);
+    }
+
+    function byId(el) {
+        return el.attr('id');
+    }
+
     function nsChart(ns) {
         if (!namespaces[ns]) {
 
-            var chart_set = $('<div class="chart-set" id="' + ns + '">').appendTo(ns_container),
+            var chart_set = $('<div class="chart-set" id="' + ns + '">'),
                 chart_label = $('<span class="ns-chart-label">').appendTo(chart_set),
                 clear2 = $('<span class="clear">').appendTo(chart_set);
+
+            insertAlphabetically(chart_set, ns_container, byId);
 
             var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
                 em_chart = $('<div class="chart em-chart-' + ns + '">').appendTo(chart_set),
@@ -102,12 +198,8 @@
                 em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new GroupsBar('.c-chart-' + ns, 'каплы'),
-                co_bars = new OutagesBar('.co-chart-' + ns, 'отключение ДЦ*', '* что произойдет, если отключится конкретный ДЦ'),
+                co_bars = new OutagesBar('.co-chart-' + ns, 'отключение ДЦ*', '* что произойдет, если отключится конкретный ДЦ');
 
-                spanMenuItem = $('<span class="menu-item">').appendTo(namespaces_menu),
-                menuItem = $('<a href="#' + ns + '">').appendTo(spanMenuItem);
-
-            menuItem.text(ns);
             chart_label.text('Неймспейс ' + ns);
 
             $('<span class="clear">').appendTo(chart_set);
@@ -164,16 +256,19 @@
                 var ns_items = iterItems(data['namespaces']);
 
                 // namespaces stats
+                var new_data = {};
                 for (var idx in ns_items) {
-
-                    var ns = nsChart(ns_items[idx][0]),
+                    var ns = ns_items[idx][0],
                         ns_data = ns_items[idx][1];
+                    new_data[ns] = ns_data;
+                }
 
-                    ns.m_bars.update(ns_data);
-                    ns.em_bars.update(ns_data);
-                    ns.k_bars.update(ns_data);
-                    ns.c_bars.update(ns_data);
-                    ns.co_bars.update(ns_data);
+                namespaces_data = new_data;
+
+                for (var ns in namespaces_data) {
+
+                    nsMenuItem(ns);
+                    display_ns(ns);
                 }
 
                 // no more animation, i'm begging you
