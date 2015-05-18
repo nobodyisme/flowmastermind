@@ -222,17 +222,22 @@ span.chart-label-small {
     white-space: nowrap;
 }
 
-.menu-item.ns-menu-item label {
+.menu-item.ns-menu-item {
     cursor: pointer;
 }
 
-.menu-item.ns-menu-item label input {
+.menu-item.ns-menu-item input {
     margin-right: 8px;
 }
 
 .menu-item a {
     text-decoration: none;
     border-bottom: 1px dashed #333;
+}
+
+.menu-item a.unchecked {
+    text-decoration: none;
+    border-bottom: none;
 }
 
 .menu-item:first {

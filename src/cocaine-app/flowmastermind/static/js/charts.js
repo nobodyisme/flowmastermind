@@ -14,6 +14,11 @@
                      [ctxKDC, 'fragmentation'],
                      [ctxGDC, 'couple_status']];
 
+    var settings = ((localStorage &&
+                     localStorage['ns'] &&
+                     JSON.parse(localStorage['ns'])) ||
+                    {});
+
     barClicks.forEach(function (el, idx) {
         el[0].onBarClick(function (dc) {
             PseudoURL.setPath('/map/')
@@ -102,53 +107,79 @@
 
     }
 
+    function renderMenuItem(ns, init) {
+        var spanMenuItem = namespaces_menu.find('.menu-item-ns-' + ns),
+            menuItemCb = spanMenuItem.find('.ns-display-cb');
+
+        checked = settings[ns] == true;
+
+        if (checked) {
+            spanMenuItem.find('.label').remove();
+            menuItemLabel = $('<a class="label" href="#' + ns + '">' + ns + '</a>').
+                appendTo(spanMenuItem);
+            if (!init) {
+                // was a user click, not initialization of menu item
+                location.hash = '#' + ns;
+            }
+        } else {
+            spanMenuItem.find('.label').remove();
+            menuItemLabel = $('<a class="label unchecked" href="#' + ns + '">' + ns + '</a>').
+                appendTo(spanMenuItem);
+            menuItemLabel.click(function () {
+                menuItemCb.prop('checked', true).trigger('change');
+                return false;
+            });
+        }
+    }
+
     function nsMenuItem(ns) {
         if (namespaces_menus[ns]) return;
 
-        var spanMenuItem = $('<span class="menu-item ns-menu-item">'),
-            menuItem = $('<label>').appendTo(spanMenuItem),
-            menuItemCb = $('<input class="ns-display-cb" type="checkbox" value="' + ns + '">').appendTo(menuItem);
+        var spanMenuItem = $('<span class="menu-item ns-menu-item menu-item-ns-' + ns + '">'),
+            // menuItem = $('<label>').appendTo(spanMenuItem),
+            menuItemCb = $('<input class="ns-display-cb" type="checkbox" value="' + ns + '">').appendTo(spanMenuItem);
 
         insertAlphabetically(spanMenuItem, namespaces_menu, function (el) {
             return el.find('input').attr('value');
         });
 
-        menuItem.append(document.createTextNode(ns));
+        renderMenuItem(ns, true);
 
-        checked = (localStorage === undefined ||
-                   localStorage['ns'] && JSON.parse(localStorage['ns'])[ns]);
+        // menuItem.append(document.createTextNode(ns));
+
+        checked = settings[ns];
         menuItemCb.attr('checked', checked ? 'checked' : null);
 
         if (localStorage !== undefined) {
             menuItemCb.change(function () {
-                var settings = (localStorage['ns'] &&
-                                JSON.parse(localStorage['ns']) ||
-                                {});
                 if (this.checked) {
                     settings[$(this).val()] = true;
+                    display_ns(ns);
                     var all_checked = true;
                     namespaces_menu.find('.ns-display-cb').each(function () {
-                        if (!this.checked) all_checked = false;
-                        return false;
+                        if (!this.checked) {
+                            all_checked = false;
+                            return false;
+                        }
                     });
                     if (all_checked) {
                         selectAllCb.prop('checked', true);
                     }
+                    renderMenuItem(ns);
                 } else {
                     delete settings[$(this).val()];
+                    display_ns(ns);
                     selectAllCb.prop('checked', false);
+                    renderMenuItem(ns);
                 }
                 localStorage['ns'] = JSON.stringify(settings);
-                display_ns(ns);
             });
         }
         namespaces_menus[ns] = true;
     }
 
     function display_ns(ns) {
-        if (localStorage === undefined ||
-            localStorage['ns'] &&
-            JSON.parse(localStorage['ns'])[ns] == true) {
+        if (settings[ns] == true) {
 
             var ns_chart = nsChart(ns),
                 ns_data = namespaces_data[ns];
@@ -232,6 +263,7 @@
         return namespaces[ns];
     }
 
+    initLoad = true;
     function updateStats() {
         $.ajax({
             url: '/json/stat/',
@@ -265,14 +297,31 @@
 
                 namespaces_data = new_data;
 
-                for (var ns in namespaces_data) {
+                if (initLoad) {
+                    maybe_ns = location.hash.substr(1);
+                    if (namespaces_data[maybe_ns] !== undefined) {
+                        settings[maybe_ns] = true;
+                        localStorage['ns'] = JSON.stringify(settings);
+                    }
+                }
 
+                for (var ns in namespaces_data) {
                     nsMenuItem(ns);
                     display_ns(ns);
                 }
 
+                if (initLoad) {
+                    maybe_ns = location.hash.substr(1);
+                    if (namespaces_data[maybe_ns] !== undefined) {
+                        // hash is a namespace, move to the anchor
+                        location.hash = '#dummy';
+                        location.hash = '#' + maybe_ns;
+                    }
+                }
+
                 // no more animation, i'm begging you
                 options.animation = false;
+                initLoad = false;
             }
         })
     }
