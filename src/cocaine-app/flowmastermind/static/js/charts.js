@@ -268,7 +268,7 @@
         $.ajax({
             url: '/json/stat/',
             data: {ts: new Date().getTime()},
-            timeout: 3000,
+            timeout: 10000,
             dataType: 'json',
             success: function (data) {
 
