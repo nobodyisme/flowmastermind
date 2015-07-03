@@ -265,7 +265,8 @@ var Jobs = (function () {
              state['status'] != 'not_approved') ||
             (this.jobs_status == 'executing' &&
              state['status'] != 'new' &&
-             state['status'] != 'executing' &&
+             state['status'] != 'executing') ||
+            (this.jobs_status == 'pending' &&
              state['status'] != 'pending' &&
              state['status'] != 'broken') ||
             (this.jobs_status == 'finished' &&

@@ -11,10 +11,13 @@
         <div class="jobs-containers" job-type="{{ job_type }}" job-tag="{{ tag }}" job-limit="{{ limit }}" job-offset="{{ offset }}" job-status="{{ job_status }}" job-cur-year="{{ cur_year }}" job-cur-month="{{ cur_month }}">
             <ul class="tabs">
                 <li class="jobs-not-approved">
-                    <a href="/jobs/{{ job_type }}/not-approved/{{ cur_year }}/{{ cur_month }}/">выполняющиеся задачи</a>
+                    <a href="/jobs/{{ job_type }}/not-approved/{{ cur_year }}/{{ cur_month }}/">новые задачи</a>
                 </li>
                 <li class="jobs-executing">
                     <a href="/jobs/{{ job_type }}/executing/{{ cur_year }}/{{ cur_month }}/">выполняющиеся задачи</a>
+                </li>
+                <li class="jobs-pending">
+                    <a href="/jobs/{{ job_type }}/pending/{{ cur_year }}/{{ cur_month }}/">жёлтофиолетовые задачи</a>
                 </li>
                 <li class="jobs-finished">
                     <a href="/jobs/{{ job_type }}/finished/{{ cur_year }}/{{ cur_month }}/">завершенные задачи</a>

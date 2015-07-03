@@ -126,7 +126,7 @@ def jobs(job_type=None, job_status=None, year=None, month=None):
 
     if job_type not in ('move', 'recovery', 'defrag', 'restore'):
         abort(404)
-    if job_status not in ('not-approved', 'executing', 'finished'):
+    if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
 
     tag = None
@@ -244,7 +244,7 @@ def json_jobs_update():
 def json_jobs_list(job_type, job_status, tag=None):
     if job_type not in ('move', 'recovery', 'defrag', 'restore'):
         abort(404)
-    if job_status not in ('not-approved', 'executing', 'finished'):
+    if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
 
     mm_job_types = {'move': 'move_job',
@@ -253,7 +253,8 @@ def json_jobs_list(job_type, job_status, tag=None):
                     'restore': 'restore_group_job'}
 
     mm_job_statuses = {'not-approved': ['not_approved'],
-                       'executing': ['new', 'executing', 'pending', 'broken'],
+                       'executing': ['new', 'executing'],
+                       'pending': ['pending', 'broken'],
                        'finished': ['completed', 'cancelled'] }
 
     try:
