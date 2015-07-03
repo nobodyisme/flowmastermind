@@ -1,3 +1,9 @@
+flowmastermind (0.58) lucid; urgency=low
+
+  * Pending and broken jobs in a separate tab
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 03 Jul 2015 15:34:29 +0300
+
 flowmastermind (0.57) lucid; urgency=low
 
   * Updated default timeout for json stat handler
