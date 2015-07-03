@@ -193,28 +193,39 @@ var Jobs = (function () {
         cancel: {
             text: 'отменить',
             url: '/json/jobs/cancel/{job_id}/'
+        },
+        restart: {
+            text: 'начать всё сначала',
+            url: '/json/jobs/restart/{job_id}/'
         }
     };
 
     JobsView.prototype.statusButtons = {
-        broken: ['cancel'],
-        pending: ['cancel'],
+        broken: ['cancel', 'restart'],
+        pending: ['cancel', 'restart'],
         not_approved: ['approve', 'cancel']
     };
 
-    JobsView.prototype.renderJobButtons = function(job, uid, job_management_btns, state) {
+    JobsView.prototype.renderJobButtons = function(job, uid, job_management_btns, state, force) {
         var self = this;
 
         if (self.statusButtons[state['status']] == undefined) {
             job_management_btns.empty();
-        } else if (status != state['status']) {
+        } else if (job.attr('status') != state['status'] || force) {
 
             job_management_btns.empty();
 
             var btn_ids = self.statusButtons[state['status']];
             for (var i = 0; i < btn_ids.length; i++) {
-                var btn_data = self.updateJobBtns[btn_ids[i]],
-                    btn = $('<a href="#" class="task-management-btn">').appendTo(job_management_btns);
+
+                // special case for restart
+                if (btn_ids[i] == 'restart' && state['tasks'][0]['status'] != 'queued') {
+                    continue;
+                }
+
+                var btn_data = self.updateJobBtns[btn_ids[i]];
+
+                var btn = $('<a href="#" class="task-management-btn">').appendTo(job_management_btns);
 
                 btn.text(btn_data.text);
                 function process(btn_data, job_id, job_management_btns) {
@@ -232,7 +243,7 @@ var Jobs = (function () {
                                 }
                             },
                             error: function (response) {
-                                self.renderJobButtons(job, uid, job_management_btns, state);
+                                self.renderJobButtons(job, uid, job_management_btns, state, true);
                             }
                         });
                         return false;

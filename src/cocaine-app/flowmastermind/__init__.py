@@ -65,8 +65,11 @@ def json_response(func):
 
 
 def mastermind_response(response):
-    if isinstance(response, dict) and 'Balancer error' in response:
-        raise RuntimeError(response['Balancer error'])
+    if isinstance(response, dict):
+        if 'Balancer error' in response:
+            raise RuntimeError(response['Balancer error'])
+        if 'Error' in response:
+            raise RuntimeError(response['Error'])
     return response
 
 
@@ -332,6 +335,22 @@ def json_cancel_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
         resp = mastermind_response(m.enqueue('cancel_job',
+                                   msgpack.packb([job_id])).get())
+
+        return resp
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/jobs/restart/<job_id>/')
+@json_response
+@auth_controller.check_auth
+def json_restart_job(job_id):
+    try:
+        m = Service(MASTERMIND_APP_NAME)
+        resp = mastermind_response(m.enqueue('restart_failed_to_start_job',
                                    msgpack.packb([job_id])).get())
 
         return resp
