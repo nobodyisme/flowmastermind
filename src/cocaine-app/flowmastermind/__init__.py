@@ -1,3 +1,8 @@
+# NB: this import have to be executed as early as possible
+#     to guarantee proper initialization of ioloops in
+#     each process of cocaine pool
+from flowmastermind.request import request as cocaine_request
+
 import datetime
 from functools import wraps
 import json
