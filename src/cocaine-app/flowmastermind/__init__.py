@@ -169,9 +169,8 @@ def jobs(job_type=None, job_status=None, year=None, month=None):
 @app.route('/json/stat/')
 def json_stat():
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = JsonResponse(json.dumps(m.enqueue('get_flow_stats', '').get()))
-        return resp
+        stats = cocaine_request('get_flow_stats', msgpack.packb(None))
+        return JsonResponse(json.dumps(stats))
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
