@@ -41,14 +41,16 @@
                     });
 
                     Jobs.view.updateContainers();
+
+                    setTimeout(periodicTask, updatePeriod);
                 } else {
                     spinner.blink('#ab2d2d');
-                    loadJobs();
+                    setTimeout(loadJobs, updatePeriod);
                 }
             },
             error: function (data) {
                 spinner.blink('#ab2d2d');
-                loadJobs();
+                setTimeout(loadJobs, updatePeriod);
             }
         })
     }
@@ -94,6 +96,5 @@
         updateJobs();
         setTimeout(periodicTask, updatePeriod);
     }
-    periodicTask();
 
 })();
