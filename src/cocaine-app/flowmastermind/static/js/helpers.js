@@ -166,6 +166,19 @@ function timedeltaToStr(sec) {
     return res;
 }
 
+function insertAlphabetically(child, parent, key) {
+    var inserted = false;
+    parent.children().each(function () {
+        if (key($(this)) > key(child)) {
+            child.insertBefore($(this));
+            inserted = true;
+            return false;
+        }
+    });
+    if (!inserted) parent.append(child);
+}
+
+
 var STATUS_LABELS = {
     couple_labels: {
         'OK': 'ОК',

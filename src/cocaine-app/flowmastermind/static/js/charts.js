@@ -195,18 +195,6 @@
         }
     }
 
-    function insertAlphabetically(child, parent, key) {
-        var inserted = false;
-        parent.children().each(function () {
-            if (key($(this)) > key(child)) {
-                child.insertBefore($(this));
-                inserted = true;
-                return false;
-            }
-        });
-        if (!inserted) parent.append(child);
-    }
-
     function byId(el) {
         return el.attr('id');
     }

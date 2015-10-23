@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}График {{ namespace }}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/jobs.css" />
+    <link rel="stylesheet" href="/static/css/paginator.css" />
+    <link rel="stylesheet" href="/static/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="/static/css/classic.css" />
+    <link rel="stylesheet" href="/static/css/monitor.css" />
+{% endblock %}
+
+{% block content %}
+    <div class="inner-content">
+        <div class="namespaces">
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="/static/js/3rd/jquery-ui.min.js"></script>
+    <script src="/static/js/jQRangeSlider-min.js"></script>
+    <script src="/static/js/helpers.js"></script>
+    <script src="/static/js/checkbox_set.js"></script>
+    <script src="/static/js/error.js"></script>
+    <script src="/static/js/ajax.js"></script>
+    <script src="/static/js/monitor_view.js"></script>
+    <script src="/static/js/monitor.js"></script>
+{% endblock %}

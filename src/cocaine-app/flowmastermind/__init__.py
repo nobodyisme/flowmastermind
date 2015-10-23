@@ -165,6 +165,17 @@ def jobs(job_type=None, job_status=None, year=None, month=None):
         logging.error(traceback.format_exc())
         raise
 
+@app.route('/monitor/couple-free-effective-space/')
+def monitor_couple_free_eff_space():
+    try:
+        return render_template(
+            'couple_free_effective_space.html',
+            menu_page='monitor')
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
 
 @app.route('/json/stat/')
 def json_stat():
@@ -438,6 +449,48 @@ def json_commands_node_start():
     uid = resp.keys()[0]
 
     return uid
+
+
+@app.route('/json/monitor/couple-free-effective-space/<namespace>/')
+@json_response
+def json_monitor_couple_free_eff_space(namespace):
+    limit = request.args.get('limit')
+    offset = request.args.get('offset', 0)
+    request_params = {
+        'limit': limit,
+        'offset': offset,
+    }
+    try:
+        samples = cocaine_request(
+            'get_monitor_effective_free_space',
+            msgpack.packb([
+                namespace,
+                request_params
+            ])
+        )
+        return samples
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/namespaces/')
+@json_response
+def json_namespaces():
+    filter = {
+        'deleted': False
+    }
+    try:
+        stats = cocaine_request(
+            'get_namespaces_list',
+            msgpack.packb([filter])
+        )
+        return stats
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
 
 
 if __name__ == '__main__':
