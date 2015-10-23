@@ -16,7 +16,7 @@ from flask import Flask, request
 from flask import abort, render_template
 
 from flowmastermind.auth import auth_controller
-from flowmastermind.config import config
+from flowmastermind.config import MASTERMIND_APP_NAME
 from flowmastermind.error import ApiResponseError, AuthenticationError, AuthorizationError
 from flowmastermind.response import JsonResponse
 from flowmastermind.test import ping
@@ -26,7 +26,6 @@ logging = Logger()
 
 app = Flask(__name__)
 
-MASTERMIND_APP_NAME = 'mastermind2.26'
 
 DEFAULT_DT_FORMAT = '%Y-%m-%d %H:%M:%S'
 

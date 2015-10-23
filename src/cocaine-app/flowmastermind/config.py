@@ -1,6 +1,7 @@
 import json
 
 CONFIG_PATH = '/etc/elliptics/flowmastermind.conf'
+MASTERMIND_APP_NAME = 'mastermind2.26'
 
 try:
 
