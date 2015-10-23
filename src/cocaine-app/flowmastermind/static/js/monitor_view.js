@@ -232,5 +232,13 @@ function get_rgb_color(value) {
 
         }
     }
+
+    // we went over the limit set by base points - return last base point color:
+    var last_rgb_value = base_points[base_points.length - 1][1];
+    return {
+        r: last_rgb_value[0],
+        g: last_rgb_value[1],
+        b: last_rgb_value[2]
+    }
 }
 
