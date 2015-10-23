@@ -69,8 +69,11 @@ def json_response(func):
 
 
 def mastermind_response(response):
-    if isinstance(response, dict) and 'Balancer error' in response:
-        raise RuntimeError(response['Balancer error'])
+    if isinstance(response, dict):
+        if 'Balancer error' in response:
+            raise RuntimeError(response['Balancer error'])
+        if 'Error' in response:
+            raise RuntimeError(response['Error'])
     return response
 
 
@@ -130,7 +133,7 @@ def jobs(job_type=None, job_status=None, year=None, month=None):
 
     if job_type not in ('move', 'recovery', 'defrag', 'restore'):
         abort(404)
-    if job_status not in ('not-approved', 'executing', 'finished'):
+    if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
 
     tag = None
@@ -258,7 +261,7 @@ def json_jobs_update():
 def json_jobs_list(job_type, job_status, tag=None):
     if job_type not in ('move', 'recovery', 'defrag', 'restore'):
         abort(404)
-    if job_status not in ('not-approved', 'executing', 'finished'):
+    if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
 
     mm_job_types = {'move': 'move_job',
@@ -267,7 +270,8 @@ def json_jobs_list(job_type, job_status, tag=None):
                     'restore': 'restore_group_job'}
 
     mm_job_statuses = {'not-approved': ['not_approved'],
-                       'executing': ['new', 'executing', 'pending', 'broken'],
+                       'executing': ['new', 'executing'],
+                       'pending': ['pending', 'broken'],
                        'finished': ['completed', 'cancelled'] }
 
     try:
@@ -345,6 +349,22 @@ def json_cancel_job(job_id):
     try:
         m = Service(MASTERMIND_APP_NAME)
         resp = mastermind_response(m.enqueue('cancel_job',
+                                   msgpack.packb([job_id])).get())
+
+        return resp
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/json/jobs/restart/<job_id>/')
+@json_response
+@auth_controller.check_auth
+def json_restart_job(job_id):
+    try:
+        m = Service(MASTERMIND_APP_NAME)
+        resp = mastermind_response(m.enqueue('restart_failed_to_start_job',
                                    msgpack.packb([job_id])).get())
 
         return resp
