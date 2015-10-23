@@ -1,1 +1,4 @@
-tar -czf ../package.tar.gz *py flowmastermind/*py flowmastermind/templates/*.html flowmastermind/static && cocaine-tool app upload --package ../package.tar.gz -n flowmastermind --manifest flowmastermind.manifest && cocaine-tool app restart -n flowmastermind -r default && rm ../package.tar.gz
+find -L . -type f -regex '.*\.\(py\|js\|json\|css\|png\|gif\|html\)'  -print0 | tar czvf ../package.tar.gz --null -T - &&\
+    cocaine-tool app upload --package ../package.tar.gz -n flowmastermind --manifest flowmastermind.manifest &&
+    cocaine-tool app restart -n flowmastermind -r default &&
+    rm ../package.tar.gz
