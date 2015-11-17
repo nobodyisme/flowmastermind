@@ -194,8 +194,8 @@ def json_stat():
 @app.route('/json/commands/')
 def json_commands():
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = JsonResponse(json.dumps(m.enqueue('get_commands', '').get()))
+        resp = cocaine_request('get_commands', msgpack.packb(None))
+        resp = JsonResponse(json.dumps(resp))
         return resp
     except Exception as e:
         logging.error(e)
@@ -206,9 +206,8 @@ def json_commands():
 @app.route('/json/commands/history/<year>/<month>/')
 def json_commands_history(year, month):
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = JsonResponse(json.dumps(m.enqueue('minion_history_log',
-            msgpack.packb([year, month])).get()))
+        resp = cocaine_request('minion_history_log', msgpack.packb([year, month]))
+        resp = JsonResponse(json.dumps(resp))
         return resp
     except Exception as e:
         logging.error(e)
@@ -228,10 +227,7 @@ def json_jobs_update():
         job_ids = request.form.getlist('jobs[]')
         logging.info('Job ids: {0}'.format(job_ids))
 
-        m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('get_jobs_status', msgpack.packb([
-            job_ids
-        ])).get()
+        resp = cocaine_request('get_jobs_status', msgpack.packb([job_ids]))
 
         def convert_tss_to_dt(d):
             if d.get('create_ts'):
@@ -279,14 +275,13 @@ def json_jobs_list(job_type, job_status, tag=None):
         limit = request.args.get('limit', 50)
         offset = request.args.get('offset', 0)
 
-        m = Service(MASTERMIND_APP_NAME)
-        resp = m.enqueue('get_job_list', msgpack.packb([
-            {'job_type': mm_job_types[job_type],
-             'tag': tag,
-             'statuses': mm_job_statuses[job_status],
-             'limit': limit,
-             'offset': offset}
-        ])).get()
+        resp = cocaine_request('get_job_list', msgpack.packb([{
+            'job_type': mm_job_types[job_type],
+            'tag': tag,
+            'statuses': mm_job_statuses[job_status],
+            'limit': limit,
+            'offset': offset,
+        }]))
 
         def convert_tss_to_dt(d):
             if d.get('create_ts'):
@@ -315,9 +310,10 @@ def json_jobs_list(job_type, job_status, tag=None):
 @auth_controller.check_auth
 def json_retry_task(job_id, task_id):
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = mastermind_response(m.enqueue('retry_failed_job_task',
-                                   msgpack.packb([job_id, task_id])).get())
+        resp = cocaine_request(
+            'retry_failed_job_task',
+            msgpack.packb([job_id, task_id])
+        )
 
         return resp
     except Exception as e:
@@ -331,9 +327,10 @@ def json_retry_task(job_id, task_id):
 @auth_controller.check_auth
 def json_skip_task(job_id, task_id):
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = mastermind_response(m.enqueue('skip_failed_job_task',
-                                   msgpack.packb([job_id, task_id])).get())
+        resp = cocaine_request(
+            'skip_failed_job_task',
+            msgpack.packb([job_id, task_id])
+        )
 
         return resp
     except Exception as e:
@@ -347,9 +344,10 @@ def json_skip_task(job_id, task_id):
 @auth_controller.check_auth
 def json_cancel_job(job_id):
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = mastermind_response(m.enqueue('cancel_job',
-                                   msgpack.packb([job_id])).get())
+        resp = cocaine_request(
+            'cancel_job',
+            msgpack.packb([job_id])
+        )
 
         return resp
     except Exception as e:
@@ -363,9 +361,10 @@ def json_cancel_job(job_id):
 @auth_controller.check_auth
 def json_restart_job(job_id):
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = mastermind_response(m.enqueue('restart_failed_to_start_job',
-                                   msgpack.packb([job_id])).get())
+        resp = cocaine_request(
+            'restart_failed_to_start_job',
+            msgpack.packb([job_id])
+        )
 
         return resp
     except Exception as e:
@@ -379,9 +378,10 @@ def json_restart_job(job_id):
 @auth_controller.check_auth
 def json_approve_job(job_id):
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        resp = mastermind_response(m.enqueue('approve_job',
-                                   msgpack.packb([job_id])).get())
+        resp = cocaine_request(
+            'approve_job',
+            msgpack.packb([job_id])
+        )
 
         return resp
     except Exception as e:
@@ -395,13 +395,14 @@ def json_approve_job(job_id):
 @json_response
 def json_treemap(namespace=None):
     try:
-        m = Service(MASTERMIND_APP_NAME)
         options = {
             'namespace': namespace,
             'couple_status': request.args.get('couple_status')
         }
-        resp = m.enqueue('get_groups_tree',
-            msgpack.packb([options])).get()
+        resp = cocaine_request(
+            'get_groups_tree',
+            msgpack.packb([options])
+        )
         return resp
     except Exception as e:
         logging.error(e)
@@ -413,10 +414,11 @@ def json_treemap(namespace=None):
 @json_response
 def json_group_info(group_id):
     try:
-        m = Service(MASTERMIND_APP_NAME)
-        group_info = m.enqueue('get_couple_statistics',
-            msgpack.packb([int(group_id)])).get()
-        return group_info
+        resp = cocaine_request(
+            'get_couple_statistics',
+            msgpack.packb([int(group_id)])
+        )
+        return resp
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -426,11 +428,13 @@ def json_group_info(group_id):
 @app.route('/json/commands/status/<uid>/')
 @json_response
 def json_command_status(uid):
-    m = Service(MASTERMIND_APP_NAME)
-    status = mastermind_response(m.enqueue('get_command',
-        msgpack.packb([uid.encode('utf-8')])).get())
+    resp = cocaine_request(
+        'get_command',
+        msgpack.packb([uid.encode('utf-8')])
+    )
+    resp = mastermind_response(resp)
 
-    return status
+    return resp
 
 
 @app.route('/json/commands/execute/node/shutdown/', methods=['POST'])
@@ -440,12 +444,17 @@ def json_commands_node_shutdown():
     host, port = node.split(':')
     if not node:
         raise ValueError('Node should be specified')
-    m = Service(MASTERMIND_APP_NAME)
-    cmd = mastermind_response(m.enqueue('shutdown_node_cmd',
-        msgpack.packb([host.encode('utf-8'), int(port)])).get())
+    cmd_resp = cocaine_request(
+        'shutdown_node_cmd',
+        msgpack.packb([host.encode('utf-8'), int(port)])
+    )
+    cmd = mastermind_response(cmd_resp)
 
-    resp = mastermind_response(m.enqueue('execute_cmd',
-        msgpack.packb([host, cmd, {'node': node}])).get())
+    resp = cocaine_request(
+        'execute_cmd',
+        msgpack.packb([host, cmd, {'node': node}])
+    )
+    resp = mastermind_response(resp)
 
     uid = resp.keys()[0]
 
@@ -459,12 +468,17 @@ def json_commands_node_start():
     host, port = node.split(':')
     if not node:
         raise ValueError('Node should be specified')
-    m = Service(MASTERMIND_APP_NAME)
-    cmd = mastermind_response(m.enqueue('start_node_cmd',
-        msgpack.packb([host.encode('utf-8'), int(port)])).get())
+    cmd_resp = cocaine_request(
+        'start_node_cmd',
+        msgpack.packb([host.encode('utf-8'), int(port)])
+    )
+    cmd = mastermind_response(cmd_resp)
 
-    resp = mastermind_response(m.enqueue('execute_cmd',
-        msgpack.packb([host, cmd, {'node': node}])).get())
+    resp = cocaine_request(
+        'execute_cmd',
+        msgpack.packb([host, cmd, {'node': node}])
+    )
+    resp = mastermind_response(resp)
 
     uid = resp.keys()[0]
 
