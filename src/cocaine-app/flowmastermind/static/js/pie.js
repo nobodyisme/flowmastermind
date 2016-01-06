@@ -97,7 +97,7 @@ EffectiveMemoryPie.prototype.prepareData = function(rawdata) {
 
     data.push({value: rawdata['effective_free_space'],
                type: 'free_space'});
-    data.push({value: rawdata['total_space'] - rawdata['free_space'],
+    data.push({value: rawdata['effective_space'] - rawdata['effective_free_space'],
                type: 'occupied_space'});
 
     return {data: data};
