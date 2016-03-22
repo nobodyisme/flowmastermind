@@ -12,7 +12,7 @@ def make_cocaine_request(method, *args):
         attempts=5
     )
     try:
-        return m.enqueue(method, *args).get()
+        return m.run_sync(method, *args)
     except Exception as e:
         # TODO: not every type of the exception works properly with
         # multiptocessing.Pool (e.g. cocaine.exceptions.ServiceError).

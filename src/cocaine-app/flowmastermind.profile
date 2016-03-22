@@ -1,4 +1,6 @@
 {
     "pool-limit": 10,
-    "startup-timeout": 60
+    "spawn-timeout": 60,
+    "heartbeat-timeout": 60,
+    "handshake-timeout": 120
 }
