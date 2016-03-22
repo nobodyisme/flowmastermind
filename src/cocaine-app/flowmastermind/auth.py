@@ -1,6 +1,6 @@
 from functools import wraps
 
-from cocaine.logging import Logger
+from cocaine.logger import Logger
 from flask import abort, request
 
 from flowmastermind.config import config

@@ -1,5 +1,5 @@
-from cocaine.logging import Logger
-from cocaine.decorators.http import http
+from cocaine.logger import Logger
+from cocaine.decorators import http
 import msgpack
 
 logging = Logger()
