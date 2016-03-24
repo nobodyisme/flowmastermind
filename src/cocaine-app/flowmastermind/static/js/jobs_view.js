@@ -87,6 +87,9 @@ var Jobs = (function () {
             if (state['uncoupled_group']) {
                 title += ' в пустую группу ' + state['uncoupled_group'];
             }
+        } else if (state['type'] == 'make_lrc_groups_job') {
+            title = 'Создание ' + state['lrc_groups'].length + ' lrc-групп' +
+            ' на основе пустых групп ' + '[' + state['uncoupled_groups'].join(', ') + ']';
         }
         return title;
     };
@@ -490,6 +493,14 @@ var Jobs = (function () {
             this.renderHistoryRemoveNodeFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'couple_defrag_state_check') {
             this.renderCoupleDefragStateCheck(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'create_group') {
+            this.renderCreateGroup(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'remove_group') {
+            this.renderRemoveGroup(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'dnet_client_backend_cmd') {
+            this.renderDnetClientBackendCmd(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'write_meta_key') {
+            this.renderWriteMetaKey(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -530,6 +541,47 @@ var Jobs = (function () {
         var cleantitle = 'ожидание окончания дефрагментации групп';
         task_maintitle.html(cleantitle);
         task_maintitle.attr('title', cleantitle);
+    }
+
+    JobsView.prototype.renderCreateGroup = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var cleantitle = 'Создание группы ' + task_state['group'] +
+            ' размером ' + prefixBytesRound(task_state['params']['total_space']);
+        task_maintitle.html(cleantitle);
+        task_maintitle.attr('title', cleantitle);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderRemoveGroup = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var cleantitle = 'Удаление группы ' + task_state['group'];
+        task_maintitle.html(cleantitle);
+        task_maintitle.attr('title', cleantitle);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderDnetClientBackendCmd = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        if (task_state['params']['dnet_client_command'] == 'enable') {
+            var title = 'Запуск бэкенда ';
+            if (task_state['params']['backend_id']) {
+                title += task_state['params']['backend_id'];
+            } else if (task_state['params']['group']) {
+                title += 'группы ' + task_state['params']['group'];
+            }
+        }
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderWriteMetaKey = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'Запись мета-ключа в группу ' + task_state['group'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
     }
 
     JobsView.prototype.updateContainers = function() {

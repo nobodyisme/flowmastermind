@@ -62,6 +62,13 @@
                         <span class="selected">восстановление</span>
                     {% endif %}
                 </span>
+                <span class="menu-page-item">
+                    {% if cur_page != 'lrc-groups' %}
+                        <a href="/jobs/lrc-groups/">lrc-группы</a>
+                    {% else %}
+                        <span class="selected">lrc-группы</span>
+                    {% endif %}
+                </span>
         {% endif %}
         <a class="menu-page" href="/commands/">
             Команды

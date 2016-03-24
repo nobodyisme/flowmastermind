@@ -131,7 +131,7 @@ def jobs(job_type=None, job_status=None, year=None, month=None):
     if job_status is None:
         job_status = 'not-approved'
 
-    if job_type not in ('move', 'recovery', 'defrag', 'restore'):
+    if job_type not in ('move', 'recovery', 'defrag', 'restore', 'lrc-groups'):
         abort(404)
     if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
@@ -255,15 +255,18 @@ def json_jobs_update():
 @app.route('/json/jobs/<job_type>/<job_status>/<tag>/')
 @json_response
 def json_jobs_list(job_type, job_status, tag=None):
-    if job_type not in ('move', 'recovery', 'defrag', 'restore'):
+    if job_type not in ('move', 'recovery', 'defrag', 'restore', 'lrc-groups'):
         abort(404)
     if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
 
-    mm_job_types = {'move': 'move_job',
-                    'recovery': 'recover_dc_job',
-                    'defrag': 'couple_defrag_job',
-                    'restore': 'restore_group_job'}
+    mm_job_types = {
+        'move': 'move_job',
+        'recovery': 'recover_dc_job',
+        'defrag': 'couple_defrag_job',
+        'restore': 'restore_group_job',
+        'lrc-groups': ('make_lrc_groups_job', ),
+    }
 
     mm_job_statuses = {'not-approved': ['not_approved'],
                        'executing': ['new', 'executing'],
