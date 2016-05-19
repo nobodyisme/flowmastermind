@@ -1,3 +1,9 @@
+flowmastermind (0.65) trusty; urgency=medium
+
+  * Support lrc-related tasks and jobs
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 19 May 2016 13:11:49 +0300
+
 flowmastermind (0.64) trusty; urgency=medium
 
   * Add lrc jobs support
