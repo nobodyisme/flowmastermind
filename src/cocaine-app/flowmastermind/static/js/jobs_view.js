@@ -90,6 +90,10 @@ var Jobs = (function () {
         } else if (state['type'] == 'make_lrc_groups_job') {
             title = 'Создание ' + state['lrc_groups'].length + ' lrc-групп' +
             ' на основе пустых групп ' + '[' + state['uncoupled_groups'].join(', ') + ']';
+        } else if (state['type'] == 'add_lrc_groupset_job') {
+            var groupset = state['groups'].join(':');
+            title = 'Создание lrc-групсета ' + groupset + ' ' +
+            'для капла ' + state['couple'];
         }
         return title;
     };
@@ -501,6 +505,10 @@ var Jobs = (function () {
             this.renderDnetClientBackendCmd(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'write_meta_key') {
             this.renderWriteMetaKey(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'wait_groupset_state') {
+            this.renderWaitGroupsetState(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'change_couple_frozen_status') {
+            this.renderChangeCoupleFrozenStatus(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -580,6 +588,27 @@ var Jobs = (function () {
 
     JobsView.prototype.renderWriteMetaKey = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = 'Запись мета-ключа в группу ' + task_state['group'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderWaitGroupsetState = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'Ожидание групсета ' + task_state['groupset'];
+        if (task_state['groupset_status']) {
+            title += ', требуемый статус ' + task_state['groupset_status'];
+        }
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+        if (task_state['frozen']) {
+            title += 'Заморозка капла ';
+        } else {
+            title += 'Разморозка капла ';
+        }
+        title += task_state['couple'];
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
     }

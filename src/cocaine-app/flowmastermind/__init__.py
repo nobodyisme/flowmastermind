@@ -265,7 +265,7 @@ def json_jobs_list(job_type, job_status, tag=None):
         'recovery': 'recover_dc_job',
         'defrag': 'couple_defrag_job',
         'restore': 'restore_group_job',
-        'lrc-groups': ('make_lrc_groups_job', ),
+        'lrc-groups': ('make_lrc_groups_job', 'add_lrc_groupset_job'),
     }
 
     mm_job_statuses = {'not-approved': ['not_approved'],
