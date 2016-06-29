@@ -94,6 +94,8 @@ var Jobs = (function () {
             var groupset = state['groups'].join(':');
             title = 'Создание lrc-групсета ' + groupset + ' ' +
             'для капла ' + state['couple'];
+        } else if (state['type'] == 'convert_to_lrc_groupset_job') {
+            title = create_convert_to_lrc_groupset_job_label(state);
         }
         return title;
     };
