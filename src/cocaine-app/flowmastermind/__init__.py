@@ -19,7 +19,7 @@ from flowmastermind.auth import auth_controller
 from flowmastermind.config import config
 from flowmastermind.error import ApiResponseError, AuthenticationError, AuthorizationError
 from flowmastermind.response import JsonResponse
-from flowmastermind.test import ping
+# from flowmastermind.test import ping
 
 
 logging = Logger()
@@ -81,6 +81,26 @@ def mastermind_response(response):
 def charts():
     try:
         return render_template('charts.html', menu_page='charts')
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/ping')
+def ping():
+    try:
+        return 'ping'
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+@app.route('/aping')
+def aping():
+    try:
+        return 'aping'
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
