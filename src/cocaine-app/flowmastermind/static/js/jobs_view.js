@@ -511,6 +511,10 @@ var Jobs = (function () {
             this.renderWaitGroupsetState(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'change_couple_frozen_status') {
             this.renderChangeCoupleFrozenStatus(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'write_external_storage_mapping') {
+            this.renderWriteExternalStorageMapping(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'change_couple_settings') {
+            this.renderChangeCoupleSettings(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -599,6 +603,29 @@ var Jobs = (function () {
         if (task_state['groupset_status']) {
             title += ', требуемый статус ' + task_state['groupset_status'];
         }
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderWriteExternalStorageMapping = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'Сохранение маппинга внешнего хранилища';
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderChangeCoupleSettings = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+        if (task_state['update']) {
+            title += 'Обновление ';
+        } else {
+            title += 'Установка ';
+        }
+        title += 'настроек капла ' + task_state['couple'];
+
+        if (task_state['settings']['read_preference']) {
+            title += ', приоритеты чтения: ' + task_state['settings']['read_preference'].join(', ');
+        }
+
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
     }
