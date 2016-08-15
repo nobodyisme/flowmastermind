@@ -1,3 +1,10 @@
+flowmastermind (0.67) trusty; urgency=medium
+
+  * Add write_external_storage_mapping and change_couple_settings tasks
+    rendering
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Mon, 15 Aug 2016 17:16:00 +0300
+
 flowmastermind (0.66) trusty; urgency=medium
 
   * Add custom jobs labels for lrc convert job
