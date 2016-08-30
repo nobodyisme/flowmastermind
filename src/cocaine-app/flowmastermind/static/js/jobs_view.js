@@ -511,6 +511,8 @@ var Jobs = (function () {
             this.renderWaitGroupsetState(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'change_couple_frozen_status') {
             this.renderChangeCoupleFrozenStatus(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'external_storage_data_size') {
+            this.renderExternalStorageDataSize(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'write_external_storage_mapping') {
             this.renderWriteExternalStorageMapping(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'change_couple_settings') {
@@ -607,12 +609,6 @@ var Jobs = (function () {
         task_maintitle.attr('title', title);
     }
 
-    JobsView.prototype.renderWriteExternalStorageMapping = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
-        var title = 'Сохранение маппинга внешнего хранилища';
-        task_maintitle.html(title);
-        task_maintitle.attr('title', title);
-    }
-
     JobsView.prototype.renderChangeCoupleSettings = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = '';
         if (task_state['update']) {
@@ -638,6 +634,24 @@ var Jobs = (function () {
             title += 'Разморозка капла ';
         }
         title += task_state['couple'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderExternalStorageDataSize = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'Определение размера данных';
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderWriteExternalStorageMapping = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'Запись соответствия капла и внешнего хранилища';
+        if (task_state['couples'] != undefined && task_state['couples'].length > 1) {
+            title = 'Запись соответствия каплов и внешнего хранилища';
+        }
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
     }

@@ -268,7 +268,7 @@ def json_jobs_list(job_type, job_status, tag=None):
         'lrc-groups': (
             'make_lrc_groups_job',
             'add_lrc_groupset_job',
-            'convert_to_lrc_groupset_job',
+            'convert_to_lrc_groupset_job2',
         ),
     }
 
