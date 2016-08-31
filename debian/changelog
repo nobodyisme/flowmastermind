@@ -1,3 +1,9 @@
+flowmastermind (0.69) trusty; urgency=medium
+
+  * Misprint fix
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 31 Aug 2016 14:46:46 +0300
+
 flowmastermind (0.68) trusty; urgency=medium
 
   * Add external storage data size task rendering
