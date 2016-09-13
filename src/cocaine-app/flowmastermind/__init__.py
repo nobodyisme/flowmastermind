@@ -119,6 +119,16 @@ def history(year=None, month=None):
         raise
 
 
+SUPPORTED_JOB_TYPES = (
+    'move',
+    'recovery',
+    'defrag',
+    'restore',
+    'lrc-groups',
+    'cleanup',
+)
+
+
 @app.route('/jobs/')
 @app.route('/jobs/<job_type>/')
 @app.route('/jobs/<job_type>/<job_status>/')
@@ -131,7 +141,7 @@ def jobs(job_type=None, job_status=None, year=None, month=None):
     if job_status is None:
         job_status = 'not-approved'
 
-    if job_type not in ('move', 'recovery', 'defrag', 'restore', 'lrc-groups'):
+    if job_type not in SUPPORTED_JOB_TYPES:
         abort(404)
     if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
@@ -255,7 +265,7 @@ def json_jobs_update():
 @app.route('/json/jobs/<job_type>/<job_status>/<tag>/')
 @json_response
 def json_jobs_list(job_type, job_status, tag=None):
-    if job_type not in ('move', 'recovery', 'defrag', 'restore', 'lrc-groups'):
+    if job_type not in SUPPORTED_JOB_TYPES:
         abort(404)
     if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
         abort(404)
@@ -269,6 +279,9 @@ def json_jobs_list(job_type, job_status, tag=None):
             'make_lrc_groups_job',
             'add_lrc_groupset_job',
             'convert_to_lrc_groupset_job',
+        ),
+        'cleanup': (
+            'ttl_cleanup_job',
         ),
     }
 

@@ -69,6 +69,13 @@
                         <span class="selected">lrc-группы</span>
                     {% endif %}
                 </span>
+                <span class="menu-page-item">
+                    {% if cur_page != 'cleanup' %}
+                        <a href="/jobs/cleanup/">чистка</a>
+                    {% else %}
+                        <span class="selected">чистка</span>
+                    {% endif %}
+                </span>
         {% endif %}
         <a class="menu-page" href="/commands/">
             Команды

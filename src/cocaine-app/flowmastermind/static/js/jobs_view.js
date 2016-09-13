@@ -96,6 +96,14 @@ var Jobs = (function () {
             'для капла ' + state['couple'];
         } else if (state['type'] == 'convert_to_lrc_groupset_job') {
             title = create_convert_to_lrc_groupset_job_label(state);
+        } else if (state['type'] == 'ttl_cleanup_job') {
+            title = 'Чистка ключей с истёкшим TTL, ';
+            if (state['couple'] != undefined) {
+                title += 'неймспейс ' + state['namespace'] + ', ';
+                title += 'капл ' + state['couple'];
+            } else {
+                title += 'группа ' + state['iter_group'];
+            }
         }
         return title;
     };
