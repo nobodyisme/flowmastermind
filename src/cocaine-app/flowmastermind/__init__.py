@@ -10,13 +10,11 @@ import traceback
 
 import msgpack
 
-from cocaine.services import Service
 from cocaine.logging import Logger
 from flask import Flask, request
 from flask import abort, render_template
 
 from flowmastermind.auth import auth_controller
-from flowmastermind.config import MASTERMIND_APP_NAME
 from flowmastermind.error import ApiResponseError, AuthenticationError, AuthorizationError
 from flowmastermind.response import JsonResponse
 from flowmastermind.test import ping
@@ -90,8 +88,11 @@ def charts():
 @app.route('/commands/')
 def commands():
     try:
-        return render_template('commands.html', menu_page='commands',
-                                                cur_page='commands')
+        return render_template(
+            'commands.html',
+            menu_page='commands',
+            cur_page='commands',
+        )
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -109,10 +110,13 @@ def history(year=None, month=None):
             dt = datetime.datetime(int(year), int(month), 1)
         except ValueError:
             abort(404)
-        return render_template('commands_history.html', year=year,
-                                                        month=month,
-                                                        menu_page='commands',
-                                                        cur_page='history')
+        return render_template(
+            'commands_history.html',
+            year=year,
+            month=month,
+            menu_page='commands',
+            cur_page='history',
+        )
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
@@ -161,22 +165,26 @@ def jobs(job_type=None, job_status=None, year=None, month=None):
         tag = dt.strftime('%Y-%m')
         prev_dt = dt - datetime.timedelta(days=1)
 
-        return render_template('jobs.html', menu_page='jobs',
-                                            cur_page=job_type,
-                                            job_type=job_type,
-                                            job_status=job_status,
-                                            tag=tag,
-                                            previous_year=prev_dt.year,
-                                            previous_month='{0:02d}'.format(prev_dt.month),
-                                            cur_year=dt.year,
-                                            cur_month='{0:02d}'.format(dt.month),
-                                            limit=limit,
-                                            offset=offset,
-                                            next_offset=limit + offset)
+        return render_template(
+            'jobs.html',
+            menu_page='jobs',
+            cur_page=job_type,
+            job_type=job_type,
+            job_status=job_status,
+            tag=tag,
+            previous_year=prev_dt.year,
+            previous_month='{0:02d}'.format(prev_dt.month),
+            cur_year=dt.year,
+            cur_month='{0:02d}'.format(dt.month),
+            limit=limit,
+            offset=offset,
+            next_offset=limit + offset,
+        )
     except Exception as e:
         logging.error(e)
         logging.error(traceback.format_exc())
         raise
+
 
 @app.route('/monitor/couple-free-effective-space/')
 def monitor_couple_free_eff_space():
@@ -285,10 +293,12 @@ def json_jobs_list(job_type, job_status, tag=None):
         ),
     }
 
-    mm_job_statuses = {'not-approved': ['not_approved'],
-                       'executing': ['new', 'executing'],
-                       'pending': ['pending', 'broken'],
-                       'finished': ['completed', 'cancelled'] }
+    mm_job_statuses = {
+        'not-approved': ['not_approved'],
+        'executing': ['new', 'executing'],
+        'pending': ['pending', 'broken'],
+        'finished': ['completed', 'cancelled'],
+    }
 
     try:
 
