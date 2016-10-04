@@ -7,6 +7,7 @@ import datetime
 from functools import wraps
 import json
 import traceback
+import urllib2
 
 import msgpack
 
@@ -15,6 +16,7 @@ from flask import Flask, request
 from flask import abort, render_template
 
 from flowmastermind.auth import auth_controller
+from flowmastermind.config import config
 from flowmastermind.error import ApiResponseError, AuthenticationError, AuthorizationError
 from flowmastermind.response import JsonResponse
 from flowmastermind.test import ping
@@ -455,6 +457,11 @@ def json_group_info(group_id):
         raise
 
 
+STATE_URL_TPL = 'http://{host}:{port}/command/status/{uid}/'
+
+MINIONS_CFG = config.get('minions', {})
+
+
 @app.route('/json/commands/status/<uid>/')
 @json_response
 def json_command_status(uid):
@@ -463,6 +470,35 @@ def json_command_status(uid):
         msgpack.packb([uid.encode('utf-8')])
     )
     resp = mastermind_response(resp)
+
+    url = STATE_URL_TPL.format(
+        host=resp['host'],
+        port=MINIONS_CFG.get('port', 8081),
+        uid=uid,
+    )
+
+    req = urllib2.Request(url)
+    if 'authkey' in MINIONS_CFG:
+        req.add_header('X-Auth', MINIONS_CFG['authkey'])
+
+    try:
+        r = urllib2.urlopen(
+            req,
+            timeout=MINIONS_CFG.get('timeout', 5),
+        )
+        command_response = json.loads(r.read())
+    except Exception as e:
+        resp['output'] = 'Failed to fetch stdout from minions: {}'.format(e)
+        resp['error_output'] = 'Failed to fetch stderr from minions: {}'.format(e)
+    else:
+        if command_response['status'] == 'success':
+            command_data = command_response['response'][uid]
+            resp['output'] = command_data['output']
+            resp['error_output'] = command_data['error_output']
+        else:
+            error = command_response['error']
+            resp['output'] = 'Failed to fetch stdout from minions: {}'.format(error)
+            resp['error_output'] = 'Failed to fetch stderr from minions: {}'.format(error)
 
     return resp
 
