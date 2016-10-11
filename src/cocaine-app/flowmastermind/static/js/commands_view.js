@@ -131,6 +131,8 @@ var Commands = (function(container) {
         cmd_std_output.css({display: 'block'});
     }
 
+    var carriage_returns = /\n([^\n])*\r/g;
+
     CommandsView.prototype.updateCmd = function(event, host, uid, status) {
 
         var cmd = this.container.find('.cmd[uid='+uid+']'),
@@ -175,10 +177,13 @@ var Commands = (function(container) {
 
         var progressVal = Math.round(status.progress * 100 * 100) / 100;
         progress(progressVal, cmd_progress);
-        cmd_stdout.find('textarea').text(status.output);
-        cmd_stderr.find('textarea').text(status.error_output);
 
+        /* Replace lines with carriage returns to provide more user-friendly output view */
+        var stdout_output = status.output.replace(carriage_returns, '\n'),
+            stderr_output = status.error_output.replace(carriage_returns, '\n');
 
+        cmd_stdout.find('textarea').text(stdout_output);
+        cmd_stderr.find('textarea').text(stderr_output);
     }
 
     function progress(percent, $element) {
