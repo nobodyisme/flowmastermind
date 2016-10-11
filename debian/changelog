@@ -1,3 +1,9 @@
+flowmastermind (0.72) trusty; urgency=medium
+
+  * Replace carriage returns for more user-friendly output view
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 11 Oct 2016 14:35:41 +0300
+
 flowmastermind (0.71) trusty; urgency=medium
 
   * Use minions as a source for commands' stdout and stderr
