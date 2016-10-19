@@ -1,8 +1,20 @@
-flowmastermind (0.70~cocainev12-1) trusty; urgency=medium
+flowmastermind (0.72~cocainev12-1) trusty; urgency=medium
 
   * Update worker to run on cocaine v12
 
  -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 22 Mar 2016 18:10:42 +0300
+
+flowmastermind (0.72) trusty; urgency=medium
+
+  * Replace carriage returns for more user-friendly output view
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 11 Oct 2016 14:35:41 +0300
+
+flowmastermind (0.71) trusty; urgency=medium
+
+  * Use minions as a source for commands' stdout and stderr
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 04 Oct 2016 20:00:29 +0300
 
 flowmastermind (0.70) trusty; urgency=medium
 

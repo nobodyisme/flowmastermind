@@ -18,5 +18,3 @@ echo "Deploy New Flowmastermind:"
 cocaine-tool app upload --manifest $DEPLOY_DIR/cocaine-app/flowmastermind.manifest --package $DEPLOY_DIR/cocaine-app/flowmastermind.tar.gz -n flowmastermind
 cocaine-tool profile upload -n flowmastermind --profile $DEPLOY_DIR/cocaine-app/flowmastermind.profile
 cocaine-tool runlist add-app -n default --app flowmastermind --profile flowmastermind --force
-
-chown cocaine -R /usr/lib/flowmastermind
