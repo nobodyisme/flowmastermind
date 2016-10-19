@@ -11,7 +11,7 @@ import urllib2
 
 import msgpack
 
-from cocaine.logging import Logger
+from cocaine.logger import Logger
 from flask import Flask, request
 from flask import abort, render_template
 
