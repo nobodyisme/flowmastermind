@@ -1,3 +1,9 @@
+flowmastermind-cocainev11 (0.73) trusty; urgency=medium
+
+  * Package renamed
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 24 Nov 2016 23:15:38 +0300
+
 flowmastermind (0.72) trusty; urgency=medium
 
   * Replace carriage returns for more user-friendly output view
