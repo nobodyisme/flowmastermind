@@ -17,4 +17,6 @@ Depends: ${shlibs:Depends},
  python-flask,
  python-mastermind,
  python-msgpack | msgpack-python
+Conflicts:
+ flowmastermind-cocainev11
 Description: Frontend for mastermind storage statistics display
