@@ -1,6 +1,6 @@
-flowmastermind (0.72~cocainev12-1) trusty; urgency=medium
+flowmastermind (0.73) trusty; urgency=medium
 
-  * Update worker to run on cocaine v12
+  * Version bump
 
  -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 22 Mar 2016 18:10:42 +0300
 
