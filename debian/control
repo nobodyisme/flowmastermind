@@ -15,7 +15,7 @@ Depends: ${shlibs:Depends},
  cocaine-v12-tornado-proxy,
  cocaine-v12-tools,
  python-flask,
- python-mastermind,
+ python-mastermind-cocainev11,
  python-msgpack | msgpack-python
 Conflicts:
  flowmastermind-cocainev11
