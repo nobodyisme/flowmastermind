@@ -517,6 +517,8 @@ var Jobs = (function () {
             this.renderWriteMetaKey(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'wait_groupset_state') {
             this.renderWaitGroupsetState(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'wait_backend_state') {
+            this.renderWaitBackendState(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'change_couple_frozen_status') {
             this.renderChangeCoupleFrozenStatus(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'external_storage_data_size') {
@@ -610,8 +612,33 @@ var Jobs = (function () {
 
     JobsView.prototype.renderWaitGroupsetState = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = 'Ожидание групсета ' + task_state['groupset'];
-        if (task_state['groupset_status']) {
+        if (task_state['groupset_statuses']) {
+            title += ', ожидаемые статусы ' + task_state['groupset_statuses'];
+        } else if (task_state['groupset_status']) {
             title += ', требуемый статус ' + task_state['groupset_status'];
+        }
+        if (task_state['sleep_period']) {
+            title += ' (ожидание ' + convertTimeUnits(task_state['sleep_period']) + ')';
+        }
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderWaitBackendState = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+        if (task_state['missing']) {
+            title += 'Ожидание отключения бекенда ';
+        } else {
+            title += 'Ожидание бекенда ';
+        }
+
+        title += task_state['backend'];
+
+        if (task_state['backend_statuses']) {
+            title += ', ожидаемые статусы ' + task_state['backend_statuses'];
+        }
+        if (task_state['sleep_period']) {
+            title += ' (ожидание ' + convertTimeUnits(task_state['sleep_period']) + ')';
         }
         task_maintitle.html(title);
         task_maintitle.attr('title', title);

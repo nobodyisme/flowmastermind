@@ -49,6 +49,26 @@ function prefixNumRound(number, max_value) {
     return render(res, prefixes.length - 1);
 }
 
+var time_units = ['сек', 'мин', 'ч', 'д'],
+    unit_count = [60, 60, 24];
+
+
+function convertTimeUnits(seconds) {
+    var res = seconds,
+        parts = [];
+    for (var i = 0; i < time_units.length - 1; i++) {
+        var part_val = res % unit_count[i];
+        if (part_val) {
+            parts.push(part_val + ' ' + time_units[i]);
+        }
+        res = Math.floor(res / unit_count[i]);
+    }
+    if (res) {
+        parts.push(res + ' ' + time_units[time_units.length - 1]);
+    }
+    return parts.reverse().join(' ');
+}
+
 Number.prototype.format = function(n, x, s, c) {
     var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
         num = this.toFixed(Math.max(0, ~~n));
