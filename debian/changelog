@@ -1,3 +1,9 @@
+flowmastermind-cocainev11 (0.75) trusty; urgency=medium
+
+  * Improve wait status tasks rendering
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 09 Dec 2016 16:13:17 +0300
+
 flowmastermind-cocainev11 (0.74) trusty; urgency=medium
 
   * Version bump
