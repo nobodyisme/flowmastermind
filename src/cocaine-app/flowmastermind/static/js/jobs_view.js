@@ -501,6 +501,7 @@ var Jobs = (function () {
             task_state['type'] == 'node_stop_task' ||
             task_state['type'] == 'node_backend_defrag_task' ||
             task_state['type'] == 'recover_dc_group_task' ||
+            task_state['type'] == 'external_storage' ||
             task_state['type'] == 'rsync_backend_task') {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
