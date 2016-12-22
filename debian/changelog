@@ -1,3 +1,9 @@
+flowmastermind-cocainev11 (0.76) trusty; urgency=medium
+
+  * Add external storage task render
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 23 Dec 2016 00:51:49 +0300
+
 flowmastermind-cocainev11 (0.75) trusty; urgency=medium
 
   * Improve wait status tasks rendering
