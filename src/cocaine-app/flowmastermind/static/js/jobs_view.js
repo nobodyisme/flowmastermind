@@ -422,6 +422,8 @@ var Jobs = (function () {
 
                 var task_cmd_state = $('<div class="task-cmd-stat">').appendTo(task_additional_data);
 
+                var visible = true;
+
                 json_ajax({
                     url: '/json/commands/status/' + task_state['minion_cmd_id'] + '/',
                     timeout: 10000,
@@ -431,7 +433,10 @@ var Jobs = (function () {
                         commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
 
                         var closeBtn = $('<div>').addClass('close')
-                            .on('click', function () { task_cmd_state.remove(); })
+                            .on('click', function () {
+                                task_cmd_state.remove();
+                                visible = false;
+                            })
                             .text('X')
                             .appendTo(task_cmd_state);
 
@@ -449,10 +454,14 @@ var Jobs = (function () {
                                     timeout: 3000,
                                     success: function (cmd_status) {
                                         commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
-                                        setTimeout(updateCmdStatus, 3000);
+                                        if (visible) {
+                                            setTimeout(updateCmdStatus, 3000);
+                                        }
                                     },
                                     error: function () {
-                                        setTimeout(updateCmdStatus, 3000);
+                                        if (visible) {
+                                            setTimeout(updateCmdStatus, 3000);
+                                        }
                                     }
                                 });
 
@@ -547,7 +556,7 @@ var Jobs = (function () {
     };
 
     JobsView.prototype.closeCmdStatus = function () {
-        this.container.find('.task-cmd-stat').remove();
+        this.container.find('.task-cmd-stat .close').click();
     };
 
     JobsView.prototype.renderHistoryRemoveNodeFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
