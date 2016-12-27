@@ -1,3 +1,9 @@
+flowmastermind-cocainev11 (0.77) trusty; urgency=medium
+
+  * Add run_history visualization
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 27 Dec 2016 17:29:42 +0300
+
 flowmastermind-cocainev11 (0.76) trusty; urgency=medium
 
   * Add external storage task render
