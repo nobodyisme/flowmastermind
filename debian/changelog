@@ -1,3 +1,9 @@
+flowmastermind-cocainev11 (0.78) trusty; urgency=medium
+
+  * Fix flowmastermind deployment
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 27 Dec 2016 17:43:01 +0300
+
 flowmastermind-cocainev11 (0.77) trusty; urgency=medium
 
   * Add run_history visualization
