@@ -1,6 +1,6 @@
 (function() {
 
-    var updatePeriod = 15000,
+    var updatePeriod = 30000,
         jobs_container = $('.jobs-containers'),
         paginator_container = jobs_container.find('.paginator_container'),
         job_type = jobs_container.attr('job-type'),
