@@ -1,3 +1,11 @@
+flowmastermind-cocainev11 (0.79) trusty; urgency=medium
+
+  * Support single job view
+  * Increase update timeout for job listing
+  * Increase jobs list and update timeouts
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 12 Jan 2017 00:04:34 +0300
+
 flowmastermind-cocainev11 (0.78) trusty; urgency=medium
 
   * Fix flowmastermind deployment
