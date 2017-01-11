@@ -135,6 +135,15 @@ SUPPORTED_JOB_TYPES = (
 )
 
 
+@app.route('/job/<job_id>/')
+def job(job_id):
+    return render_template(
+        'job.html',
+        menu_page='jobs',
+        job_id=job_id,
+    )
+
+
 @app.route('/jobs/')
 @app.route('/jobs/<job_type>/')
 @app.route('/jobs/<job_type>/<job_status>/')
@@ -271,49 +280,59 @@ def json_jobs_update():
         raise
 
 
+MM_JOB_TYPES = {
+    'move': 'move_job',
+    'recovery': 'recover_dc_job',
+    'defrag': 'couple_defrag_job',
+    'restore': 'restore_group_job',
+    'lrc-groups': (
+        'make_lrc_groups_job',
+        'add_lrc_groupset_job',
+        'convert_to_lrc_groupset_job',
+    ),
+    'cleanup': (
+        'ttl_cleanup_job',
+    ),
+}
+
+MM_JOB_STATUSES = {
+    'not-approved': ['not_approved'],
+    'executing': ['new', 'executing'],
+    'pending': ['pending', 'broken'],
+    'finished': ['completed', 'cancelled'],
+}
+
+
+@app.route('/json/jobs/<job_id>/')
 @app.route('/json/jobs/<job_type>/<job_status>/')
 @app.route('/json/jobs/<job_type>/<job_status>/<tag>/')
 @json_response
-def json_jobs_list(job_type, job_status, tag=None):
-    if job_type not in SUPPORTED_JOB_TYPES:
-        abort(404)
-    if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
-        abort(404)
+def json_jobs_list(job_id=None, job_type=None, job_status=None, tag=None):
 
-    mm_job_types = {
-        'move': 'move_job',
-        'recovery': 'recover_dc_job',
-        'defrag': 'couple_defrag_job',
-        'restore': 'restore_group_job',
-        'lrc-groups': (
-            'make_lrc_groups_job',
-            'add_lrc_groupset_job',
-            'convert_to_lrc_groupset_job',
-        ),
-        'cleanup': (
-            'ttl_cleanup_job',
-        ),
-    }
-
-    mm_job_statuses = {
-        'not-approved': ['not_approved'],
-        'executing': ['new', 'executing'],
-        'pending': ['pending', 'broken'],
-        'finished': ['completed', 'cancelled'],
-    }
-
-    try:
+    if job_id:
+        params = {
+            'ids': [job_id],
+        }
+    else:
+        if job_type not in SUPPORTED_JOB_TYPES:
+            abort(404)
+        if job_status not in ('not-approved', 'executing', 'pending', 'finished'):
+            abort(404)
 
         limit = request.args.get('limit', 50)
         offset = request.args.get('offset', 0)
 
-        resp = cocaine_request('get_job_list', msgpack.packb([{
-            'job_type': mm_job_types[job_type],
+        params = {
+            'job_type': MM_JOB_TYPES[job_type],
             'tag': tag,
-            'statuses': mm_job_statuses[job_status],
+            'statuses': MM_JOB_STATUSES[job_status],
             'limit': limit,
             'offset': offset,
-        }]))
+        }
+
+    try:
+
+        resp = cocaine_request('get_job_list', msgpack.packb([params]))
 
         def convert_tss_to_dt(d):
             if d.get('create_ts'):
