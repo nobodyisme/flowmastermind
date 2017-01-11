@@ -19,7 +19,7 @@
         $.ajax({
             url: '/json/jobs/' + job_type + '/' + job_status + '/' + job_tag + '/' + '?limit=' + limit + '&offset=' + offset,
             data: {ts: new Date().getTime()},
-            timeout: 8000,
+            timeout: 30000,
             dataType: 'json',
             success: function (response) {
 
@@ -66,7 +66,7 @@
             url: '/json/jobs/update/',
             data: {jobs: job_ids,
                    ts: new Date().getTime()},
-            timeout: 8000,
+            timeout: 30000,
             dataType: 'json',
             type: 'POST',
             success: function (response) {
