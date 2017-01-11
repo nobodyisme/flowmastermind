@@ -1,8 +1,8 @@
-flowmastermind (0.79-1) trusty; urgency=medium
+flowmastermind (0.80) trusty; urgency=medium
 
-  * Fix for package renaming
+  * Add single job template
 
- -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 12 Jan 2017 00:27:01 +0300
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 12 Jan 2017 00:36:52 +0300
 
 flowmastermind (0.79) trusty; urgency=medium
 
