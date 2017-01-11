@@ -1,3 +1,9 @@
+flowmastermind (0.79-1) trusty; urgency=medium
+
+  * Fix for package renaming
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 12 Jan 2017 00:27:01 +0300
+
 flowmastermind (0.79) trusty; urgency=medium
 
   * Support single job view
