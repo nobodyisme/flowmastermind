@@ -1,8 +1,9 @@
 (function() {
 
-    var updatePeriod = 15000,
+    var updatePeriod = 30000,
         jobs_container = $('.jobs-containers'),
         paginator_container = jobs_container.find('.paginator_container'),
+        job_id = jobs_container.attr('job-id'),
         job_type = jobs_container.attr('job-type'),
         job_tag = jobs_container.attr('job-tag'),
         job_status = jobs_container.attr('job-status'),
@@ -16,10 +17,16 @@
     spinner.start();
 
     function loadJobs() {
+        var load_url;
+        if (job_id) {
+            load_url = '/json/jobs/' + job_id + '/';
+        } else {
+            load_url = '/json/jobs/' + job_type + '/' + job_status + '/' + job_tag + '/' + '?limit=' + limit + '&offset=' + offset;
+        }
         $.ajax({
-            url: '/json/jobs/' + job_type + '/' + job_status + '/' + job_tag + '/' + '?limit=' + limit + '&offset=' + offset,
+            url: load_url,
             data: {ts: new Date().getTime()},
-            timeout: 8000,
+            timeout: 30000,
             dataType: 'json',
             success: function (response) {
 
@@ -66,7 +73,7 @@
             url: '/json/jobs/update/',
             data: {jobs: job_ids,
                    ts: new Date().getTime()},
-            timeout: 8000,
+            timeout: 30000,
             dataType: 'json',
             type: 'POST',
             success: function (response) {

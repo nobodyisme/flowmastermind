@@ -1,8 +1,28 @@
-flowmastermind (0.75-1) trusty; urgency=medium
+flowmastermind (0.79) trusty; urgency=medium
 
-  * Fix dependencies
+  * Support single job view
+  * Increase update timeout for job listing
+  * Increase jobs list and update timeouts
 
- -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 09 Dec 2016 19:24:26 +0300
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 12 Jan 2017 00:04:34 +0300
+
+flowmastermind (0.78) trusty; urgency=medium
+
+  * Fix flowmastermind deployment
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 27 Dec 2016 17:43:01 +0300
+
+flowmastermind (0.77) trusty; urgency=medium
+
+  * Add run_history visualization
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 27 Dec 2016 17:29:42 +0300
+
+flowmastermind (0.76) trusty; urgency=medium
+
+  * Add external storage task render
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 23 Dec 2016 00:51:49 +0300
 
 flowmastermind (0.75) trusty; urgency=medium
 

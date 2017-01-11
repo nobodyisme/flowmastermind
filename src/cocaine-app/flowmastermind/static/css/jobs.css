@@ -148,14 +148,15 @@
 
 .job-create-time-label, .job-create-time-val,
 .job-start-time-label, .job-start-time-val,
-.job-finish-time-label, .job-finish-time-val {
+.job-finish-time-label, .job-finish-time-val,
+.job-delayed-till-time-label, .job-delayed-till-time-val {
     display: inline-block;
     padding: 5px 10px;
     font-size: 12px;
 }
 
-.job-start-time-val, .job-finish-time-val {
-    padding-right: 50px;
+.job-start-time-val, .job-finish-time-val, .job-delayed-till-time-val {
+    padding-right: 30px;
 }
 
 .job-tasklist {
@@ -173,12 +174,14 @@
 }
 
 .task .task-status-icon, .task .task-title, .task .task-time,
-.task .task-start-time-label, .task .task-finish-time-label,
-.task .task-start-time-value, .task .task-finish-time-value,
 .task .task-additional-info, .task .task-management {
     display: inline-block;
     vertical-align: middle;
     line-height: 15px;
+}
+
+.task .task-start-time, .task .task-finish-time, .task .task-retry-time {
+    display: block;
 }
 
 .task .task-status-icon {
@@ -239,16 +242,16 @@
     margin-top: -2px;
 }
 
-.task .task-start-time-label, .task .task-finish-time-label {
-    width: 60px;
+.task .task-start-time, .task .task-finish-time {
+    width: 300px;
     font-size: 13px;
-    padding: 5px 5px;
+    padding: 5px;
 }
 
-.task .task-start-time-value, .task .task-finish-time-value {
-    width: 160px;
-    padding: 5px 5px 5px 0;
+.task .task-retry-time {
+    width: 400px;
     font-size: 13px;
+    padding: 5px 20px 5px 5px;
 }
 
 .task .task-management {
@@ -272,6 +275,54 @@
     background-color: #fff;
     border: 1px solid #777;
     z-index: 1;
+}
+
+.task .task-run-history {
+    display: block;
+    position: relative;
+    float: right;
+    width: 100px;
+}
+
+.task .task-run-history .list {
+    position: absolute;
+    width: 1200px;
+    left: -1150px;
+    top: 20px;
+    background-color: #fff;
+    border: 1px solid #777;
+    z-index: 1;
+}
+
+.task .task-run-history table {
+    border-spacing: 15px;
+}
+
+.task .task-run-history table td {
+    padding: 0 10px;
+}
+
+.task .task-run-history table td.record-spent-time {
+    text-align: right;
+}
+
+.task .task-run-history table td.record-exit-code {
+    text-align: center;
+}
+
+.task .task-run-history .history-icon {
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.task .task-run-history table td .artifacts {
+    width: 100%;
+    height: 100px;
+}
+
+.task .task-run-history table tr.artifacts-content {
+    display: none;
 }
 
 .job-errorlist-showmore-btn {

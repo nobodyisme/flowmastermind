@@ -131,6 +131,8 @@ var Jobs = (function () {
             job_start_time_val = $('<div class="job-start-time-val">').appendTo(job_desc),
             job_finish_time_label = $('<div class="job-finish-time-label">').appendTo(job_desc),
             job_finish_time_val = $('<div class="job-finish-time-val">').appendTo(job_desc),
+            job_delayed_till_time_label = $('<div class="job-delayed-till-time-label">').appendTo(job_desc),
+            job_delayed_till_time_val = $('<div class="job-delayed-till-time-val">').appendTo(job_desc),
             job_management = $('<div class="job-management">').appendTo(job_desc),
             job_id = $('<div class="job-id">').appendTo(job_management),
             job_management_btns = $('<div class="job-management-btns">').appendTo(job_management),
@@ -170,15 +172,12 @@ var Jobs = (function () {
             task_maintitle = $('<div class="task-maintitle">').appendTo(task_title),
             task_subtitle = $('<div class="task-subtitle">').appendTo(task_title),
             task_time = $('<div class="task-time">').appendTo(task),
-            task_start_time_label = $('<div class="task-start-time-label">').appendTo(task_time),
-            task_start_time_val = $('<div class="task-start-time-value">').appendTo(task_time),
-            task_finish_time_label = $('<div class="task-finish-time-label">').appendTo(task_time),
-            task_finish_time_val = $('<div class="task-finish-time-value">').appendTo(task_time),
+            task_start_time = $('<div class="task-start-time">').appendTo(task_time),
+            task_finish_time = $('<div class="task-finish-time">').appendTo(task_time),
+            task_retry_time = $('<div class="task-retry-time">').appendTo(task_time),
             task_additional_data = $('<div class="task-additional-info">').appendTo(task),
             task_management = $('<div class="task-management">').appendTo(task);
-
-        task_start_time_label.text('Начало:');
-        task_finish_time_label.text('Конец:');
+            task_run_history = $('<div class="task-run-history">').appendTo(task);
 
         this.renderCustomTaskFields(task_state, task_maintitle, task_subtitle, task_additional_data);
 
@@ -280,6 +279,8 @@ var Jobs = (function () {
             job_start_time_val = job.find('.job-start-time-val'),
             job_finish_time_label = job.find('.job-finish-time-label'),
             job_finish_time_val = job.find('.job-finish-time-val'),
+            job_delayed_till_time_label = job.find('.job-delayed-till-time-label'),
+            job_delayed_till_time_val = job.find('.job-delayed-till-time-val'),
             job_management_btns = job.find('.job-management-btns'),
             task_list = job.find('.job-tasklist'),
             status = job.attr('status');
@@ -314,6 +315,29 @@ var Jobs = (function () {
         this.renderTime(state['create_ts'], job_create_time_label, job_create_time_val);
         this.renderTime(state['start_ts'], job_start_time_label, job_start_time_val);
         this.renderTime(state['finish_ts'], job_finish_time_label, job_finish_time_val);
+
+        var failed_task = undefined;
+        for (var i = 0; i < state['tasks'].length; i++) {
+            var task = state['tasks'][i];
+            if (task['status'] == 'failed') {
+                failed_task = task;
+                break;
+            }
+        }
+
+        if (failed_task) {
+            if (failed_task['run_history'] && failed_task['run_history'].length) {
+                var run_history_length = failed_task['run_history'].length;
+                var delayed_till_ts = failed_task['run_history'][run_history_length - 1]['delayed_till_ts'];
+                if (delayed_till_ts) {
+                    job_delayed_till_time_label.text('Следующая попытка не ранее:');
+                    job_delayed_till_time_val.text(format_timestamp(delayed_till_ts));
+                } else {
+                    job_delayed_till_time_label.text('');
+                    job_delayed_till_time_val.text('');
+                }
+            }
+        }
 
         job.attr('status', state['status']);
 
@@ -385,19 +409,33 @@ var Jobs = (function () {
         var self = this,
             task = $(task_div),
             job_id = task.parents('.job').attr('uid'),
-            task_start_time_label = task.find('.task-start-time-label'),
-            task_start_time_val = task.find('.task-start-time-value'),
-            task_finish_time_label = task.find('.task-finish-time-label'),
-            task_finish_time_val = task.find('.task-finish-time-value'),
+            task_start_time = task.find('.task-start-time'),
+            task_finish_time = task.find('.task-finish-time'),
+            task_retry_time = task.find('.task-retry-time'),
             task_additional_data = task.find('.task-additional-info'),
             task_status_icon = task.find('.task-status-icon'),
+            task_run_history = task.find('.task-run-history'),
             task_management = task.find('.task-management');
 
         var task_status_cls = 'task-status-' + task_state['status'];
         task.removeClass().addClass('task').addClass(task_status_cls);
 
-        this.renderTime(task_state['start_ts'], task_start_time_label, task_start_time_val);
-        this.renderTime(task_state['finish_ts'], task_finish_time_label, task_finish_time_val);
+        if (task_state['start_ts']) {
+            task_start_time.text('Начало: ' + task_state['start_ts']);
+        }
+        if (task_state['finish_ts']) {
+            task_start_time.text('Конец:' + task_state['finish_ts']);
+        }
+
+        if (task_state['run_history'] && task_state['run_history'].length) {
+            var run_history_length = task_state['run_history'].length;
+            var delayed_till_ts = task_state['run_history'][run_history_length - 1]['delayed_till_ts'];
+            if (delayed_till_ts) {
+                task_retry_time.text('Следующая попытка не ранее: ' + format_timestamp(delayed_till_ts));
+            } else {
+                task_retry_time.text('');
+            }
+        }
 
         var icon_hint = '';
         switch (task_state['status']) {
@@ -422,6 +460,8 @@ var Jobs = (function () {
 
                 var task_cmd_state = $('<div class="task-cmd-stat">').appendTo(task_additional_data);
 
+                var visible = true;
+
                 json_ajax({
                     url: '/json/commands/status/' + task_state['minion_cmd_id'] + '/',
                     timeout: 10000,
@@ -431,7 +471,10 @@ var Jobs = (function () {
                         commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
 
                         var closeBtn = $('<div>').addClass('close')
-                            .on('click', function () { task_cmd_state.remove(); })
+                            .on('click', function () {
+                                task_cmd_state.remove();
+                                visible = false;
+                            })
                             .text('X')
                             .appendTo(task_cmd_state);
 
@@ -449,10 +492,14 @@ var Jobs = (function () {
                                     timeout: 3000,
                                     success: function (cmd_status) {
                                         commands.view.updateCmd(undefined, task_state['host'], task_state['id'], cmd_status);
-                                        setTimeout(updateCmdStatus, 3000);
+                                        if (visible) {
+                                            setTimeout(updateCmdStatus, 3000);
+                                        }
                                     },
                                     error: function () {
-                                        setTimeout(updateCmdStatus, 3000);
+                                        if (visible) {
+                                            setTimeout(updateCmdStatus, 3000);
+                                        }
                                     }
                                 });
 
@@ -494,6 +541,80 @@ var Jobs = (function () {
         } else {
             task_management.empty()
         }
+        
+        if (task_state['run_history'].length) {
+            if (task_run_history.find('.history-icon').length == 0) {
+                var history_icon = $('<img src="/static/img/history.png" class="history-icon">').appendTo(task_run_history);
+
+                history_icon.click(function () {
+
+                    self.closeCmdStatus();
+
+                    var history_list = $('<div class="list">').appendTo(task_run_history);
+
+                    var closeBtn = $('<div>').addClass('close')
+                        .on('click', function () {
+                            history_list.remove();
+                        })
+                        .text('X')
+                        .appendTo(history_list);
+
+                    task_run_history.mouseup(function (e) {
+                        e.stopPropagation();
+                    });
+
+                    var table = $('<table>').appendTo(history_list);
+
+                    var header_row = $('<tr>').appendTo(table);
+                    $('<td>начало</td>').appendTo(header_row);
+                    $('<td>конец</td>').appendTo(header_row);
+                    $('<td>потрачено</td>').appendTo(header_row);
+                    $('<td>exit code</td>').appendTo(header_row);
+                    $('<td>артефакты</td>').appendTo(header_row);
+                    $('<td>cледующий запуск</td>').appendTo(header_row);
+
+                    task_state['run_history'].forEach(function (record) {
+                        var row = $('<tr>');
+                        $('<td>').text(format_timestamp(record['start_ts'])).appendTo(row);
+                        $('<td>').text(format_timestamp(record['finish_ts'])).appendTo(row);
+                        $('<td class="record-spent-time">').text(convertTimeUnits(record['finish_ts'] - record['start_ts'])).appendTo(row);
+
+                        var exit_code = $('<td class="record-exit-code">').appendTo(row);
+                        if (record['exit_code'] != 0) exit_code.text(record['exit_code']);
+
+                        var artifacts = $('<td>').appendTo(row);
+                        if (record['artifacts']) {
+                            var artifacts_switch = $('<a href="#" class="cmd-std">посмотреть</a>');
+                            var artifacts_row = $('<tr class="artifacts-content">');
+                            artifacts_switch.appendTo(artifacts);
+                            artifacts_switch.click(function () {
+                                if (artifacts_row.css('display') == 'table-row') {
+                                    artifacts_row.css('display', 'none');
+                                } else {
+                                    artifacts_row.css('display', 'table-row');
+                                }
+                                return false;
+                            });
+                        }
+
+                        var delayed_till_ts = $('<td>').appendTo(row);
+                        if (record['delayed_till_ts']) {
+                            delayed_till_ts.text(format_timestamp(record['delayed_till_ts']));
+                        }
+
+                        row.appendTo(table);
+
+                        if (record['artifacts']) {
+                            var artifacts_col = $('<td colspan="6">').appendTo(artifacts_row);
+
+                            $('<textarea class="artifacts">').text(JSON.stringify(record['artifacts'], null, 4)).appendTo(artifacts_col);
+
+                            artifacts_row.appendTo(table);
+                        }
+                    });
+                });
+            }
+        }
     };
 
     JobsView.prototype.renderCustomTaskFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -501,6 +622,7 @@ var Jobs = (function () {
             task_state['type'] == 'node_stop_task' ||
             task_state['type'] == 'node_backend_defrag_task' ||
             task_state['type'] == 'recover_dc_group_task' ||
+            task_state['type'] == 'external_storage' ||
             task_state['type'] == 'rsync_backend_task') {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
@@ -546,7 +668,8 @@ var Jobs = (function () {
     };
 
     JobsView.prototype.closeCmdStatus = function () {
-        this.container.find('.task-cmd-stat').remove();
+        this.container.find('.task-cmd-stat .close').click();
+        this.container.find('.task-run-history .close').click();
     };
 
     JobsView.prototype.renderHistoryRemoveNodeFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
