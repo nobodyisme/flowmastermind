@@ -1,3 +1,9 @@
+flowmastermind (0.82) trusty; urgency=medium
+
+  * Version bump
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 12 Jan 2017 13:12:45 +0300
+
 flowmastermind (0.81) trusty; urgency=medium
 
   * Add job id search field
