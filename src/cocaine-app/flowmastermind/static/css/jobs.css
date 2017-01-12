@@ -169,6 +169,28 @@
     padding: 0 10px;
 }
 
+.job-search {
+    text-align: right;
+}
+
+.job-search .job-id {
+    text-color: #666;
+}
+
+.job-search .job-id .job-id-field {
+    width: 300px;
+}
+
+.job-search .job-search-btn {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.job-search .job-search-btn input {
+    height: 15px;
+    margin-top: -5px;
+}
+
 .task {
     padding: 10px;
 }

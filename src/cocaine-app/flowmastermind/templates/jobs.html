@@ -7,7 +7,14 @@
 
 {% block content %}
     <div class="inner-content">
-        <a href="/jobs/{{ job_type }}/{{ job_status }}/{{ previous_year }}/{{ previous_month }}/" class="jobs-previous-month">за предыдущий месяц</a>
+        <form class="job-search">
+            <div class="job-id">
+                id: <input type="text" name="job_id" width="100" class="job-id-field" />
+                <div class="job-search-btn">
+                    <input type="image" src="/static/img/find.png">
+                </div>
+            </div>
+        </form>
         <div class="jobs-containers" job-type="{{ job_type }}" job-tag="{{ tag }}" job-limit="{{ limit }}" job-offset="{{ offset }}" job-status="{{ job_status }}" job-cur-year="{{ cur_year }}" job-cur-month="{{ cur_month }}">
             <ul class="tabs">
                 <li class="jobs-not-approved">
