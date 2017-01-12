@@ -12,6 +12,7 @@
         limit = jobs_container.attr('job-limit'),
         offset = jobs_container.attr('job-offset'),
         spinner = new Spinner('div.job-init-spinner', jobs_container.width()),
+        job_id_search_form = $('.job-search'),
         paginator = Paginator(paginator_container);
 
     spinner.start();
@@ -103,5 +104,18 @@
         updateJobs();
         setTimeout(periodicTask, updatePeriod);
     }
+
+    job_id_search_form.submit(function (event) {
+        event.preventDefault();
+        var job_id = job_id_search_form.find('.job-id-field').val();
+
+        // special case since 'отменить' is frequently selected along with job id on double click
+        // on pending jobs
+        job_id = job_id.replace(/отменить$/, '');
+
+        if (job_id) {
+            window.location = '/job/' + job_id + '/';
+        }
+    });
 
 })();

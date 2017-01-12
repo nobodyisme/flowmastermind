@@ -7,6 +7,14 @@
 
 {% block content %}
     <div class="inner-content">
+        <form class="job-search">
+            <div class="job-id">
+                id: <input type="text" name="job_id" width="100" class="job-id-field" value="{{ job_id }}" />
+                <div class="job-search-btn">
+                    <input type="image" src="/static/img/find.png">
+                </div>
+            </div>
+        </form>
         <div class="jobs-containers" job-id="{{ job_id }}">
             <div id="jobs-list" class="tab-content">
             </div>
