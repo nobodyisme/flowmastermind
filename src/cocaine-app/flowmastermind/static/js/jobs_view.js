@@ -99,6 +99,11 @@ var Jobs = (function () {
             'для капла ' + state['couple'];
         } else if (state['type'] == 'convert_to_lrc_groupset_job') {
             title = create_convert_to_lrc_groupset_job_label(state);
+        } else if (state['type'] == 'restore_lrc_group_job') {
+            title = 'Восстановление lrc-группы ' + state['group'] + ' ' +
+            'в резервную группу ' + state['lrc_reserve_group'] + ' ' +
+            '(lrc-групсет ' + state['lrc_groupset'] + ', ' +
+            'капл ' + state['couple'] + ')';
         } else if (state['type'] == 'ttl_cleanup_job') {
             title = 'Чистка ключей с истёкшим TTL, ';
             if (state['couple'] != undefined) {
