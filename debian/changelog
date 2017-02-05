@@ -1,3 +1,13 @@
+flowmastermind-cocainev11 (0.83) trusty; urgency=medium
+
+  * Render lrc_recovery task as minion task
+  * Add title for restore_lrc_group_job
+  * Add title for make_lrc_reserved_groups_job
+  * Fix group file marker task title
+  * Add new tasks
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Mon, 06 Feb 2017 00:06:14 +0300
+
 flowmastermind-cocainev11 (0.82) trusty; urgency=medium
 
   * Version bump
