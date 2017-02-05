@@ -875,7 +875,7 @@ var Jobs = (function () {
         var title = '';
 
         title += 'Запись файла ' + task_state['params']['group_file_marker']
-        title += ' для увезённой группы ' + task_state['params']['group']
+        title += ' для переехавшей группы ' + task_state['params']['group']
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
