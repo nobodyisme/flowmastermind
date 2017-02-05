@@ -90,6 +90,9 @@ var Jobs = (function () {
         } else if (state['type'] == 'make_lrc_groups_job') {
             title = 'Создание ' + state['lrc_groups'].length + ' lrc-групп' +
             ' на основе пустых групп ' + '[' + state['uncoupled_groups'].join(', ') + ']';
+        } else if (state['type'] == 'make_lrc_reserved_groups_job') {
+            title = 'Создание ' + state['lrc_groups'].length + ' резервных lrc-групп' +
+            ' на основе пустой группы ' + state['uncoupled_group'];
         } else if (state['type'] == 'add_lrc_groupset_job') {
             var groupset = state['groups'].join(':');
             title = 'Создание lrc-групсета ' + groupset + ' ' +
