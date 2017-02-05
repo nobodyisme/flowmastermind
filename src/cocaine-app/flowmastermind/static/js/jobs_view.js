@@ -90,12 +90,20 @@ var Jobs = (function () {
         } else if (state['type'] == 'make_lrc_groups_job') {
             title = 'Создание ' + state['lrc_groups'].length + ' lrc-групп' +
             ' на основе пустых групп ' + '[' + state['uncoupled_groups'].join(', ') + ']';
+        } else if (state['type'] == 'make_lrc_reserved_groups_job') {
+            title = 'Создание ' + state['lrc_groups'].length + ' резервных lrc-групп' +
+            ' на основе пустой группы ' + state['uncoupled_group'];
         } else if (state['type'] == 'add_lrc_groupset_job') {
             var groupset = state['groups'].join(':');
             title = 'Создание lrc-групсета ' + groupset + ' ' +
             'для капла ' + state['couple'];
         } else if (state['type'] == 'convert_to_lrc_groupset_job') {
             title = create_convert_to_lrc_groupset_job_label(state);
+        } else if (state['type'] == 'restore_lrc_group_job') {
+            title = 'Восстановление lrc-группы ' + state['group'] + ' ' +
+            'в резервную группу ' + state['lrc_reserve_group'] + ' ' +
+            '(lrc-групсет ' + state['lrc_groupset'] + ', ' +
+            'капл ' + state['couple'] + ')';
         } else if (state['type'] == 'ttl_cleanup_job') {
             title = 'Чистка ключей с истёкшим TTL, ';
             if (state['couple'] != undefined) {
@@ -623,6 +631,7 @@ var Jobs = (function () {
             task_state['type'] == 'node_backend_defrag_task' ||
             task_state['type'] == 'recover_dc_group_task' ||
             task_state['type'] == 'external_storage' ||
+            task_state['type'] == 'lrc_recovery' ||
             task_state['type'] == 'rsync_backend_task') {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
@@ -649,6 +658,18 @@ var Jobs = (function () {
             this.renderWriteExternalStorageMapping(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'change_couple_settings') {
             this.renderChangeCoupleSettings(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'move_path') {
+            this.renderMovePath(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'mark_backend' || task_state['type'] == 'unmark_backend') {
+            this.renderMarkBackend(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'remove_path') {
+            this.renderRemovePath(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'create_group_file' || task_state['type'] == 'remove_group_file') {
+            this.renderCreateGroupFile(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'create_ids_file') {
+            this.renderCreateIdsFile(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'create_file_marker') {
+            this.renderCreateFileMarker(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -782,6 +803,94 @@ var Jobs = (function () {
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderMovePath = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Переименование директории ' + task_state['params']['move_src']
+        title += ' в ' + task_state['params']['move_dst']
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderMarkBackend = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        if (task_state['type'] == 'mark_backend') {
+            title += 'Создание '
+            title += 'lock файла ' + task_state['params']['mark_backend']
+        } else if (task_state['type'] == 'unmark_backend') {
+            title += 'Удаление '
+            title += 'lock файла ' + task_state['params']['unmark_backend']
+        } else {
+            console.log('Unknown task type: ' + task_state['type']);
+        }
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderRemovePath = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Удаление директории ' + task_state['params']['remove_path']
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderCreateGroupFile = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        if (task_state['type'] == 'create_group_file') {
+            title += 'Запись группы ' + task_state['params']['group'] + ' в ' + task_state['params']['group_file']
+        } else if (task_state['type'] == 'remove_group_file') {
+            title += 'Удаление файла группы ' + task_state['params']['remove_group_file']
+        } else {
+            console.log('Unknown task type: ' + task_state['type']);
+        }
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderCreateIdsFile = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Запись ids файла ' + task_state['params']['ids']
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderCreateFileMarker = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Запись файла ' + task_state['params']['group_file_marker']
+        title += ' для переехавшей группы ' + task_state['params']['group']
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
     }
 
     JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {

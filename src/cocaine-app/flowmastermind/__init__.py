@@ -296,8 +296,10 @@ MM_JOB_TYPES = {
     'restore': 'restore_group_job',
     'lrc-groups': (
         'make_lrc_groups_job',
+        'make_lrc_reserved_groups_job',
         'add_lrc_groupset_job',
         'convert_to_lrc_groupset_job',
+        'restore_lrc_group_job',
     ),
     'cleanup': (
         'ttl_cleanup_job',
