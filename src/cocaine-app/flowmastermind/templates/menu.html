@@ -70,6 +70,13 @@
                     {% endif %}
                 </span>
                 <span class="menu-page-item">
+                    {% if cur_page != 'lrc-groups-restore' %}
+                        <a href="/jobs/lrc-groups-restore/">lrc-восстановление</a>
+                    {% else %}
+                        <span class="selected">lrc-восстановление</span>
+                    {% endif %}
+                </span>
+                <span class="menu-page-item">
                     {% if cur_page != 'cleanup' %}
                         <a href="/jobs/cleanup/">чистка</a>
                     {% else %}
