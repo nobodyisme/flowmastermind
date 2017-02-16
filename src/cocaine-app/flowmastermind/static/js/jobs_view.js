@@ -104,6 +104,10 @@ var Jobs = (function () {
             'в резервную группу ' + state['lrc_reserve_group'] + ' ' +
             '(lrc-групсет ' + state['lrc_groupset'] + ', ' +
             'капл ' + state['couple'] + ')';
+        } else if (state['type'] == 'restore_uncoupled_lrc_group_job') {
+            title = 'Восстановление пустой lrc-группы ' + state['group'] + ' ' +
+            'в резервную группу ' + state['lrc_reserve_group'] + ' ' +
+            '(набор групп ' + state['lrc_groups'] + ')';
         } else if (state['type'] == 'ttl_cleanup_job') {
             title = 'Чистка ключей с истёкшим TTL, ';
             if (state['couple'] != undefined) {

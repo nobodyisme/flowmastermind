@@ -294,6 +294,7 @@ MM_JOB_TYPES = {
     ),
     'lrc-groups-restore': (
         'restore_lrc_group_job',
+        'restore_uncoupled_lrc_group_job',
     ),
     'cleanup': (
         'ttl_cleanup_job',
