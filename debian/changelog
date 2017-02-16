@@ -1,3 +1,9 @@
+flowmastermind-cocainev11 (0.85) trusty; urgency=medium
+
+  * Add uncoupled lrc group job
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Thu, 16 Feb 2017 14:51:12 +0300
+
 flowmastermind-cocainev11 (0.84) trusty; urgency=medium
 
   * Add separate lrc restore page
