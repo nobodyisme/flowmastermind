@@ -1,3 +1,9 @@
+flowmastermind-cocainev11 (0.86) trusty; urgency=medium
+
+  * Add check file system
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Mon, 13 Mar 2017 20:02:12 +0300
+
 flowmastermind-cocainev11 (0.85) trusty; urgency=medium
 
   * Add uncoupled lrc group job
