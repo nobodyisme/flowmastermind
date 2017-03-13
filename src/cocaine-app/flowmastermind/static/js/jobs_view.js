@@ -674,6 +674,8 @@ var Jobs = (function () {
             this.renderCreateIdsFile(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'create_file_marker') {
             this.renderCreateFileMarker(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'check_file_system') {
+            this.renderCheckFileSystem(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -889,6 +891,18 @@ var Jobs = (function () {
 
         title += 'Запись файла ' + task_state['params']['group_file_marker']
         title += ' для переехавшей группы ' + task_state['params']['group']
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['hostname'] + '<span class="composite-line-sub">' +
+            task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderCheckFileSystem = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Проверка файловой системы ' + task_state['params']['backend_path']
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
