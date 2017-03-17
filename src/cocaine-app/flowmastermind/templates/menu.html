@@ -77,10 +77,24 @@
                     {% endif %}
                 </span>
                 <span class="menu-page-item">
+                    {% if cur_page != 'lrc-recovery' %}
+                        <a href="/jobs/lrc-recovery/">lrc-синхронизация</a>
+                    {% else %}
+                        <span class="selected">lrc-синхронизация</span>
+                    {% endif %}
+                </span>
+                <span class="menu-page-item">
                     {% if cur_page != 'cleanup' %}
                         <a href="/jobs/cleanup/">чистка</a>
                     {% else %}
                         <span class="selected">чистка</span>
+                    {% endif %}
+                </span>
+                <span class="menu-page-item">
+                    {% if cur_page != 'backend_cleanup' %}
+                        <a href="/jobs/backend_cleanup/">удаление бекенда</a>
+                    {% else %}
+                        <span class="selected">удаление бекенда</span>
                     {% endif %}
                 </span>
         {% endif %}
