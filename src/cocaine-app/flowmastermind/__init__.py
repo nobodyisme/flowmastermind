@@ -141,7 +141,9 @@ SUPPORTED_JOB_TYPES = (
     'restore',
     'lrc-groups',
     'lrc-groups-restore',
+    'lrc-recovery',
     'cleanup',
+    'backend_cleanup',
 )
 
 
@@ -294,7 +296,9 @@ MM_JOB_TYPES = {
     'move': 'move_job',
     'recovery': 'recover_dc_job',
     'defrag': 'couple_defrag_job',
-    'restore': 'restore_group_job',
+    'restore': (
+        'restore_group_job',
+    ),
     'lrc-groups': (
         'make_lrc_groups_job',
         'make_lrc_reserved_groups_job',
@@ -305,8 +309,12 @@ MM_JOB_TYPES = {
         'restore_lrc_group_job',
         'restore_uncoupled_lrc_group_job',
     ),
+    'lrc-recovery': 'recover_lrc_groupset_job',
     'cleanup': (
         'ttl_cleanup_job',
+    ),
+    'backend_cleanup': (
+        'backend_cleanup_job',
     ),
 }
 

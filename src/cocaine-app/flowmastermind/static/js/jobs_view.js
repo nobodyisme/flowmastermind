@@ -108,6 +108,8 @@ var Jobs = (function () {
             title = 'Восстановление пустой lrc-группы ' + state['group'] + ' ' +
             'в резервную группу ' + state['lrc_reserve_group'] + ' ' +
             '(набор групп ' + state['lrc_groups'] + ')';
+        } else if (state['type'] == 'recover_lrc_groupset_job') {
+            title = 'Синхронизация lrc-группсета ' + state['lrc_groupset'];
         } else if (state['type'] == 'ttl_cleanup_job') {
             title = 'Чистка ключей с истёкшим TTL, ';
             if (state['couple'] != undefined) {
@@ -116,6 +118,9 @@ var Jobs = (function () {
             } else {
                 title += 'группа ' + state['iter_group'];
             }
+        } else if (state['type'] == 'backend_cleanup_job') {
+            title = 'Удаление бекенда ';
+            title += 'группы  ' + state['group'];
         }
         return title;
     };
