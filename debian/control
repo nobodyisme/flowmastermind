@@ -11,9 +11,9 @@ Package: flowmastermind
 Architecture: amd64
 Depends: ${shlibs:Depends},
  ${misc:Depends},
- cocaine-v12-framework-python,
- cocaine-v12-tornado-proxy,
- cocaine-v12-tools,
+ cocaine-framework-python,
+ cocaine-tornado-proxy,
+ cocaine-tools,
  python-flask,
  python-mastermind,
  python-msgpack | msgpack-python
