@@ -1,3 +1,10 @@
+flowmastermind (0.89) trusty; urgency=medium
+
+  * Update cocaine v13 deps
+  * Add support of move_lrc_groupset_job
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 10 May 2017 18:29:38 +0300
+
 flowmastermind (0.87) trusty; urgency=medium
 
   * Add backend_cleanup and recover_lrc_groupset job types
