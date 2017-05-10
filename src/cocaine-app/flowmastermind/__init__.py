@@ -139,6 +139,7 @@ SUPPORTED_JOB_TYPES = (
     'recovery',
     'defrag',
     'restore',
+    'move-lrc-groups',
     'lrc-groups',
     'lrc-groups-restore',
     'lrc-recovery',
@@ -299,6 +300,7 @@ MM_JOB_TYPES = {
     'restore': (
         'restore_group_job',
     ),
+    'move-lrc-groups': 'move_lrc_groupset_job',
     'lrc-groups': (
         'make_lrc_groups_job',
         'make_lrc_reserved_groups_job',

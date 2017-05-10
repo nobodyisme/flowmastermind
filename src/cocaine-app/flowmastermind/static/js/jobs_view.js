@@ -87,6 +87,10 @@ var Jobs = (function () {
             if (state['uncoupled_group']) {
                 title += ' в пустую группу ' + state['uncoupled_group'];
             }
+        } else if (state['type'] == 'move_lrc_groupset_job') {
+            title = 'Переезд групп ' + state['lrc_groups'] + ' ' +
+                    'с хостов <span class="composite-line">' + state['src_hostnames'] + '</span> ' +
+                    'на хосты <span class="composite-line">' + state['dst_hostnames'] + '</span>';
         } else if (state['type'] == 'make_lrc_groups_job') {
             title = 'Создание ' + state['lrc_groups'].length + ' lrc-групп' +
             ' на основе пустых групп ' + '[' + state['uncoupled_groups'].join(', ') + ']';

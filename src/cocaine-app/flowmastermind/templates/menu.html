@@ -63,6 +63,13 @@
                     {% endif %}
                 </span>
                 <span class="menu-page-item">
+                    {% if cur_page != 'move-lrc-groups' %}
+                        <a href="/jobs/move-lrc-groups/">lrc-переезд</a>
+                    {% else %}
+                        <span class="selected">lrc-переезд</span>
+                    {% endif %}
+                </span>
+                <span class="menu-page-item">
                     {% if cur_page != 'lrc-groups' %}
                         <a href="/jobs/lrc-groups/">lrc-группы</a>
                     {% else %}
