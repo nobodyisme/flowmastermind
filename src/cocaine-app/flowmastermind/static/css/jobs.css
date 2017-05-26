@@ -278,6 +278,7 @@
 
 .task .task-management {
     width: 100px;
+    white-space: nowrap;
 }
 
 .task-management-btn {
