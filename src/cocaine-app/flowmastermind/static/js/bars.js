@@ -341,12 +341,12 @@ GroupsBar.prototype.color = d3.scale.ordinal()
             'rgb(78,201,106)', 'rgb(242,238,96)']);
 
 GroupsBar.prototype.labels = {
-    bad_couples: 'в капле, недоступно для записи',
-    broken_couples: 'в капле, ошибка конфигурации',
-    closed_couples: 'в капле, заполнены',
-    frozen_couples: 'в капле, заморожено',
-    open_couples: 'в капле, открыто на запись',
-    uncoupled_groups: 'не в капле'
+    bad_couples: 'недоступные для записи каплы',
+    broken_couples: 'каплы с ошибкой конфигурации',
+    closed_couples: 'заполненные каплы',
+    frozen_couples: 'замороженные каплы',
+    open_couples: 'открытые на запись каплы',
+    uncoupled_groups: 'групп не в капле'
 };
 
 GroupsBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
