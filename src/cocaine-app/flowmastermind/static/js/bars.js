@@ -16,7 +16,7 @@ function TotalMemoryBar(container, chartLabel, chartLabelSmall) {
 }
 
 
-function GroupsBar(container, chartLabel, chartLabelSmall) {
+function CouplesBar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
     self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
@@ -127,7 +127,7 @@ function extend(Child, Parent) {
 extend(TotalMemoryBar, Bar);
 extend(MemoryBar, Bar);
 extend(KeysBar, Bar);
-extend(GroupsBar, Bar);
+extend(CouplesBar, Bar);
 extend(OutagesBar, Bar);
 
 
@@ -334,24 +334,24 @@ KeysBar.prototype.barLabelFormatter = function (val) {
     return prefixNumRound(val, self.max_value);
 };
 
-GroupsBar.prototype.color = d3.scale.ordinal()
+CouplesBar.prototype.color = d3.scale.ordinal()
     .domain(['bad_couples', 'broken_couples', 'closed_couples', 'frozen_couples',
              'open_couples', 'uncoupled_groups'])
     .range(['rgb(240,72,72)', 'rgb(150,35,0)', 'rgb(200,200,200)', 'rgb(150,197,255)',
             'rgb(78,201,106)', 'rgb(242,238,96)']);
 
-GroupsBar.prototype.labels = {
-    bad_couples: 'в капле, недоступно для записи',
-    broken_couples: 'в капле, ошибка конфигурации',
-    closed_couples: 'в капле, заполнены',
-    frozen_couples: 'в капле, заморожено',
-    open_couples: 'в капле, открыто на запись',
-    uncoupled_groups: 'не в капле'
+CouplesBar.prototype.labels = {
+    bad_couples: 'недоступные для записи каплы',
+    broken_couples: 'каплы с ошибкой конфигурации',
+    closed_couples: 'заполненные каплы',
+    frozen_couples: 'замороженные каплы',
+    open_couples: 'открытые на запись каплы',
+    uncoupled_groups: 'групп не в капле'
 };
 
-GroupsBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+CouplesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
 
-GroupsBar.prototype.addLegend = function () {
+CouplesBar.prototype.addLegend = function () {
 
     var self = this;
 
@@ -388,7 +388,7 @@ GroupsBar.prototype.addLegend = function () {
 };
 
 
-GroupsBar.prototype.prepareData = function (rawdata) {
+CouplesBar.prototype.prepareData = function (rawdata) {
     rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
 
     var data = [],

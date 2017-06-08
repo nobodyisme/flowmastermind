@@ -8,7 +8,7 @@
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
-        ctxGDC = new GroupsBar('#dscGroupsChart', 'группы по датацентрам');
+        ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы по датацентрам');
 
     var barClicks = [[ctxEMDC, 'free_space'],
                      [ctxKDC, 'fragmentation'],
@@ -216,7 +216,7 @@
                 m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
                 em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
-                c_bars = new GroupsBar('.c-chart-' + ns, 'каплы'),
+                c_bars = new CouplesBar('.c-chart-' + ns, 'каплы'),
                 co_bars = new OutagesBar('.co-chart-' + ns, 'отключение ДЦ*', '* что произойдет, если отключится конкретный ДЦ');
 
             chart_label.text('Неймспейс ' + ns);
