@@ -306,6 +306,7 @@ MM_JOB_TYPES = {
         'make_lrc_reserved_groups_job',
         'add_lrc_groupset_job',
         'convert_to_lrc_groupset_job',
+        'add_groupset_to_couple_job',
     ),
     'lrc-groups-restore': (
         'restore_lrc_group_job',

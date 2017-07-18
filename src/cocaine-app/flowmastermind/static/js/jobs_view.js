@@ -101,6 +101,11 @@ var Jobs = (function () {
             var groupset = state['groups'].join(':');
             title = 'Создание lrc-групсета ' + groupset + ' ' +
             'для капла ' + state['couple'];
+        } else if (state['type'] == 'add_groupset_to_couple_job') {
+            var groupset = state['groups'].join(':');
+            var src_groupset = state['src_groups'].join(':');
+            title = 'Создание lrc-групсета ' + groupset + ' (' + state['groupset_key'] + ') ' +
+            'для капла ' + state['couple'] + ' из групсета ' + src_groupset;
         } else if (state['type'] == 'convert_to_lrc_groupset_job') {
             title = create_convert_to_lrc_groupset_job_label(state);
         } else if (state['type'] == 'restore_lrc_group_job') {
