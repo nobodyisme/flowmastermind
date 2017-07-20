@@ -1,3 +1,10 @@
+flowmastermind (0.92) trusty; urgency=medium
+
+  * Show new defrag task info
+  * Update couple description
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Thu, 20 Jul 2017 16:52:01 +0300
+
 flowmastermind (0.91) trusty; urgency=medium
 
   * Support add groupset to couple job
