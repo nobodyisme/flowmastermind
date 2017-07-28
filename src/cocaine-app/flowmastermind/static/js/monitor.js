@@ -92,7 +92,7 @@
 
         this.graph.model.clear();
         this.graph.model.update(samples);
-    }
+    };
 
     GraphController.prototype.init_slider = function(response) {
         var self = this;
