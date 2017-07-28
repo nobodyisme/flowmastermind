@@ -84,15 +84,16 @@
             var select_idx = Math.round(idx * ratio);
             if (slice[select_idx] == undefined) {
                 console.log('Undefined data for index', select_idx);
+                break;
             }
-            samples.push(slice[select_idx].data);
+            samples.push(slice[select_idx].free_space_percentage_distribution);
         }
 
         console.log('Length', samples.length);
 
         this.graph.model.clear();
         this.graph.model.update(samples);
-    }
+    };
 
     GraphController.prototype.init_slider = function(response) {
         var self = this;
