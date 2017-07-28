@@ -84,6 +84,7 @@
             var select_idx = Math.round(idx * ratio);
             if (slice[select_idx] == undefined) {
                 console.log('Undefined data for index', select_idx);
+                break;
             }
             samples.push(slice[select_idx].data);
         }
