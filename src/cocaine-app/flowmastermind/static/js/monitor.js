@@ -86,7 +86,7 @@
                 console.log('Undefined data for index', select_idx);
                 break;
             }
-            samples.push(slice[select_idx].data);
+            samples.push(slice[select_idx].free_space_percentage_distribution);
         }
 
         console.log('Length', samples.length);
