@@ -1,3 +1,10 @@
+flowmastermind (0.93) trusty; urgency=medium
+
+  * Use new mm-monitor statistic format
+  * Show effective space graphic even if mm-statistic is too small
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Mon, 31 Jul 2017 12:43:19 +0300
+
 flowmastermind (0.92) trusty; urgency=medium
 
   * Show new defrag task info
