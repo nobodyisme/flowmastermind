@@ -831,8 +831,8 @@ var Jobs = (function () {
     JobsView.prototype.renderMovePath = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = '';
 
-        title += 'Переименование директории ' + task_state['params']['move_src']
-        title += ' в ' + task_state['params']['move_dst']
+        title += 'Переименование директории ' + task_state['params']['move_src'];
+        title += ' в ' + task_state['params']['move_dst'];
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
@@ -845,11 +845,11 @@ var Jobs = (function () {
         var title = '';
 
         if (task_state['type'] == 'mark_backend') {
-            title += 'Создание '
-            title += 'lock файла ' + task_state['params']['mark_backend']
+            title += 'Создание ';
+            title += 'lock файла ' + task_state['params']['mark_backend'];
         } else if (task_state['type'] == 'unmark_backend') {
-            title += 'Удаление '
-            title += 'lock файла ' + task_state['params']['unmark_backend']
+            title += 'Удаление ';
+            title += 'lock файла ' + task_state['params']['unmark_backend'];
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -864,7 +864,7 @@ var Jobs = (function () {
     JobsView.prototype.renderRemovePath = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = '';
 
-        title += 'Удаление директории ' + task_state['params']['remove_path']
+        title += 'Удаление директории ' + task_state['params']['remove_path'];
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
@@ -877,9 +877,9 @@ var Jobs = (function () {
         var title = '';
 
         if (task_state['type'] == 'create_group_file') {
-            title += 'Запись группы ' + task_state['params']['group'] + ' в ' + task_state['params']['group_file']
+            title += 'Запись группы ' + task_state['params']['group'] + ' в ' + task_state['params']['group_file'];
         } else if (task_state['type'] == 'remove_group_file') {
-            title += 'Удаление файла группы ' + task_state['params']['remove_group_file']
+            title += 'Удаление файла группы ' + task_state['params']['remove_group_file'];
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -894,7 +894,7 @@ var Jobs = (function () {
     JobsView.prototype.renderCreateIdsFile = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = '';
 
-        title += 'Запись ids файла ' + task_state['params']['ids']
+        title += 'Запись ids файла ' + task_state['params']['ids'];
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
@@ -906,8 +906,8 @@ var Jobs = (function () {
     JobsView.prototype.renderCreateFileMarker = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = '';
 
-        title += 'Запись файла ' + task_state['params']['group_file_marker']
-        title += ' для переехавшей группы ' + task_state['params']['group']
+        title += 'Запись файла ' + task_state['params']['group_file_marker'];
+        title += ' для переехавшей группы ' + task_state['params']['group'];
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
@@ -919,7 +919,7 @@ var Jobs = (function () {
     JobsView.prototype.renderCheckFileSystem = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = '';
 
-        title += 'Проверка файловой системы ' + task_state['params']['backend_path']
+        title += 'Проверка файловой системы ' + task_state['params']['backend_path'];
 
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
