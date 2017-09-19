@@ -695,6 +695,8 @@ var Jobs = (function () {
             this.renderCreateFileMarker(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'check_file_system') {
             this.renderCheckFileSystem(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'add_couple_meta_info') {
+            this.renderAddCoupleMetaInfo(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -928,6 +930,15 @@ var Jobs = (function () {
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
             task_state['hostname'] + '<span class="composite-line-sub">' +
             task_state['host'] + '</span></span>');
+    }
+
+    JobsView.prototype.renderAddCoupleMetaInfo = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Добавление мета-информации о капле ' + task_state['couple_meta_info']['couple_id'];
+        title += ' в групсет ' + task_state['groupset'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
     }
 
     JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
