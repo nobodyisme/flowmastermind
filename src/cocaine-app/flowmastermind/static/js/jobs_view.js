@@ -673,6 +673,8 @@ var Jobs = (function () {
             this.renderWaitBackendState(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'change_couple_frozen_status') {
             this.renderChangeCoupleFrozenStatus(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'change_groupset_frozen_status') {
+            this.renderChangeGroupsetFrozenStatus(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'external_storage_data_size') {
             this.renderExternalStorageDataSize(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'write_external_storage_mapping') {
@@ -936,6 +938,18 @@ var Jobs = (function () {
             title += 'Разморозка капла ';
         }
         title += task_state['couple'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderChangeGroupsetFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+        if (task_state['frozen']) {
+            title += 'Заморозка групсета ';
+        } else {
+            title += 'Разморозка групсета ';
+        }
+        title += task_state['groupset'];
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
     }
