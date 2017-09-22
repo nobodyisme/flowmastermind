@@ -450,6 +450,23 @@ def json_restart_job(job_id):
         raise
 
 
+@app.route('/json/jobs/refinish/<job_id>/')
+@json_response
+@auth_controller.check_auth
+def json_refinish_job(job_id):
+    try:
+        resp = cocaine_request(
+            'restart_failed_to_finish_job',
+            msgpack.packb([job_id])
+        )
+
+        return resp
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
 @app.route('/json/jobs/approve/<job_id>/')
 @json_response
 @auth_controller.check_auth
