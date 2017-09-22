@@ -239,12 +239,16 @@ var Jobs = (function () {
         restart: {
             text: 'начать всё сначала',
             url: '/json/jobs/restart/{job_id}/'
+        },
+        refinish: {
+            text: 'почистить за собой снова',
+            url: '/json/jobs/refinish/{job_id}/'
         }
     };
 
     JobsView.prototype.statusButtons = {
-        broken: ['cancel', 'restart'],
-        pending: ['cancel', 'restart'],
+        broken: ['cancel', 'restart', 'refinish'],
+        pending: ['cancel', 'restart', 'refinish'],
         not_approved: ['approve', 'cancel']
     };
 
@@ -263,6 +267,23 @@ var Jobs = (function () {
                 // special case for restart
                 if (btn_ids[i] == 'restart' && state['tasks'][0]['status'] != 'queued') {
                     continue;
+                }
+
+                // special case for refinish
+                if (btn_ids[i] == 'refinish') {
+                    var finished = true;
+                    for (var j = 0; j < state['tasks'].length; j++) {
+                        if (
+                            state['tasks'][j]['status'] != 'completed'
+                            && state['tasks'][j]['status'] != 'skipped'
+                        ) {
+                            finished = false;
+                            break;
+                        }
+                    }
+                    if (!finished) {
+                        continue;
+                    }
                 }
 
                 var btn_data = self.updateJobBtns[btn_ids[i]];

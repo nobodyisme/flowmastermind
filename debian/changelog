@@ -1,3 +1,9 @@
+flowmastermind (0.97) trusty; urgency=medium
+
+  * Allow to refinish job via interface
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Fri, 22 Sep 2017 15:00:38 +0300
+
 flowmastermind (0.96) trusty; urgency=medium
 
   * Add couple meta info task
