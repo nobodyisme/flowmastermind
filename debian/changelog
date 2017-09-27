@@ -1,3 +1,9 @@
+flowmastermind (0.98) trusty; urgency=medium
+
+  * Add remove_lrc_groupset_job job type
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 27 Sep 2017 15:32:10 +0300
+
 flowmastermind (0.97) trusty; urgency=medium
 
   * Allow to refinish job via interface
