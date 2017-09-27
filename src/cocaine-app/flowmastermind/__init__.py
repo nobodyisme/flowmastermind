@@ -143,6 +143,7 @@ SUPPORTED_JOB_TYPES = (
     'lrc-groups',
     'lrc-groups-restore',
     'lrc-recovery',
+    'lrc-remove',
     'cleanup',
     'backend_cleanup',
 )
@@ -312,7 +313,12 @@ MM_JOB_TYPES = {
         'restore_lrc_group_job',
         'restore_uncoupled_lrc_group_job',
     ),
-    'lrc-recovery': 'recover_lrc_groupset_job',
+    'lrc-recovery': (
+        'recover_lrc_groupset_job',
+    ),
+    'lrc-remove': (
+        'remove_lrc_groupset_job',
+    ),
     'cleanup': (
         'ttl_cleanup_job',
     ),
