@@ -119,6 +119,8 @@ var Jobs = (function () {
             '(набор групп ' + state['lrc_groups'] + ')';
         } else if (state['type'] == 'recover_lrc_groupset_job') {
             title = 'Синхронизация lrc-группсета ' + state['lrc_groupset'];
+        } else if (state['type'] == 'remove_lrc_groupset_job') {
+            title = 'Удаление капла ' + state['couple_to_remove'] + ' из lrc-группсета ' + state['lrc_groupset'];
         } else if (state['type'] == 'ttl_cleanup_job') {
             title = 'Чистка ключей с истёкшим TTL, ';
             if (state['couple'] != undefined) {
