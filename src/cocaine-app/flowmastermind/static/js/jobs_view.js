@@ -720,6 +720,8 @@ var Jobs = (function () {
             this.renderCheckFileSystem(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'add_couple_meta_info') {
             this.renderAddCoupleMetaInfo(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'remove_couple_meta_info') {
+            this.renderRemoveCoupleMetaInfo(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -960,6 +962,15 @@ var Jobs = (function () {
 
         title += 'Добавление мета-информации о капле ' + task_state['couple_meta_info']['couple_id'];
         title += ' в групсет ' + task_state['groupset'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderRemoveCoupleMetaInfo = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Удаление мета-информации о капле ' + task_state['couple'];
+        title += ' из групсета ' + task_state['groupset'];
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
     }
