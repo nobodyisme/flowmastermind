@@ -137,12 +137,12 @@ TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
 TotalMemoryPie.prototype.labels = {
     free_space: 'свободно',
-    occupied_space: 'занято',
+    used_space: 'занято',
     uncoupled_space: 'не используется'
 };
 
 TotalMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_space', 'occupied_space', 'uncoupled_space'])
+    .domain(['free_space', 'used_space', 'uncoupled_space'])
     .range(['rgb(78,201,106)', 'rgb(200,200,200)', 'rgb(246,244,158)']);
 
 TotalMemoryPie.prototype.prepareData = function(rawdata) {
@@ -150,10 +150,10 @@ TotalMemoryPie.prototype.prepareData = function(rawdata) {
 
     data.push({value: rawdata['free_space'],
                type: 'free_space'});
-    data.push({value: rawdata['total_space'] - rawdata['free_space'],
-               type: 'occupied_space'});
+    data.push({value: rawdata['used_space'],
+               type: 'used_space'});
     data.push({value: rawdata['uncoupled_space'],
-               type: 'uncoupled_space'})
+               type: 'uncoupled_space'});
 
     return {data: data};
 };

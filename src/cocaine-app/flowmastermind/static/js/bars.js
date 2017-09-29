@@ -244,11 +244,11 @@ MemoryBar.prototype.barLabelFormatter = prefixBytesRound;
 
 
 TotalMemoryBar.prototype.color = d3.scale.ordinal()
-    .domain(['occupied_space', 'free_space', 'uncoupled_space'])
+    .domain(['used_space', 'free_space', 'uncoupled_space'])
     .range(['rgb(200,200,200)', 'rgb(78,201,106)', 'rgb(242,238,96)']);
 
 TotalMemoryBar.prototype.labels = {
-    occupied_space: 'занято',
+    used_space: 'занято',
     free_space: 'свободно',
     uncoupled_space: 'не используется'
 };
@@ -265,8 +265,8 @@ TotalMemoryBar.prototype.prepareData = function (rawdata) {
     rawdataEntries.forEach(function (d, i) {
         var el = [];
         el.push({x: d.key,
-                 y: d.value['total_space'] - d.value['free_space'],
-                 type: 'occupied_space'});
+                 y: d.value['used_space'],
+                 type: 'used_space'});
         el.push({x: d.key,
                  y: d.value['free_space'],
                  type: 'free_space'});
