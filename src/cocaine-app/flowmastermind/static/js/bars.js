@@ -202,45 +202,19 @@ extend(OutagesBar, Bar);
 
 
 MemoryBar.prototype.color = d3.scale.ordinal()
-    .domain(['effective_occupied_space', 'effective_free_space', 'uncoupled_space'])
+    .domain(['effective_used_space', 'effective_free_space', 'uncoupled_space'])
     .range(['rgb(200,200,200)', 'rgb(78,201,106)', 'rgb(242,238,96)']);
 
 MemoryBar.prototype.labels = {
-    effective_occupied_space: 'занято',
+    effective_used_space: 'занято',
     effective_free_space: 'свободно',
     uncoupled_space: 'не используется'
 };
 
 MemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+MemoryBar.prototype.labelLength = 170;
 
-
-MemoryBar.prototype.prepareData = function (rawdata) {
-    rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
-
-    var data = [],
-        keys = rawdataEntries.map(function (d) { return d.key; });
-
-    rawdataEntries.forEach(function (d, i) {
-        var el = [];
-        el.push({x: d.key,
-                 y: d.value['effective_space'] - d.value['effective_free_space'],
-                 type: 'effective_occupied_space'});
-        el.push({x: d.key,
-                 y: d.value['effective_free_space'],
-                 type: 'effective_free_space'});
-        el.push({x: d.key,
-                 y: d.value['uncoupled_space'],
-                 type: 'uncoupled_space'});
-        data.push(el);
-    });
-
-    data = d3.transpose(
-        d3.layout.stack()(d3.transpose(data)));
-
-    return {data: data,
-            keys: keys};
-}
-
+MemoryBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
 
 MemoryBar.prototype.tooltipFormatter = prefixBytes;
 MemoryBar.prototype.barLabelFormatter = prefixBytesRound;

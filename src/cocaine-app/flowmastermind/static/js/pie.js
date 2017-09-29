@@ -97,24 +97,15 @@ extend(GroupsPie, Pie);
 EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
 EffectiveMemoryPie.prototype.labels = {
-    free_space: 'свободно',
-    occupied_space: 'занято',
+    effective_free_space: 'свободно',
+    effective_used_space: 'занято',
 };
 
 EffectiveMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_space', 'occupied_space'])
+    .domain(['effective_free_space', 'effective_used_space'])
     .range(['rgb(78,201,106)', 'rgb(200,200,200)']);
 
-EffectiveMemoryPie.prototype.prepareData = function(rawdata) {
-    var data = [];
-
-    data.push({value: rawdata['effective_free_space'],
-               type: 'free_space'});
-    data.push({value: rawdata['effective_space'] - rawdata['effective_free_space'],
-               type: 'occupied_space'});
-
-    return {data: data};
-};
+EffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
 
 EffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 EffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
