@@ -4,7 +4,6 @@
 
     var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'эффективное место'),
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
-        ctxRDEM = new EffectiveMemoryPie('#realDataEffMemoryChart', 'размер данных*', true),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
@@ -266,7 +265,6 @@
 
                 ctxEM.update(data);
                 ctxTM.update(data);
-                ctxRDEM.update(data['real_data']);
                 ctxC.update(data);
 
                 ctxEMDC.update(data['dc']);
