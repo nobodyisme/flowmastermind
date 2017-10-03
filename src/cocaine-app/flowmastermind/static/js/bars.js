@@ -207,6 +207,8 @@ MemoryBar.prototype.color = d3.scale.ordinal()
         'effective_used_space',
         'effective_uncommitted_keys_size',
         'reserved_effective_free_space',
+        'wasted_effective_free_space',
+        'bad_effective_free_space',
         'effective_free_space',
         'uncoupled_space',
     ])
@@ -215,6 +217,8 @@ MemoryBar.prototype.color = d3.scale.ordinal()
         'rgb(200,200,200)',
         'rgb(224, 210, 122)',
         'rgb(58, 170, 209)',
+        'rgb(184, 121, 209)',
+        'rgb(240,72,72)',
         'rgb(78,201,106)',
         'rgb(242,238,96)',
     ]);
@@ -223,9 +227,11 @@ MemoryBar.prototype.labels = {
     effective_removed_keys_size: 'помечено удаленными',
     effective_used_space: 'закоммиченно',
     effective_uncommitted_keys_size: 'незакоммиченно',
-    effective_free_space: 'свободно',
     reserved_effective_free_space: 'зарезервировано свободное',
-    uncoupled_space: 'не используется'
+    wasted_effective_free_space: 'свободное в FROZEN|ARCHIVED капле',
+    bad_effective_free_space: 'недоступно',
+    effective_free_space: 'свободно',
+    uncoupled_space: 'не используется',
 };
 
 MemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
