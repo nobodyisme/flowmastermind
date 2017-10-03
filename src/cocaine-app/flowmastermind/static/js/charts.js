@@ -8,6 +8,7 @@
         ctxTLRCM = new LrcMemoryPie('#LrcMemoryChart', 'LRC: общее место'),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
+        ctxTMDC = new TotalMemoryBar('#dscTotalMemoryChart', 'общее место по датацентрам'),
         ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
         ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы и группы по датацентрам');
@@ -277,6 +278,7 @@
                 ctxC.update(data);
 
                 ctxEMDC.update(data['dc']);
+                ctxTMDC.update(data['dc']);
                 ctxLRCDC.update(data['dc']);
                 ctxKDC.update(data['dc']);
                 ctxGDC.update(data['dc']);
