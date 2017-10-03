@@ -3,6 +3,7 @@
     var updatePeriod = 30000;
 
     var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'эффективное место'),
+        ctxELRCM = new LrcEffectiveMemoryPie('#LrcEffectiveMemoryChart', 'LRC: эффективное место'),
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
@@ -269,6 +270,7 @@
                     closed_couples = data['total_couples'] - open_couples - frozen_couples;
 
                 ctxEM.update(data);
+                ctxELRCM.update(data);
                 ctxTM.update(data);
                 ctxC.update(data);
 

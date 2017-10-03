@@ -9,6 +9,12 @@ function EffectiveMemoryPie(container, chartLabel, renderLabels) {
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
+function LrcEffectiveMemoryPie(container, chartLabel, renderLabels) {
+    var self = this;
+    self.width = 170;
+    self.constructor.super.call(self, container, chartLabel, renderLabels);
+}
+
 function TotalMemoryPie(container, chartLabel, renderLabels) {
     var self = this;
     self.width = 150;
@@ -90,6 +96,7 @@ function extend(Child, Parent) {
 
 // extend(MemoryPie, Pie);
 extend(EffectiveMemoryPie, Pie);
+extend(LrcEffectiveMemoryPie, Pie);
 extend(TotalMemoryPie, Pie);
 extend(GroupsPie, Pie);
 
@@ -132,6 +139,37 @@ EffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 EffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
 EffectiveMemoryPie.prototype.legendLabelOffset = 10;
 
+LrcEffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+
+LrcEffectiveMemoryPie.prototype.labels = {
+    effective_free_lrc_space: 'свободно',
+    bad_effective_free_lrc_space: 'недоступно свободное',
+    effective_uncommitted_lrc_keys_size: 'незакоммиченно',
+    effective_used_lrc_space: 'закоммиченно',
+    effective_removed_lrc_keys_size: 'удалено',
+};
+
+LrcEffectiveMemoryPie.prototype.color = d3.scale.ordinal()
+    .domain([
+        'effective_free_lrc_space',
+        'bad_effective_free_lrc_space',
+        'effective_uncommitted_lrc_keys_size',
+        'effective_used_lrc_space',
+        'effective_removed_lrc_keys_size',
+    ])
+    .range([
+        'rgb(78,201,106)',
+        'rgb(240,72,72)',
+        'rgb(224, 210, 122)',
+        'rgb(200,200,200)',
+        'rgb(121,146,155)',
+    ]);
+
+LrcEffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
+
+LrcEffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
+LrcEffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
+LrcEffectiveMemoryPie.prototype.legendLabelOffset = 10;
 
 TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
