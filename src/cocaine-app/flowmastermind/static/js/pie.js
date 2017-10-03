@@ -5,7 +5,7 @@
 
 function EffectiveMemoryPie(container, chartLabel, renderLabels) {
     var self = this;
-    self.width = 150;
+    self.width = 180;
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
@@ -17,7 +17,7 @@ function LrcEffectiveMemoryPie(container, chartLabel, renderLabels) {
 
 function TotalMemoryPie(container, chartLabel, renderLabels) {
     var self = this;
-    self.width = 150;
+    self.width = 160;
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 

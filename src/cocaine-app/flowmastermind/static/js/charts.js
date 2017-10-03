@@ -2,13 +2,13 @@
 
     var updatePeriod = 30000;
 
-    var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'эффективное место'),
+    var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'реплики: эффективное место'),
         ctxELRCM = new LrcEffectiveMemoryPie('#LrcEffectiveMemoryChart', 'LRC: эффективное место'),
-        ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
+        ctxTM = new TotalMemoryPie('#totalMemoryChart', 'реплики: общее место'),
         ctxTLRCM = new LrcMemoryPie('#LrcMemoryChart', 'LRC: общее место'),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
-        ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
-        ctxTMDC = new TotalMemoryBar('#dscTotalMemoryChart', 'общее место по датацентрам'),
+        ctxEMDC = new MemoryBar('#dscMemoryChart', 'реплики: эффективное место по дц'),
+        ctxTMDC = new TotalMemoryBar('#dscTotalMemoryChart', 'реплики: общее место по дц'),
         ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
         ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы и группы по датацентрам');
