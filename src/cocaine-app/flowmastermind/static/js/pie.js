@@ -140,18 +140,25 @@ TotalMemoryPie.prototype.labels = {
     removed_keys_size: 'удалено',
     committed_keys_size: 'закоммиченно',
     uncommitted_keys_size: 'незакоммиченно',
-    uncoupled_space: 'не используется'
+    uncoupled_space: 'не используется',
+    bad_free_space: 'недоступное свободное',
 };
 
 TotalMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_space', 'removed_keys_size', 'committed_keys_size', 'uncommitted_keys_size', 'uncoupled_space'])
-    .range(['rgb(78,201,106)', 'rgb(121,146,155)', 'rgb(200,200,200)', 'rgb(224, 210, 122)','rgb(246,244,158)']);
+    .domain(['free_space', 'removed_keys_size', 'committed_keys_size',
+            'uncommitted_keys_size', 'uncoupled_space', 'bad_free_space'])
+    .range(['rgb(78,201,106)', 'rgb(121,146,155)', 'rgb(200,200,200)',
+            'rgb(224, 210, 122)', 'rgb(246,244,158)', 'rgb(240,72,72)']);
 
 TotalMemoryPie.prototype.prepareData = function(rawdata) {
     var data = [];
 
     data.push({value: rawdata['free_space'],
                type: 'free_space'});
+    data.push({value: rawdata['total_space']
+                      - rawdata['free_space']
+                      - rawdata['used_space'],
+               type: 'bad_free_space'});
     data.push({value: rawdata['uncommitted_keys_size'],
                type: 'uncommitted_keys_size'});
     data.push({value: rawdata['used_space']

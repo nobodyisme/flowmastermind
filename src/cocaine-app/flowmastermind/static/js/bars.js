@@ -244,15 +244,18 @@ MemoryBar.prototype.barLabelFormatter = prefixBytesRound;
 
 
 TotalMemoryBar.prototype.color = d3.scale.ordinal()
-    .domain(['removed_keys_size', 'committed_keys_size', 'uncommitted_keys_size', 'free_space', 'uncoupled_space'])
-    .range(['rgb(121,146,155)', 'rgb(200,200,200)', 'rgb(224, 210, 122)', 'rgb(78,201,106)', 'rgb(242,238,96)']);
+    .domain(['removed_keys_size', 'committed_keys_size', 'uncommitted_keys_size',
+            'free_space', 'uncoupled_space', 'bad_free_space'])
+    .range(['rgb(121,146,155)', 'rgb(200,200,200)', 'rgb(224, 210, 122)',
+            'rgb(78,201,106)', 'rgb(242,238,96)', 'rgb(240,72,72)']);
 
 TotalMemoryBar.prototype.labels = {
     removed_keys_size: 'удалено',
     committed_keys_size: 'закоммиченно',
     uncommitted_keys_size: 'незакоммиченно',
     free_space: 'свободно',
-    uncoupled_space: 'не используется'
+    uncoupled_space: 'не используется',
+    bad_free_space: 'недоступное свободное',
 };
 
 TotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
@@ -280,6 +283,11 @@ TotalMemoryBar.prototype.prepareData = function (rawdata) {
         el.push({x: d.key,
                  y: d.value['free_space'],
                  type: 'free_space'});
+        el.push({x: d.key,
+                 y: d.value['total_space']
+                    - d.value['free_space']
+                    - d.value['used_space'],
+                 type: 'bad_free_space'});
         el.push({x: d.key,
                  y: d.value['uncoupled_space'],
                  type: 'uncoupled_space'});
