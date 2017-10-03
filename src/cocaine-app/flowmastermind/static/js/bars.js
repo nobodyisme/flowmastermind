@@ -16,6 +16,15 @@ function TotalMemoryBar(container, chartLabel, chartLabelSmall) {
 }
 
 
+function LrcTotalMemoryBar(container, chartLabel, chartLabelSmall) {
+
+    var self = this;
+    self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
+
+    self.yAxis.tickFormat(prefixBytesRound);
+}
+
+
 function CouplesBar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
@@ -195,6 +204,7 @@ function extend(Child, Parent) {
 }
 
 extend(TotalMemoryBar, Bar);
+extend(LrcTotalMemoryBar, Bar);
 extend(MemoryBar, Bar);
 extend(KeysBar, Bar);
 extend(CouplesBar, Bar);
@@ -304,6 +314,85 @@ TotalMemoryBar.prototype.prepareData = function (rawdata) {
 
 TotalMemoryBar.prototype.tooltipFormatter = prefixBytes;
 TotalMemoryBar.prototype.barLabelFormatter = prefixBytesRound;
+
+
+LrcTotalMemoryBar.prototype.color = d3.scale.ordinal()
+    .domain([
+        'removed_lrc_keys_size',
+        'committed_lrc_keys_size',
+        'uncommitted_lrc_keys_size',
+        'free_lrc_space',
+        'bad_free_lrc_space',
+        'uncoupled_lrc_space',
+        'reserved_lrc_space',
+    ])
+    .range([
+        'rgb(121,146,155)',
+        'rgb(200,200,200)',
+        'rgb(224, 210, 122)',
+        'rgb(78,201,106)',
+        'rgb(240,72,72)',
+        'rgb(246,244,158)',
+        'rgb(133, 229, 219)',
+    ]);
+
+LrcTotalMemoryBar.prototype.labels = {
+    removed_lrc_keys_size: 'помечено удаленными',
+    committed_lrc_keys_size: 'закоммиченно',
+    uncommitted_lrc_keys_size: 'незакоммиченно',
+    free_lrc_space: 'свободно',
+    bad_free_lrc_space: 'недоступное свободное',
+    uncoupled_lrc_space: 'не используется',
+    reserved_lrc_space: 'зарезервировано',
+};
+
+LrcTotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+
+LrcTotalMemoryBar.prototype.prepareData = function (rawdata) {
+    var rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
+
+    var data = [],
+        keys = rawdataEntries.map(function (d) { return d.key; });
+
+    rawdataEntries.forEach(function (d, i) {
+        var el = [];
+        el.push({x: d.key,
+                 y: d.value['removed_lrc_keys_size'],
+                 type: 'removed_lrc_keys_size'});
+        el.push({x: d.key,
+                 y: d.value['used_lrc_space']
+                    - d.value['uncommitted_lrc_keys_size']
+                    - d.value['removed_lrc_keys_size'],
+                 type: 'committed_lrc_keys_size'});
+        el.push({x: d.key,
+                 y: d.value['uncommitted_lrc_keys_size'],
+                 type: 'uncommitted_lrc_keys_size'});
+        el.push({x: d.key,
+                 y: d.value['free_lrc_space'],
+                 type: 'free_lrc_space'});
+        el.push({x: d.key,
+                 y: d.value['total_lrc_space']
+                    - d.value['free_lrc_space']
+                    - d.value['used_lrc_space'],
+                 type: 'bad_free_lrc_space'});
+        el.push({x: d.key,
+                 y: d.value['uncoupled_lrc_space'] ? d.value['uncoupled_lrc_space'] : 0,
+                 type: 'uncoupled_lrc_space'});
+        el.push({x: d.key,
+                 y: d.value['reserved_lrc_space'] ? d.value['reserved_lrc_space'] : 0,
+                 type: 'reserved_lrc_space'});
+        data.push(el);
+    });
+
+    data = d3.transpose(
+        d3.layout.stack()(d3.transpose(data)));
+
+    return {data: data,
+            keys: keys};
+};
+
+LrcTotalMemoryBar.prototype.tooltipFormatter = prefixBytes;
+LrcTotalMemoryBar.prototype.barLabelFormatter = prefixBytesRound;
 
 
 KeysBar.prototype.labels = {

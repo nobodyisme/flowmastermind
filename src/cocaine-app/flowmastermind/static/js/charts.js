@@ -6,6 +6,7 @@
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
+        ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
         ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы и группы по датацентрам');
 
@@ -185,6 +186,7 @@
 
             ns_chart.m_bars.update(ns_data);
             ns_chart.em_bars.update(ns_data);
+            ns_chart.lrc_m_bars.update(ns_data);
             ns_chart.k_bars.update(ns_data);
             ns_chart.c_bars.update(ns_data);
             ns_chart.co_bars.update(ns_data);
@@ -209,11 +211,13 @@
 
             var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
                 em_chart = $('<div class="chart em-chart-' + ns + '">').appendTo(chart_set),
+                lrc_chart = $('<div class="chart lrc-m-chart-' + ns + '">').appendTo(chart_set),
                 k_chart = $('<div class="chart k-chart-' + ns + '">').appendTo(chart_set),
                 c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
                 co_chart = $('<div class="chart co-chart-' + ns + '">').appendTo(chart_set),
                 m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
                 em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
+                lrc_m_bars = new LrcTotalMemoryBar('.lrc-m-chart-' + ns, 'LRC: общее место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new CouplesBar('.c-chart-' + ns, 'каплы'),
                 co_bars = new OutagesBar('.co-chart-' + ns, 'отключение ДЦ*', '* что произойдет, если отключится конкретный ДЦ');
@@ -225,6 +229,7 @@
             namespaces[ns] = {
                 'm_bars': m_bars,
                 'em_bars': em_bars,
+                'lrc_m_bars': lrc_m_bars,
                 'k_bars': k_bars,
                 'c_bars': c_bars,
                 'co_bars': co_bars
@@ -268,6 +273,7 @@
                 ctxC.update(data);
 
                 ctxEMDC.update(data['dc']);
+                ctxLRCDC.update(data['dc']);
                 ctxKDC.update(data['dc']);
                 ctxGDC.update(data['dc']);
 
