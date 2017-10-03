@@ -21,6 +21,12 @@ function TotalMemoryPie(container, chartLabel, renderLabels) {
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
+function LrcMemoryPie(container, chartLabel, renderLabels) {
+    var self = this;
+    self.width = 150;
+    self.constructor.super.call(self, container, chartLabel, renderLabels);
+}
+
 function GroupsPie(container, chartLabel, renderLabels) {
     var self = this;
     self.width = 275;
@@ -98,6 +104,7 @@ function extend(Child, Parent) {
 extend(EffectiveMemoryPie, Pie);
 extend(LrcEffectiveMemoryPie, Pie);
 extend(TotalMemoryPie, Pie);
+extend(LrcMemoryPie, Pie);
 extend(GroupsPie, Pie);
 
 
@@ -214,6 +221,52 @@ TotalMemoryPie.prototype.prepareData = function(rawdata) {
 TotalMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 TotalMemoryPie.prototype.tooltipFormatter = prefixBytes;
 
+
+LrcMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+
+LrcMemoryPie.prototype.labels = {
+    free_lrc_space: 'свободно',
+    bad_free_space: 'недоступное свободное',
+    uncommitted_lrc_keys_size: 'незакоммиченно',
+    committed_lrc_space: 'закоммиченно',
+    removed_lrc_keys_size: 'удалено',
+    uncoupled_lrc_space: 'не используется',
+    reserved_lrc_space: 'зарезервировано',
+};
+
+LrcMemoryPie.prototype.color = d3.scale.ordinal()
+    .domain(['free_lrc_space', 'bad_free_space', 'uncommitted_lrc_keys_size',
+            'committed_lrc_space', 'removed_lrc_keys_size', 'uncoupled_lrc_space', 'reserved_lrc_space'])
+    .range(['rgb(78,201,106)', 'rgb(240,72,72)', 'rgb(224, 210, 122)',
+            'rgb(200,200,200)', 'rgb(121,146,155)', 'rgb(246,244,158)', 'rgb(133, 229, 219)']);
+
+LrcMemoryPie.prototype.prepareData = function(rawdata) {
+    var data = [];
+
+    data.push({value: rawdata['free_lrc_space'],
+               type: 'free_lrc_space'});
+    data.push({value: rawdata['total_lrc_space']
+            - rawdata['free_lrc_space']
+            - rawdata['used_lrc_space'],
+               type: 'bad_free_space'});
+    data.push({value: rawdata['uncommitted_lrc_keys_size'],
+               type: 'uncommitted_lrc_keys_size'});
+    data.push({value: rawdata['used_lrc_space']
+                      - rawdata['uncommitted_lrc_keys_size']
+                      - rawdata['removed_lrc_keys_size'],
+               type: 'committed_lrc_space'});
+    data.push({value: rawdata['removed_lrc_keys_size'],
+               type: 'removed_lrc_keys_size'});
+    data.push({value: rawdata['uncoupled_lrc_space'] ? rawdata['uncoupled_lrc_space'] : 0,
+               type: 'uncoupled_lrc_space'});
+    data.push({value: rawdata['reserved_lrc_space'] ? rawdata['reserved_lrc_space'] : 0,
+               type: 'reserved_lrc_space'});
+
+    return {data: data};
+};
+
+LrcMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
+LrcMemoryPie.prototype.tooltipFormatter = prefixBytes;
 
 
 GroupsPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};

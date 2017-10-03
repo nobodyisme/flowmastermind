@@ -5,6 +5,7 @@
     var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'эффективное место'),
         ctxELRCM = new LrcEffectiveMemoryPie('#LrcEffectiveMemoryChart', 'LRC: эффективное место'),
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
+        ctxTLRCM = new LrcMemoryPie('#LrcMemoryChart', 'LRC: общее место'),
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
         ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
@@ -272,6 +273,7 @@
                 ctxEM.update(data);
                 ctxELRCM.update(data);
                 ctxTM.update(data);
+                ctxTLRCM.update(data);
                 ctxC.update(data);
 
                 ctxEMDC.update(data['dc']);
