@@ -99,12 +99,26 @@ EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40}
 EffectiveMemoryPie.prototype.labels = {
     effective_free_space: 'свободно',
     reserved_effective_free_space: 'зарезервировано свободное',
+    effective_uncommitted_keys_size: 'незакоммиченно',
     effective_used_space: 'занято',
+    effective_removed_keys_size: 'помечено удаленными',
 };
 
 EffectiveMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['effective_free_space', 'reserved_effective_free_space', 'effective_used_space'])
-    .range(['rgb(78,201,106)', 'rgb(58, 170, 209)', 'rgb(200,200,200)']);
+    .domain([
+        'effective_free_space',
+        'reserved_effective_free_space',
+        'effective_uncommitted_keys_size',
+        'effective_used_space',
+        'effective_removed_keys_size',
+    ])
+    .range([
+        'rgb(78,201,106)',
+        'rgb(58, 170, 209)',
+        'rgb(224, 210, 122)',
+        'rgb(200,200,200)',
+        'rgb(121,146,155)',
+    ]);
 
 EffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
 

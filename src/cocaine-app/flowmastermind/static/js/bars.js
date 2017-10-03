@@ -202,11 +202,27 @@ extend(OutagesBar, Bar);
 
 
 MemoryBar.prototype.color = d3.scale.ordinal()
-    .domain(['effective_used_space', 'effective_free_space', 'reserved_effective_free_space', 'uncoupled_space'])
-    .range(['rgb(200,200,200)', 'rgb(78,201,106)', 'rgb(58, 170, 209)', 'rgb(242,238,96)']);
+    .domain([
+        'effective_removed_keys_size',
+        'effective_used_space',
+        'effective_uncommitted_keys_size',
+        'reserved_effective_free_space',
+        'effective_free_space',
+        'uncoupled_space',
+    ])
+    .range([
+        'rgb(121,146,155)',
+        'rgb(200,200,200)',
+        'rgb(224, 210, 122)',
+        'rgb(58, 170, 209)',
+        'rgb(78,201,106)',
+        'rgb(242,238,96)',
+    ]);
 
 MemoryBar.prototype.labels = {
-    effective_used_space: 'занято',
+    effective_removed_keys_size: 'помечено удаленными',
+    effective_used_space: 'закоммиченно',
+    effective_uncommitted_keys_size: 'незакоммиченно',
     effective_free_space: 'свободно',
     reserved_effective_free_space: 'зарезервировано свободное',
     uncoupled_space: 'не используется'
