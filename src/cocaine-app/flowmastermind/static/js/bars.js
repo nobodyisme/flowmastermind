@@ -307,42 +307,26 @@ TotalMemoryBar.prototype.barLabelFormatter = prefixBytesRound;
 
 
 KeysBar.prototype.labels = {
-    keys: 'живые ключи',
     removed_keys: 'удаленные ключи',
+    committed_keys: 'закоммиченные ключи',
+    uncommitted_keys: 'незакоммиченные ключи',
 };
 
 KeysBar.prototype.margin = {top: 50, right: 10, left: 70, bottom: 60};
 
 KeysBar.prototype.color = d3.scale.ordinal()
-    .domain(['keys', 'removed_keys'])
-    .range(['rgb(232,207,179)', 'rgb(121,146,155)']);
+    .domain([
+        'removed_keys',
+        'committed_keys',
+        'uncommitted_keys',
+    ]).range([
+        'rgb(121,146,155)',
+        'rgb(232,207,179)',
+        'rgb(210, 232, 169)',
+    ]);
 
 
-KeysBar.prototype.prepareData = function (rawdata) {
-    rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
-
-    var data = [],
-        keys = rawdataEntries.map(function (d) { return d.key; });
-
-    self.max_value = d3.max(rawdataEntries.map(function (d) { return d.value['total_keys']; }));
-
-    rawdataEntries.forEach(function (d, i) {
-        var el = [];
-        el.push({x: d.key,
-                 y: d.value['removed_keys'],
-                 type: 'removed_keys'});
-        el.push({x: d.key,
-                 y: d.value['total_keys'] - d.value['removed_keys'],
-                 type: 'keys'});
-        data.push(el);
-    });
-
-    data = d3.transpose(
-        d3.layout.stack()(d3.transpose(data)));
-
-    return {data: data,
-            keys: keys};
-}
+KeysBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
 
 KeysBar.prototype.tooltipFormatter = function (val) {
     return intGroupsDelimiter(val, ',');
