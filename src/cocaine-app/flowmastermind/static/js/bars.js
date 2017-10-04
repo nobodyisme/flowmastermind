@@ -241,38 +241,6 @@ MemoryBar.prototype.prepareData = function (rawdata) {
             keys: keys};
 }
 
-MemoryBar.prototype.addLegend = function () {
-
-    var self = this;
-
-    self.legend = self.svg_container
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', 'translate(' + self.margin.left + ',0)');
-
-    var labels = self.color.domain().slice(),
-        colors = self.color.range().slice();
-
-    var labelLength = 140;
-
-    d3.zip(colors, labels).reverse().forEach(function (cl, i) {
-        self.legend
-            .append('rect')
-            .attr('class', 'legend-colorsample')
-            .attr('height', 10)
-            .attr('width', 10)
-            .attr('transform', 'translate(' + (i * labelLength) + ',15)')
-            .style('fill', cl[0]);
-
-        self.legend
-            .append('text')
-            .attr('class', 'legend-label')
-            .attr('transform', 'translate(' + (i * labelLength + 15) + ',15)')
-            .attr('y', 4)
-            .text('— ' + self.labels[cl[1]]);
-    });
-};
-
 
 MemoryBar.prototype.tooltipFormatter = prefixBytes;
 MemoryBar.prototype.barLabelFormatter = prefixBytesRound;
@@ -318,8 +286,6 @@ TotalMemoryBar.prototype.prepareData = function (rawdata) {
             keys: keys};
 }
 
-TotalMemoryBar.prototype.addLegend = MemoryBar.prototype.addLegend;
-
 
 TotalMemoryBar.prototype.tooltipFormatter = prefixBytes;
 TotalMemoryBar.prototype.barLabelFormatter = prefixBytesRound;
@@ -363,40 +329,6 @@ KeysBar.prototype.prepareData = function (rawdata) {
             keys: keys};
 }
 
-KeysBar.prototype.addLegend = function () {
-
-    var self = this;
-
-    self.legend = self.svg_container
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', 'translate(' + self.margin.left + ',0)');
-
-    var labels = self.color.domain().slice(),
-        colors = self.color.range().slice();
-
-    var labelLength = 140;
-
-    d3.zip(colors, labels).reverse().forEach(function (cl, i) {
-        self.legend
-            .append('rect')
-            .attr('class', 'legend-colorsample')
-            .attr('height', 10)
-            .attr('width', 10)
-            .attr('transform', 'translate(' + (i * labelLength) + ',15)')
-            .style('fill', cl[0]);
-
-        self.legend
-            .append('text')
-            .attr('class', 'legend-label')
-            .attr('transform', 'translate(' + (i * labelLength + 15) + ',15)')
-            .attr('y', 4)
-            .text('— ' + self.labels[cl[1]]);
-    });
-};
-
-
-
 KeysBar.prototype.tooltipFormatter = function (val) {
     return intGroupsDelimiter(val, ',');
 };
@@ -420,43 +352,7 @@ CouplesBar.prototype.labels = {
 };
 
 CouplesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
-
-CouplesBar.prototype.addLegend = function () {
-
-    var self = this;
-
-    self.legend = self.svg_container
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', 'translate(' + self.margin.left + ',0)');
-
-    var labels = self.color.domain().slice(),
-        colors = self.color.range().slice();
-
-    var labelLength = 185;
-    var flatcl = d3.zip(colors, labels).reverse();
-    var levelcl = [flatcl.slice(0, 3), flatcl.slice(3)];
-
-    levelcl.forEach(function (cl, j) {
-        cl.forEach(function (cl, i) {
-            self.legend
-                .append('rect')
-                .attr('class', 'legend-colorsample')
-                .attr('height', 10)
-                .attr('width', 10)
-                .attr('transform', 'translate(' + (i * labelLength) + ',' + (5 + (j * 15)) + ')')
-                .style('fill', cl[0]);
-
-            self.legend
-                .append('text')
-                .attr('class', 'legend-label')
-                .attr('transform', 'translate(' + (i * labelLength + 15) + ',' + (5 + (j * 15)) + ')')
-                .attr('y', 4)
-                .text('— ' + self.labels[cl[1]]);
-        });
-    });
-};
-
+CouplesBar.prototype.labelLength = 185;
 
 CouplesBar.prototype.prepareData = function (rawdata) {
     rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
@@ -510,42 +406,8 @@ OutagesBar.prototype.labels = {
 
 OutagesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
 
-OutagesBar.prototype.addLegend = function () {
-
-    var self = this;
-
-    self.legend = self.svg_container
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', 'translate(' + self.margin.left + ',0)');
-
-    var labels = self.color.domain().slice(),
-        colors = self.color.range().slice();
-
-    var labelLength = 170;
-    var flatcl = d3.zip(colors, labels).reverse();
-    var levelcl = [flatcl.slice(0, 3), flatcl.slice(3)];
-
-    levelcl.forEach(function (cl, j) {
-        cl.forEach(function (cl, i) {
-            self.legend
-                .append('rect')
-                .attr('class', 'legend-colorsample')
-                .attr('height', 10)
-                .attr('width', 10)
-                .attr('transform', 'translate(' + (i * labelLength) + ',' + (5 + (j * 15)) + ')')
-                .style('fill', cl[0]);
-
-            self.legend
-                .append('text')
-                .attr('class', 'legend-label')
-                .attr('transform', 'translate(' + (i * labelLength + 15) + ',' + (5 + (j * 15)) + ')')
-                .attr('y', 4)
-                .text('— ' + self.labels[cl[1]]);
-        });
-    });
-};
-
+OutagesBar.prototype.legend_per_line = 2;
+OutagesBar.prototype.labelLength = 170;
 
 OutagesBar.prototype.prepareData = function (rawdata) {
     rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
