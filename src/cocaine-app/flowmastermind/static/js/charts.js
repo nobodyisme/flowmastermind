@@ -13,7 +13,8 @@
         ctxTMDC = new TotalMemoryBar('#dscTotalMemoryChart', 'реплики: общее место по дц'),
         ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
-        ctxCDC = new CouplesBar('#dscCouplesChart', 'каплы и группы по датацентрам');
+        ctxCDC = new CouplesBar('#dscCouplesChart', 'каплы по датацентрам'),
+        ctxUGDC = new UnusedGroupsBar('#dscUnusedGroupsChart', 'неипользуемые группы по дц');
 
     var barClicks = [[ctxEMDC, 'free_space'],
                      [ctxKDC, 'fragmentation'],
@@ -292,6 +293,7 @@
                 ctxLRCDC.update(data['dc']);
                 ctxKDC.update(data['dc']);
                 ctxCDC.update(data['dc']);
+                ctxUGDC.update(data['dc']);
 
                 var ns_per_dc_items = iterItems(data['namespaces']),
                     ns_items = iterItems(data['namespaces_only']);

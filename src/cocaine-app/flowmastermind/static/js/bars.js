@@ -31,6 +31,12 @@ function CouplesBar(container, chartLabel, chartLabelSmall) {
     self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
 }
 
+function UnusedGroupsBar(container, chartLabel, chartLabelSmall) {
+
+    var self = this;
+    self.constructor.super.call(self, container, chartLabel, chartLabelSmall);
+}
+
 function KeysBar(container, chartLabel, chartLabelSmall) {
 
     var self = this;
@@ -208,6 +214,7 @@ extend(LrcTotalMemoryBar, Bar);
 extend(MemoryBar, Bar);
 extend(KeysBar, Bar);
 extend(CouplesBar, Bar);
+extend(UnusedGroupsBar, Bar);
 extend(OutagesBar, Bar);
 
 
@@ -463,6 +470,37 @@ CouplesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 CouplesBar.prototype.labelLength = 185;
 
 CouplesBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
+
+
+UnusedGroupsBar.prototype.color = d3.scale.ordinal()
+    .domain([
+        'uncoupled_groups',
+        'uncoupled_cache_groups',
+        'uncoupled_lrc_groups',
+        'reserved_lrc_groups',
+        'unused_locked_groups',
+        'bad_unused_groups',
+    ]).range([
+        'rgb(229, 214, 137)',
+        'rgb(211, 219, 199)',
+        'rgb(139, 232, 205)',
+        'rgb(139, 213, 232)',
+        'rgb(184, 121, 209)',
+        'rgb(240,72,72)',
+    ]);
+
+UnusedGroupsBar.prototype.labels = {
+    uncoupled_groups: 'для реплики',
+    uncoupled_cache_groups: 'для кэша',
+    uncoupled_lrc_groups: 'для lrc',
+    reserved_lrc_groups: 'зарезервированные для lrc',
+    unused_locked_groups: 'заблокированные',
+    bad_unused_groups: 'недоступные',
+};
+
+UnusedGroupsBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+UnusedGroupsBar.prototype.labelLength = 160;
+UnusedGroupsBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
 
 
 OutagesBar.prototype.color = d3.scale.ordinal()
