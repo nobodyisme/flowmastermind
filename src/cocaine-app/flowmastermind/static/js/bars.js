@@ -244,7 +244,7 @@ MemoryBar.prototype.labels = {
     uncoupled_space: 'не используется',
 };
 
-MemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+MemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 MemoryBar.prototype.labelLength = 170;
 
 MemoryBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
@@ -268,7 +268,7 @@ TotalMemoryBar.prototype.labels = {
     bad_free_space: 'недоступное свободное',
 };
 
-TotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+TotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
 
 TotalMemoryBar.prototype.prepareData = function (rawdata) {
@@ -346,7 +346,7 @@ LrcTotalMemoryBar.prototype.labels = {
     reserved_lrc_space: 'зарезервировано',
 };
 
-LrcTotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+LrcTotalMemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
 LrcTotalMemoryBar.prototype.prepareData = function (rawdata) {
     var rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
@@ -401,7 +401,7 @@ KeysBar.prototype.labels = {
     uncommitted_keys: 'незакоммиченные ключи',
 };
 
-KeysBar.prototype.margin = {top: 50, right: 10, left: 70, bottom: 60};
+KeysBar.prototype.margin = {top: 50, right: 10, left: 70, bottom: 40};
 
 KeysBar.prototype.color = d3.scale.ordinal()
     .domain([
@@ -459,7 +459,7 @@ CouplesBar.prototype.labels = {
     uncoupled_groups: 'групп не в капле'
 };
 
-CouplesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+CouplesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 CouplesBar.prototype.labelLength = 185;
 
 CouplesBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
@@ -497,7 +497,7 @@ OutagesBar.prototype.labels = {
     service_stalled_couples: 'проблемные в сервисе',
 };
 
-OutagesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
+OutagesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
 OutagesBar.prototype.legend_per_line = 2;
 OutagesBar.prototype.labelLength = 170;
@@ -527,13 +527,13 @@ Bar.prototype.updateSize = function (bars_num) {
 
     self.width = bars_num * self.barCoef;
 
-    self.width = d3.max([self.width, self.legend[0][0].getBBox().width + self.margin.left]);
+    self.width = d3.max([self.width, self.legend[0][0].getBBox().width]);
 
     self.svg_container
             .attr('width', self.width + self.margin.left + self.margin.right);
 
     self.legend
-        .attr('transform', 'translate(' + (self.width - self.legend[0][0].getBBox().width) + ',0)');
+        .attr('transform', 'translate(' + (self.margin.left) + ',0)');
 
     self.chart_label
         .transition()

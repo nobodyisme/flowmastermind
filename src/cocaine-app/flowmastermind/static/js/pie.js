@@ -45,11 +45,11 @@ function Pie(container, chartLabel, renderLabels) {
     self.height = 150;
 
     self.svg_container = d3.select(container).insert('svg', ':first-child');
-    self.svg = self.svg_container
-            .attr('width', self.width + self.margin.left + self.margin.right)
-            .attr('height', self.height + self.margin.bottom + self.margin.top)
-        .append('g')
-            .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
+
+    if (renderLabels) {
+        self.addLegend();
+        self.width = d3.max([self.width, self.legend[0][0].getBBox().width]);
+    }
 
     self.chart_label = self.svg_container
         .append('g')
@@ -57,19 +57,23 @@ function Pie(container, chartLabel, renderLabels) {
             .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height + 30) + ')')
         .append('text')
             .attr('fill-opacity', 1)
-            .attr('x', self.height / 2)
             .text(chartLabel);
+    self.width = d3.max([self.width, self.chart_label[0][0].getBBox().width]);
+    self.chart_label[0][0].setAttribute('x', self.width / 2);
 
-    if (renderLabels) {
-        self.addLegend();
-    }
+    self.svg = self.svg_container
+        .attr('width', self.width + self.margin.left + self.margin.right)
+        .attr('height', self.height + self.margin.bottom + self.margin.top)
+    .append('g')
+        .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
+
 
     self.tooltip = new Tooltip();
     self.tooltip.appendTo(container);
 
     self.gpie = self.svg
         .append('g')
-        .attr('transform', 'translate(' + (self.height / 2) + ',' + (self.height / 2) + ')');
+        .attr('transform', 'translate(' + (self.width / 2) + ',' + (self.height / 2) + ')');
 
     self.pie = d3.layout.pie()
         .value(function (d) { return d.value; })
@@ -115,7 +119,7 @@ extend(CouplesPie, Pie);
 extend(UnusedGroupsPie, Pie);
 
 
-EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 EffectiveMemoryPie.prototype.labels = {
     effective_free_space: 'свободно',
@@ -153,7 +157,7 @@ EffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 EffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
 EffectiveMemoryPie.prototype.legendLabelOffset = 10;
 
-LrcEffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+LrcEffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 LrcEffectiveMemoryPie.prototype.labels = {
     effective_free_lrc_space: 'свободно',
@@ -185,7 +189,7 @@ LrcEffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 LrcEffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
 LrcEffectiveMemoryPie.prototype.legendLabelOffset = 10;
 
-TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 TotalMemoryPie.prototype.labels = {
     free_space: 'свободно',
@@ -229,7 +233,7 @@ TotalMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 TotalMemoryPie.prototype.tooltipFormatter = prefixBytes;
 
 
-LrcMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+LrcMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 LrcMemoryPie.prototype.labels = {
     free_lrc_space: 'свободно',
@@ -276,7 +280,7 @@ LrcMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 LrcMemoryPie.prototype.tooltipFormatter = prefixBytes;
 
 
-CouplesPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+CouplesPie.prototype.margin = {top: 70, right: 10, left: 10, bottom: 40};
 
 CouplesPie.prototype.color = d3.scale.ordinal()
     .domain([
@@ -433,7 +437,7 @@ Pie.prototype.hideTooltip = function () {
     self.tooltip.hide();
 };
 
-Pie.prototype.legend_per_line = 3;
+Pie.prototype.legend_per_line = 2;
 Pie.prototype.labelLength = 150;
 Pie.prototype.addLegend = function () {
 

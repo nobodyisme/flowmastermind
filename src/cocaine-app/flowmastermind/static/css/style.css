@@ -68,7 +68,7 @@ span.clear {
 }
 
 .chart {
-    vertical-align: top;
+    vertical-align: bottom;
     display: inline-block;
     /*width: 200px;*/
     padding: 20px;
