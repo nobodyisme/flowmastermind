@@ -39,6 +39,12 @@ function UnusedGroupsPie(container, chartLabel, renderLabels) {
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
+function UnusedSpacePie(container, chartLabel, renderLabels) {
+    var self = this;
+    self.width = 220;
+    self.constructor.super.call(self, container, chartLabel, renderLabels);
+}
+
 function Pie(container, chartLabel, renderLabels) {
     var self = this;
 
@@ -117,6 +123,7 @@ extend(TotalMemoryPie, Pie);
 extend(LrcMemoryPie, Pie);
 extend(CouplesPie, Pie);
 extend(UnusedGroupsPie, Pie);
+extend(UnusedSpacePie, Pie);
 
 
 EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
@@ -347,6 +354,40 @@ UnusedGroupsPie.prototype.labels = {
 UnusedGroupsPie.prototype.labelLength = 160;
 UnusedGroupsPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
 
+
+UnusedSpacePie.prototype.margin = {top: 70, right: 10, left: 10, bottom: 40};
+
+UnusedSpacePie.prototype.color = d3.scale.ordinal()
+    .domain([
+        'uncoupled_space',
+        'uncoupled_cached_space',
+        'uncoupled_lrc_space',
+        'reserved_lrc_space',
+        'unused_locked_space',
+        'bad_unused_space',
+    ]).range([
+        'rgb(229, 214, 137)',
+        'rgb(211, 219, 199)',
+        'rgb(139, 232, 205)',
+        'rgb(139, 213, 232)',
+        'rgb(184, 121, 209)',
+        'rgb(240,72,72)',
+    ]);
+
+UnusedSpacePie.prototype.labels = {
+    uncoupled_space: 'для реплики',
+    uncoupled_cached_space: 'для кэша',
+    uncoupled_lrc_space: 'для lrc',
+    reserved_lrc_space: 'зарезервированные для lrc',
+    unused_locked_space: 'заблокированные',
+    bad_unused_space: 'недоступные',
+};
+
+UnusedSpacePie.prototype.labelLength = 160;
+UnusedSpacePie.prototype.prepareData = Pie.prototype.defaultPrepareData;
+
+UnusedSpacePie.prototype.pieLabelFormatter = prefixBytesRound;
+UnusedSpacePie.prototype.tooltipFormatter = prefixBytes;
 
 Pie.prototype.update = function (rawdata) {
 
