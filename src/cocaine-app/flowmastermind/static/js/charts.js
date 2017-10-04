@@ -7,6 +7,7 @@
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'реплики: общее место'),
         ctxTLRCM = new LrcMemoryPie('#LrcMemoryChart', 'LRC: общее место'),
         ctxC = new CouplesPie('#couplesChart', 'каплы', true),
+        ctxUG = new UnusedGroupsPie('#UnusedGroupsChart', 'неиспользуемые группы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'реплики: эффективное место по дц'),
         ctxTMDC = new TotalMemoryBar('#dscTotalMemoryChart', 'реплики: общее место по дц'),
         ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
@@ -282,6 +283,7 @@
                 ctxTM.update(data);
                 ctxTLRCM.update(data);
                 ctxC.update(data);
+                ctxUG.update(data);
 
                 ctxEMDC.update(data['dc']);
                 ctxTMDC.update(data['dc']);
