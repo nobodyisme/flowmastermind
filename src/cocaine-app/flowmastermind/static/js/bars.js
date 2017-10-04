@@ -289,7 +289,7 @@ TotalMemoryBar.prototype.prepareData = function (rawdata) {
                     - d.value['used_space'],
                  type: 'bad_free_space'});
         el.push({x: d.key,
-                 y: d.value['uncoupled_space'],
+                 y: d.value['uncoupled_space'] ? d.value['uncoupled_space']: 0,
                  type: 'uncoupled_space'});
         data.push(el);
     });
