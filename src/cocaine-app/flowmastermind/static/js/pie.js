@@ -27,7 +27,7 @@ function LrcMemoryPie(container, chartLabel, renderLabels) {
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
-function GroupsPie(container, chartLabel, renderLabels) {
+function CouplesPie(container, chartLabel, renderLabels) {
     var self = this;
     self.width = 275;
     self.constructor.super.call(self, container, chartLabel, renderLabels);
@@ -105,7 +105,7 @@ extend(EffectiveMemoryPie, Pie);
 extend(LrcEffectiveMemoryPie, Pie);
 extend(TotalMemoryPie, Pie);
 extend(LrcMemoryPie, Pie);
-extend(GroupsPie, Pie);
+extend(CouplesPie, Pie);
 
 
 EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
@@ -269,9 +269,9 @@ LrcMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 LrcMemoryPie.prototype.tooltipFormatter = prefixBytes;
 
 
-GroupsPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+CouplesPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
-GroupsPie.prototype.color = d3.scale.ordinal()
+CouplesPie.prototype.color = d3.scale.ordinal()
     .domain([
         'open_couples',
         'bad_couples',
@@ -292,7 +292,7 @@ GroupsPie.prototype.color = d3.scale.ordinal()
         'rgb(140, 70, 140)',
     ]);
 
-GroupsPie.prototype.labels = {
+CouplesPie.prototype.labels = {
     open_couples: 'открыто',
     bad_couples: 'недоступно для записи',
     archived_couples: 'в архиве',
@@ -303,7 +303,7 @@ GroupsPie.prototype.labels = {
     service_stalled_couples: 'проблемные в сервисе',
 };
 
-GroupsPie.prototype.prepareData = Pie.prototype.defaultPrepareData
+CouplesPie.prototype.prepareData = Pie.prototype.defaultPrepareData
 
 
 Pie.prototype.update = function (rawdata) {

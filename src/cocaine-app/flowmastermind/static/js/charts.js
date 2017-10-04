@@ -6,16 +6,16 @@
         ctxELRCM = new LrcEffectiveMemoryPie('#LrcEffectiveMemoryChart', 'LRC: эффективное место'),
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'реплики: общее место'),
         ctxTLRCM = new LrcMemoryPie('#LrcMemoryChart', 'LRC: общее место'),
-        ctxC = new GroupsPie('#couplesChart', 'каплы', true),
+        ctxC = new CouplesPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'реплики: эффективное место по дц'),
         ctxTMDC = new TotalMemoryBar('#dscTotalMemoryChart', 'реплики: общее место по дц'),
         ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
-        ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы и группы по датацентрам');
+        ctxCDC = new CouplesBar('#dscCouplesChart', 'каплы и группы по датацентрам');
 
     var barClicks = [[ctxEMDC, 'free_space'],
                      [ctxKDC, 'fragmentation'],
-                     [ctxGDC, 'couple_status']];
+                     [ctxCDC, 'couple_status']];
 
     var settings = ((localStorage &&
                      localStorage['ns'] &&
@@ -277,10 +277,6 @@
             dataType: 'json',
             success: function (data) {
 
-                var open_couples = data['open_couples'],
-                    frozen_couples = data['frozen_couples'],
-                    closed_couples = data['total_couples'] - open_couples - frozen_couples;
-
                 ctxEM.update(data);
                 ctxELRCM.update(data);
                 ctxTM.update(data);
@@ -291,7 +287,7 @@
                 ctxTMDC.update(data['dc']);
                 ctxLRCDC.update(data['dc']);
                 ctxKDC.update(data['dc']);
-                ctxGDC.update(data['dc']);
+                ctxCDC.update(data['dc']);
 
                 var ns_per_dc_items = iterItems(data['namespaces']),
                     ns_items = iterItems(data['namespaces_only']);
