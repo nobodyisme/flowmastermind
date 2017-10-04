@@ -34,7 +34,7 @@
     var ns_container = $('.namespaces'),
         namespaces_menu = $('.namespaces-menu'),
         namespaces = {},
-        namespaces_data = {},
+        namespaces_per_dc_data = {},
         namespaces_menus = {};
 
     var selectAllMI = $('<span class="menu-item ns-menu-item">'),
@@ -185,14 +185,14 @@
         if (settings[ns] == true) {
 
             var ns_chart = nsChart(ns),
-                ns_data = namespaces_data[ns];
+                ns_per_dc_data = namespaces_per_dc_data[ns];
 
-            ns_chart.m_bars.update(ns_data);
-            ns_chart.em_bars.update(ns_data);
-            ns_chart.lrc_m_bars.update(ns_data);
-            ns_chart.k_bars.update(ns_data);
-            ns_chart.c_bars.update(ns_data);
-            ns_chart.co_bars.update(ns_data);
+            ns_chart.m_bars.update(ns_per_dc_data);
+            ns_chart.em_bars.update(ns_per_dc_data);
+            ns_chart.lrc_m_bars.update(ns_per_dc_data);
+            ns_chart.k_bars.update(ns_per_dc_data);
+            ns_chart.c_bars.update(ns_per_dc_data);
+            ns_chart.co_bars.update(ns_per_dc_data);
         } else {
             delete namespaces[ns];
             $('.namespaces #' + ns).remove();
@@ -283,34 +283,34 @@
                 ctxKDC.update(data['dc']);
                 ctxGDC.update(data['dc']);
 
-                var ns_items = iterItems(data['namespaces']);
+                var ns_per_dc_items = iterItems(data['namespaces']);
 
                 // namespaces stats
-                var new_data = {};
-                for (var idx in ns_items) {
-                    var ns = ns_items[idx][0],
-                        ns_data = ns_items[idx][1];
-                    new_data[ns] = ns_data;
+                var new_ns_per_dc_data = {};
+                for (var idx in ns_per_dc_items) {
+                    var ns = ns_per_dc_items[idx][0],
+                        ns_per_dc_data = ns_per_dc_items[idx][1];
+                    new_ns_per_dc_data[ns] = ns_per_dc_data;
                 }
 
-                namespaces_data = new_data;
+                namespaces_per_dc_data = new_ns_per_dc_data;
 
                 if (initLoad) {
                     maybe_ns = location.hash.substr(1);
-                    if (namespaces_data[maybe_ns] !== undefined) {
+                    if (namespaces_per_dc_data[maybe_ns] !== undefined) {
                         settings[maybe_ns] = true;
                         localStorage['ns'] = JSON.stringify(settings);
                     }
                 }
 
-                for (var ns in namespaces_data) {
+                for (var ns in namespaces_per_dc_data) {
                     nsMenuItem(ns);
                     display_ns(ns);
                 }
 
                 if (initLoad) {
                     maybe_ns = location.hash.substr(1);
-                    if (namespaces_data[maybe_ns] !== undefined) {
+                    if (namespaces_per_dc_data[maybe_ns] !== undefined) {
                         // hash is a namespace, move to the anchor
                         location.hash = '#dummy';
                         location.hash = '#' + maybe_ns;
