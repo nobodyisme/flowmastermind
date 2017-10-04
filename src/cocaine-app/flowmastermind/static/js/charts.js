@@ -35,6 +35,7 @@
         namespaces_menu = $('.namespaces-menu'),
         namespaces = {},
         namespaces_per_dc_data = {},
+        namespaces_data = {};
         namespaces_menus = {};
 
     var selectAllMI = $('<span class="menu-item ns-menu-item">'),
@@ -186,10 +187,13 @@
 
             var ns_chart = nsChart(ns),
                 ns_per_dc_data = namespaces_per_dc_data[ns];
+                ns_data = namespaces_data[ns];
 
             ns_chart.m_bars.update(ns_per_dc_data);
             ns_chart.em_bars.update(ns_per_dc_data);
             ns_chart.lrc_m_bars.update(ns_per_dc_data);
+            ns_chart.lrc_em_pies.update(ns_data);
+            ns_chart.lrc_tm_pies.update(ns_data);
             ns_chart.k_bars.update(ns_per_dc_data);
             ns_chart.c_bars.update(ns_per_dc_data);
             ns_chart.co_bars.update(ns_per_dc_data);
@@ -214,12 +218,16 @@
 
             var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
                 em_chart = $('<div class="chart em-chart-' + ns + '">').appendTo(chart_set),
+                lrc_em_chart = $('<div class="chart lrc-em-chart-' + ns + '">').appendTo(chart_set),
+                lrc_tm_chart = $('<div class="chart lrc-tm-chart-' + ns + '">').appendTo(chart_set),
                 lrc_chart = $('<div class="chart lrc-m-chart-' + ns + '">').appendTo(chart_set),
                 k_chart = $('<div class="chart k-chart-' + ns + '">').appendTo(chart_set),
                 c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
                 co_chart = $('<div class="chart co-chart-' + ns + '">').appendTo(chart_set),
                 m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
                 em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
+                lrc_em_pies = new LrcEffectiveMemoryPie('.lrc-em-chart-' + ns, 'LRC: эффективное место'),
+                lrc_tm_pies = new LrcMemoryPie('.lrc-tm-chart-' + ns, 'LRC: общее место'),
                 lrc_m_bars = new LrcTotalMemoryBar('.lrc-m-chart-' + ns, 'LRC: общее место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new CouplesBar('.c-chart-' + ns, 'каплы'),
@@ -233,6 +241,8 @@
                 'm_bars': m_bars,
                 'em_bars': em_bars,
                 'lrc_m_bars': lrc_m_bars,
+                'lrc_em_pies': lrc_em_pies,
+                'lrc_tm_pies': lrc_tm_pies,
                 'k_bars': k_bars,
                 'c_bars': c_bars,
                 'co_bars': co_bars
@@ -283,7 +293,8 @@
                 ctxKDC.update(data['dc']);
                 ctxGDC.update(data['dc']);
 
-                var ns_per_dc_items = iterItems(data['namespaces']);
+                var ns_per_dc_items = iterItems(data['namespaces']),
+                    ns_items = iterItems(data['namespaces_only']);
 
                 // namespaces stats
                 var new_ns_per_dc_data = {};
@@ -292,12 +303,20 @@
                         ns_per_dc_data = ns_per_dc_items[idx][1];
                     new_ns_per_dc_data[ns] = ns_per_dc_data;
                 }
+                var new_ns_data = {};
+                for (var idx in ns_items) {
+                    var ns = ns_items[idx][0],
+                        ns_data = ns_items[idx][1];
+                    new_ns_data[ns] = ns_data;
+                }
 
                 namespaces_per_dc_data = new_ns_per_dc_data;
+                namespaces_data = new_ns_data;
 
                 if (initLoad) {
                     maybe_ns = location.hash.substr(1);
-                    if (namespaces_per_dc_data[maybe_ns] !== undefined) {
+                    if (namespaces_per_dc_data[maybe_ns] !== undefined
+                        && namespaces_data[maybe_ns] !== undefined) {
                         settings[maybe_ns] = true;
                         localStorage['ns'] = JSON.stringify(settings);
                     }
@@ -310,7 +329,8 @@
 
                 if (initLoad) {
                     maybe_ns = location.hash.substr(1);
-                    if (namespaces_per_dc_data[maybe_ns] !== undefined) {
+                    if (namespaces_per_dc_data[maybe_ns] !== undefined
+                        && namespaces_data[maybe_ns] !== undefined) {
                         // hash is a namespace, move to the anchor
                         location.hash = '#dummy';
                         location.hash = '#' + maybe_ns;
