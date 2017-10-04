@@ -65,6 +65,19 @@ function Pie(container, chartLabel, renderLabels) {
         .outerRadius(Math.round(self.height / 2) + 15);
 }
 
+Pie.prototype.defaultPrepareData = function (rawdata) {
+    var self = this;
+
+    var data = [];
+
+    var data_types = self.color.domain().slice();
+    for (var index = 0; index < data_types.length; ++index) {
+        data.push({value: rawdata[data_types[index]] ? rawdata[data_types[index]] : 0,
+                   type: data_types[index]});
+    }
+
+    return {data: data};
+};
 
 function extend(Child, Parent) {
     var F = function() { };

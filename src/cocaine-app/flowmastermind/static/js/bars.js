@@ -52,6 +52,9 @@ function Bar(container, chartLabel, chartLabelSmall) {
     var barClickHandler = null;
 
     self.svg_container = d3.select(container).insert('svg', ':first-child');
+
+    self.addLegend();
+
     self.svg = self.svg_container
             .attr('width', self.width + self.margin.left + self.margin.right)
             .attr('height', self.height + self.margin.bottom + self.margin.top)
@@ -78,8 +81,6 @@ function Bar(container, chartLabel, chartLabelSmall) {
                 .attr('x', 0)
                 .text(chartLabelSmall);
     }
-
-    self.addLegend();
 
     self.tooltip = new Tooltip(true);
     self.tooltip.appendTo(container);
@@ -114,6 +115,75 @@ function Bar(container, chartLabel, chartLabelSmall) {
         .call(self.yAxis);
 }
 
+Bar.prototype.defaultPrepareData = function (rawdata) {
+    var self = this;
+
+    var rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
+    var data = [],
+        keys = rawdataEntries.map(function (d) { return d.key; });
+
+    var data_types = self.color.domain().slice();
+    rawdataEntries.forEach(function (d, i) {
+        var el = [];
+        for (var index = 0; index < data_types.length; ++index) {
+            el.push({x: d.key,
+                     y: d.value[data_types[index]] ? d.value[data_types[index]] : 0,
+                     type: data_types[index]});
+        }
+        data.push(el);
+    });
+
+    data = d3.transpose(d3.layout.stack()(d3.transpose(data)));
+
+    return {data: data,
+            keys: keys};
+
+};
+
+Bar.prototype.legend_per_line = 2;
+Bar.prototype.labelLength = 150;
+Bar.prototype.addLegend = function () {
+
+    var self = this;
+
+    self.legend = self.svg_container
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', 'translate(' + self.margin.left + ',0)');
+
+    var labels = self.color.domain().slice(),
+        colors = self.color.range().slice();
+
+    var flatcl = d3.zip(colors, labels).reverse();
+    var level = 0;
+    var levelcl = [];
+    while ((level + 1) * self.legend_per_line < labels.length) {
+        levelcl.push(flatcl.slice(level * self.legend_per_line, (level + 1) * self.legend_per_line));
+        ++level;
+    }
+    levelcl.push(flatcl.slice(level * self.legend_per_line));
+
+    levelcl.forEach(function (cl, j) {
+        cl.forEach(function (cl, i) {
+            self.legend
+                .append('rect')
+                .attr('class', 'legend-colorsample')
+                .attr('height', 10)
+                .attr('width', 10)
+                .attr('transform', 'translate(' + (i * self.labelLength) + ',' + (5 + (j * 15)) + ')')
+                .style('fill', cl[0]);
+
+            self.legend
+                .append('text')
+                .attr('class', 'legend-label')
+                .attr('transform', 'translate(' + (i * self.labelLength + 15) + ',' + (5 + (j * 15)) + ')')
+                .attr('y', 4)
+                .text('— ' + self.labels[cl[1]]);
+        });
+    });
+
+    self.margin.top = d3.max([self.margin.top, self.legend[0][0].getBBox().height + 20]);
+};
 
 function extend(Child, Parent) {
     var F = function() { };
