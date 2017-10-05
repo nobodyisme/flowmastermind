@@ -272,8 +272,10 @@ Pie.prototype.hideTooltip = function () {
         .style('fill-opacity', 0.6);
 
     self.tooltip.hide();
-}
+};
 
+Pie.prototype.legend_per_line = 2;
+Pie.prototype.labelLength = 90;
 Pie.prototype.addLegend = function () {
 
     var self = this;
@@ -286,9 +288,14 @@ Pie.prototype.addLegend = function () {
     var labels = self.color.domain().slice(),
         colors = self.color.range().slice();
 
-    var labelLength = 90;
     var flatcl = d3.zip(colors, labels).reverse();
-    var levelcl = [flatcl.slice(0, 2), flatcl.slice(2)];
+    var level = 0;
+    var levelcl = [];
+    while ((level + 1) * self.legend_per_line < labels.length) {
+        levelcl.push(flatcl.slice(level * self.legend_per_line, (level + 1) * self.legend_per_line));
+        ++level;
+    }
+    levelcl.push(flatcl.slice(level * self.legend_per_line));
 
     levelcl.forEach(function (cl, j) {
         cl.forEach(function (cl, i) {
@@ -297,13 +304,13 @@ Pie.prototype.addLegend = function () {
                 .attr('class', 'legend-colorsample')
                 .attr('height', 10)
                 .attr('width', 10)
-                .attr('transform', 'translate(' + (i * labelLength) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
+                .attr('transform', 'translate(' + (i * self.labelLength) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
                 .style('fill', cl[0]);
 
             self.legend
                 .append('text')
                 .attr('class', 'legend-label')
-                .attr('transform', 'translate(' + (i * labelLength + 15) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
+                .attr('transform', 'translate(' + (i * self.labelLength + 15) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
                 .attr('y', 4)
                 .text('— ' + self.labels[cl[1]]);
         });
@@ -313,6 +320,7 @@ Pie.prototype.addLegend = function () {
         self.legend
             .attr('transform', 'translate(' + (self.width - self.legend[0][0].getBBox().width) + ',0)');
     }
+    self.margin.top = d3.max([self.margin.top, self.legend[0][0].getBBox().height + 20]);
 };
 
 Pie.prototype.arcTween = function (self) {
