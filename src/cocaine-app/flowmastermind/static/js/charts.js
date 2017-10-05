@@ -8,7 +8,7 @@
         ctxC = new GroupsPie('#couplesChart', 'каплы', true),
         ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
-        ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы по датацентрам');
+        ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы и группы по датацентрам');
 
     var barClicks = [[ctxEMDC, 'free_space'],
                      [ctxKDC, 'fragmentation'],

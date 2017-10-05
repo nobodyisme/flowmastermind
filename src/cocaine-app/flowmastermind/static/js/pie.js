@@ -154,35 +154,38 @@ TotalMemoryPie.prototype.tooltipFormatter = prefixBytes;
 GroupsPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 
 GroupsPie.prototype.color = d3.scale.ordinal()
-    .domain(['broken_couples', 'closed_couples',
-             'frozen_couples', 'bad_couples', 'open_couples'])
-    .range(['rgb(150,35,0)', 'rgb(200,200,200)',
-            'rgb(150,197,255)', 'rgb(240,72,72)', 'rgb(78,201,106)']);
+    .domain([
+        'open_couples',
+        'bad_couples',
+        'archived_couples',
+        'closed_couples',
+        'frozen_couples',
+        'broken_couples',
+        'service_active_couples',
+        'service_stalled_couples',
+    ]).range([
+        'rgb(78,201,106)',
+        'rgb(240,72,72)',
+        'rgb(120,120,120)',
+        'rgb(200,200,200)',
+        'rgb(150,197,255)',
+        'rgb(150,35,0)',
+        'rgb(220, 110, 220)',
+        'rgb(140, 70, 140)',
+    ]);
 
 GroupsPie.prototype.labels = {
+    open_couples: 'открыто',
     bad_couples: 'недоступно для записи',
-    broken_couples: 'конфигурация',
+    archived_couples: 'в архиве',
     closed_couples: 'заполнено',
     frozen_couples: 'заморожено',
-    open_couples: 'открыто',
+    broken_couples: 'конфигурация',
+    service_active_couples: 'в сервисе',
+    service_stalled_couples: 'проблемные в сервисе',
 };
 
-GroupsPie.prototype.prepareData = function(rawdata) {
-    var data = [];
-
-    data.push({value: rawdata['open_couples'],
-               type: 'open_couples'});
-    data.push({value: rawdata['bad_couples'],
-               type: 'bad_couples'});
-    data.push({value: rawdata['frozen_couples'],
-               type: 'frozen_couples'});
-    data.push({value: rawdata['closed_couples'],
-               type: 'closed_couples'});
-    data.push({value: rawdata['broken_couples'],
-               type: 'broken_couples'});
-
-    return {data: data};
-}
+GroupsPie.prototype.prepareData = Pie.prototype.defaultPrepareData
 
 
 Pie.prototype.update = function (rawdata) {
@@ -274,8 +277,8 @@ Pie.prototype.hideTooltip = function () {
     self.tooltip.hide();
 };
 
-Pie.prototype.legend_per_line = 2;
-Pie.prototype.labelLength = 90;
+Pie.prototype.legend_per_line = 3;
+Pie.prototype.labelLength = 150;
 Pie.prototype.addLegend = function () {
 
     var self = this;

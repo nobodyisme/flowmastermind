@@ -337,71 +337,76 @@ KeysBar.prototype.barLabelFormatter = function (val) {
 };
 
 CouplesBar.prototype.color = d3.scale.ordinal()
-    .domain(['bad_couples', 'broken_couples', 'closed_couples', 'frozen_couples',
-             'open_couples', 'uncoupled_groups'])
-    .range(['rgb(240,72,72)', 'rgb(150,35,0)', 'rgb(200,200,200)', 'rgb(150,197,255)',
-            'rgb(78,201,106)', 'rgb(242,238,96)']);
+    .domain([
+        'bad_couples',
+        'broken_couples',
+        'archived_couples',
+        'closed_couples',
+        'frozen_couples',
+        'open_couples',
+        'service_active_couples',
+        'service_stalled_couples',
+        'uncoupled_groups',
+    ]).range([
+        'rgb(240,72,72)',
+        'rgb(150,35,0)',
+        'rgb(120,120,120)',
+        'rgb(200,200,200)',
+        'rgb(150,197,255)',
+        'rgb(78,201,106)',
+        'rgb(220, 110, 220)',
+        'rgb(140, 70, 140)',
+        'rgb(242,238,96)',
+    ]);
 
 CouplesBar.prototype.labels = {
     bad_couples: 'недоступные для записи каплы',
     broken_couples: 'каплы с ошибкой конфигурации',
+    archived_couples: 'отправленные в архив каплы',
     closed_couples: 'заполненные каплы',
     frozen_couples: 'замороженные каплы',
     open_couples: 'открытые на запись каплы',
+    service_active_couples: 'каплы в сервисе',
+    service_stalled_couples: 'проблемные каплы в сервисе',
     uncoupled_groups: 'групп не в капле'
 };
 
 CouplesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
 CouplesBar.prototype.labelLength = 185;
 
-CouplesBar.prototype.prepareData = function (rawdata) {
-    rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
+CouplesBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
 
-    var data = [],
-        keys = rawdataEntries.map(function (d) { return d.key; });
-
-    rawdataEntries.forEach(function (d, i) {
-        var el = [];
-        el.push({x: d.key,
-                 y: d.value['bad_couples'],
-                 type: 'bad_couples'});
-        el.push({x: d.key,
-                 y: d.value['broken_couples'],
-                 type: 'broken_couples'});
-        el.push({x: d.key,
-                 y: d.value['closed_couples'],
-                 type: 'closed_couples'});
-        el.push({x: d.key,
-                 y: d.value['frozen_couples'],
-                 type: 'frozen_couples'});
-        el.push({x: d.key,
-                 y: d.value['open_couples'],
-                 type: 'open_couples'});
-        el.push({x: d.key,
-                 y: d.value['uncoupled_groups'],
-                 type: 'uncoupled_groups'});
-        data.push(el);
-    });
-
-    data = d3.transpose(
-        d3.layout.stack()(d3.transpose(data)));
-
-    return {data: data,
-            keys: keys};
-}
 
 OutagesBar.prototype.color = d3.scale.ordinal()
-    .domain(['bad_couples', 'broken_couples', 'closed_couples', 'frozen_couples',
-             'open_couples'])
-    .range(['rgb(240,72,72)', 'rgb(150,35,0)', 'rgb(200,200,200)', 'rgb(150,197,255)',
-            'rgb(78,201,106)']);
+    .domain([
+        'bad_couples',
+        'broken_couples',
+        'archived_couples',
+        'closed_couples',
+        'frozen_couples',
+        'open_couples',
+        'service_active_couples',
+        'service_stalled_couples',
+    ]).range([
+        'rgb(240,72,72)',
+        'rgb(150,35,0)',
+        'rgb(120,120,120)',
+        'rgb(200,200,200)',
+        'rgb(150,197,255)',
+        'rgb(78,201,106)',
+        'rgb(220, 110, 220)',
+        'rgb(140, 70, 140)',
+    ]);
 
 OutagesBar.prototype.labels = {
     bad_couples: 'недоступно для записи',
     broken_couples: 'ошибка конфигурации',
+    archived_couples: 'архив',
     closed_couples: 'заполнены',
     frozen_couples: 'заморожено',
-    open_couples: 'открыто на запись'
+    open_couples: 'открыто на запись',
+    service_active_couples: 'в сервисе',
+    service_stalled_couples: 'проблемные в сервисе',
 };
 
 OutagesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
@@ -409,38 +414,7 @@ OutagesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 60};
 OutagesBar.prototype.legend_per_line = 2;
 OutagesBar.prototype.labelLength = 170;
 
-OutagesBar.prototype.prepareData = function (rawdata) {
-    rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
-
-    var data = [],
-        keys = rawdataEntries.map(function (d) { return d.key; });
-
-    rawdataEntries.forEach(function (d, i) {
-        var el = [];
-        el.push({x: d.key,
-                 y: d.value['outages']['bad_couples'],
-                 type: 'bad_couples'});
-        el.push({x: d.key,
-                 y: d.value['outages']['broken_couples'],
-                 type: 'broken_couples'});
-        el.push({x: d.key,
-                 y: d.value['outages']['closed_couples'],
-                 type: 'closed_couples'});
-        el.push({x: d.key,
-                 y: d.value['outages']['frozen_couples'],
-                 type: 'frozen_couples'});
-        el.push({x: d.key,
-                 y: d.value['outages']['open_couples'],
-                 type: 'open_couples'});
-        data.push(el);
-    });
-
-    data = d3.transpose(
-        d3.layout.stack()(d3.transpose(data)));
-
-    return {data: data,
-            keys: keys};
-}
+OutagesBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
 
 
 Bar.prototype.tooltipFormatter = function (d) { return d; };
