@@ -160,6 +160,7 @@ EffectiveMemoryPie.prototype.color = d3.scale.ordinal()
 
 EffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
 
+EffectiveMemoryPie.prototype.labelLength = 210;
 EffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 EffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
 EffectiveMemoryPie.prototype.legendLabelOffset = 10;

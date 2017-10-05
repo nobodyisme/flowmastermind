@@ -2,7 +2,7 @@
 
     var updatePeriod = 30000;
 
-    var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'реплики: эффективное место'),
+    var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'реплики: эффективное место', true),
         ctxELRCM = new LrcEffectiveMemoryPie('#LrcEffectiveMemoryChart', 'LRC: эффективное место'),
         ctxTM = new TotalMemoryPie('#totalMemoryChart', 'реплики: общее место'),
         ctxTLRCM = new LrcMemoryPie('#LrcMemoryChart', 'LRC: общее место'),
