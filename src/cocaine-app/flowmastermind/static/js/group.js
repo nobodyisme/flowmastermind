@@ -203,7 +203,7 @@ GroupInfo.prototype.renderCoupleGraph = function (data) {
                 })
                 .attr('d', d3.svg.arc().innerRadius(r - 4).outerRadius(r)
                                       .startAngle(node_start_angle).endAngle(node_start_angle + fragm_angle)())
-                .style('fill', 'rgb(121,146,155)')
+                .style('fill', 'rgb(97, 99, 232)')
                 .on('mouseenter', function () { self.highlight.bind(self)(this); })
                 .on('mouseleave', self.cancelHighlight.bind(self))
                 .on('click', function () { self.treemapZoom.bind(self)(node, group); });

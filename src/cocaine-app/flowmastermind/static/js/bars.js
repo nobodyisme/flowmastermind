@@ -237,7 +237,7 @@ MemoryBar.prototype.color = d3.scale.ordinal()
         'uncoupled_space',
     ])
     .range([
-        'rgb(121,146,155)',
+        'rgb(97, 99, 232)',
         'rgb(200,200,200)',
         'rgb(224, 210, 122)',
         'rgb(58, 170, 209)',
@@ -270,7 +270,7 @@ MemoryBar.prototype.barLabelFormatter = prefixBytesRound;
 TotalMemoryBar.prototype.color = d3.scale.ordinal()
     .domain(['removed_keys_size', 'committed_keys_size', 'uncommitted_keys_size',
             'free_space', 'uncoupled_space', 'bad_free_space'])
-    .range(['rgb(121,146,155)', 'rgb(200,200,200)', 'rgb(224, 210, 122)',
+    .range(['rgb(97, 99, 232)', 'rgb(200,200,200)', 'rgb(224, 210, 122)',
             'rgb(78,201,106)', 'rgb(242,238,96)', 'rgb(240,72,72)']);
 
 TotalMemoryBar.prototype.labels = {
@@ -341,7 +341,7 @@ LrcTotalMemoryBar.prototype.color = d3.scale.ordinal()
         'reserved_lrc_space',
     ])
     .range([
-        'rgb(121,146,155)',
+        'rgb(97, 99, 232)',
         'rgb(200,200,200)',
         'rgb(224, 210, 122)',
         'rgb(78,201,106)',

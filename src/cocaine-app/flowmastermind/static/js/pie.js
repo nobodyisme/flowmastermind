@@ -155,7 +155,7 @@ EffectiveMemoryPie.prototype.color = d3.scale.ordinal()
         'rgb(58, 170, 209)',
         'rgb(224, 210, 122)',
         'rgb(200,200,200)',
-        'rgb(121,146,155)',
+        'rgb(97, 99, 232)',
     ]);
 
 EffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
@@ -187,7 +187,7 @@ LrcEffectiveMemoryPie.prototype.color = d3.scale.ordinal()
         'rgb(240,72,72)',
         'rgb(224, 210, 122)',
         'rgb(200,200,200)',
-        'rgb(121,146,155)',
+        'rgb(97, 99, 232)',
     ]);
 
 LrcEffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
@@ -210,7 +210,7 @@ TotalMemoryPie.prototype.labels = {
 TotalMemoryPie.prototype.color = d3.scale.ordinal()
     .domain(['free_space', 'removed_keys_size', 'committed_keys_size',
             'uncommitted_keys_size', 'uncoupled_space', 'bad_free_space'])
-    .range(['rgb(78,201,106)', 'rgb(121,146,155)', 'rgb(200,200,200)',
+    .range(['rgb(78,201,106)', 'rgb(97, 99, 232)', 'rgb(200,200,200)',
             'rgb(224, 210, 122)', 'rgb(246,244,158)', 'rgb(240,72,72)']);
 
 TotalMemoryPie.prototype.prepareData = function(rawdata) {
@@ -256,7 +256,7 @@ LrcMemoryPie.prototype.color = d3.scale.ordinal()
     .domain(['free_lrc_space', 'bad_free_space', 'uncommitted_lrc_keys_size',
             'committed_lrc_space', 'removed_lrc_keys_size', 'uncoupled_lrc_space', 'reserved_lrc_space'])
     .range(['rgb(78,201,106)', 'rgb(240,72,72)', 'rgb(224, 210, 122)',
-            'rgb(200,200,200)', 'rgb(121,146,155)', 'rgb(246,244,158)', 'rgb(133, 229, 219)']);
+            'rgb(200,200,200)', 'rgb(97, 99, 232)', 'rgb(246,244,158)', 'rgb(133, 229, 219)']);
 
 LrcMemoryPie.prototype.prepareData = function(rawdata) {
     var data = [];
