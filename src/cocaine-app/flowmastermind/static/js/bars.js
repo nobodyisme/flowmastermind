@@ -579,7 +579,30 @@ OutagesBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
 OutagesBar.prototype.legend_per_line = 2;
 OutagesBar.prototype.labelLength = 170;
 
-OutagesBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
+OutagesBar.prototype.prepareData = function (rawdata) {
+    var self = this;
+
+    var rawdataEntries = d3.entries(rawdata).sort(function (a, b) { return (a.key < b.key) ? -1 : 1; });
+    var data = [],
+        keys = rawdataEntries.map(function (d) { return d.key; });
+
+    var data_types = self.color.domain().slice();
+    rawdataEntries.forEach(function (d, i) {
+        var el = [];
+        for (var index = 0; index < data_types.length; ++index) {
+            el.push({x: d.key,
+                     y: d.value['outages'][data_types[index]] ? d.value['outages'][data_types[index]] : 0,
+                     type: data_types[index]});
+        }
+        data.push(el);
+    });
+
+    data = d3.transpose(d3.layout.stack()(d3.transpose(data)));
+
+    return {data: data,
+            keys: keys};
+
+};
 
 
 Bar.prototype.tooltipFormatter = function (d) { return d; };

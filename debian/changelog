@@ -1,3 +1,9 @@
+flowmastermind (1.1) trusty; urgency=medium
+
+  * Fix: show outage statistics correctly
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Fri, 06 Oct 2017 18:50:55 +0300
+
 flowmastermind (1.0) trusty; urgency=medium
 
   * Add memory pies per namespace
