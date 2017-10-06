@@ -1,3 +1,33 @@
+flowmastermind (1.0) trusty; urgency=medium
+
+  * Add memory pies per namespace
+  * Show legend for effective pie
+  * Change color of removed data
+  * Show unused space per dc
+  * Show unused groups per dc
+  * Add unused space pie
+  * Show pies and bars better
+  * Add pie for unused groups
+  * Add lrc pies per namespace
+  * Change labels
+  * Add space per dc bar
+  * Add total lrc memory pie
+  * Add effective lrc memory pie
+  * Add lrc memory bars
+  * Use default zero value when uncoupled stat is missing
+  * Separate alive keys to committed and uncommitted
+  * Show bad free space
+  * Separate used space to committed/uncommitted/removed
+  * Show used_space correctly
+  * Show wasted and bad free space
+  * Show effective uncommmitted and removed stats
+  * Remove duplicate pie
+  * Show reserved_effective_free_space
+  * Show effective_used_space correctly
+  * Show new couple types in statistics
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Fri, 06 Oct 2017 15:31:16 +0300
+
 flowmastermind (0.99) trusty; urgency=medium
 
   * Add remove couple meta info task
