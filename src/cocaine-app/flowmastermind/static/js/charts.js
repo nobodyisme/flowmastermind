@@ -193,11 +193,13 @@
                 ns_per_dc_data = namespaces_per_dc_data[ns];
                 ns_data = namespaces_data[ns];
 
+            ns_chart.emp_pies.update(ns_data);
+            ns_chart.tmp_pies.update(ns_data);
+            ns_chart.lrc_em_pies.update(ns_data);
+            ns_chart.lrc_tm_pies.update(ns_data);
             ns_chart.m_bars.update(ns_per_dc_data);
             ns_chart.em_bars.update(ns_per_dc_data);
             ns_chart.lrc_m_bars.update(ns_per_dc_data);
-            ns_chart.lrc_em_pies.update(ns_data);
-            ns_chart.lrc_tm_pies.update(ns_data);
             ns_chart.k_bars.update(ns_per_dc_data);
             ns_chart.c_bars.update(ns_per_dc_data);
             ns_chart.co_bars.update(ns_per_dc_data);
@@ -220,18 +222,23 @@
 
             insertAlphabetically(chart_set, ns_container, byId);
 
-            var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
+            var emp_chart = $('<div class="chart emp-chart-' + ns + '">').appendTo(chart_set),
+                tmp_chart = $('<div class="chart tmp-chart-' + ns + '">').appendTo(chart_set),
+                lrc_emp_chart = $('<div class="chart lrc-em-chart-' + ns + '">').appendTo(chart_set),
+                lrc_tmp_chart = $('<div class="chart lrc-tm-chart-' + ns + '">').appendTo(chart_set),
+                clear3 = $('<span class="clear">').appendTo(chart_set);
+                m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
                 em_chart = $('<div class="chart em-chart-' + ns + '">').appendTo(chart_set),
-                lrc_em_chart = $('<div class="chart lrc-em-chart-' + ns + '">').appendTo(chart_set),
-                lrc_tm_chart = $('<div class="chart lrc-tm-chart-' + ns + '">').appendTo(chart_set),
                 lrc_chart = $('<div class="chart lrc-m-chart-' + ns + '">').appendTo(chart_set),
                 k_chart = $('<div class="chart k-chart-' + ns + '">').appendTo(chart_set),
                 c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
                 co_chart = $('<div class="chart co-chart-' + ns + '">').appendTo(chart_set),
-                m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
-                em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
+                emp_pies = new EffectiveMemoryPie('.emp-chart-' + ns, 'реплики: эффективное место', true),
+                tmp_pies = new TotalMemoryPie('.tmp-chart-' + ns, 'реплики: общее место'),
                 lrc_em_pies = new LrcEffectiveMemoryPie('.lrc-em-chart-' + ns, 'LRC: эффективное место'),
                 lrc_tm_pies = new LrcMemoryPie('.lrc-tm-chart-' + ns, 'LRC: общее место'),
+                m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
+                em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
                 lrc_m_bars = new LrcTotalMemoryBar('.lrc-m-chart-' + ns, 'LRC: общее место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new CouplesBar('.c-chart-' + ns, 'каплы'),
@@ -242,11 +249,13 @@
             $('<span class="clear">').appendTo(chart_set);
 
             namespaces[ns] = {
+                'emp_pies': emp_pies,
+                'tmp_pies': tmp_pies,
+                'lrc_em_pies': lrc_em_pies,
+                'lrc_tm_pies': lrc_tm_pies,
                 'm_bars': m_bars,
                 'em_bars': em_bars,
                 'lrc_m_bars': lrc_m_bars,
-                'lrc_em_pies': lrc_em_pies,
-                'lrc_tm_pies': lrc_tm_pies,
                 'k_bars': k_bars,
                 'c_bars': c_bars,
                 'co_bars': co_bars

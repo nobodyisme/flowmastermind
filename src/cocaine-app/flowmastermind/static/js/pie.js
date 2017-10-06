@@ -231,7 +231,7 @@ TotalMemoryPie.prototype.prepareData = function(rawdata) {
                type: 'committed_keys_size'});
     data.push({value: rawdata['removed_keys_size'],
                type: 'removed_keys_size'});
-    data.push({value: rawdata['uncoupled_space'],
+    data.push({value: rawdata['uncoupled_space'] ? rawdata['uncoupled_space'] : 0,
                type: 'uncoupled_space'});
 
     return {data: data};
