@@ -2,17 +2,24 @@
 
     var updatePeriod = 30000;
 
-    var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'эффективное место'),
-        ctxTM = new TotalMemoryPie('#totalMemoryChart', 'общее место'),
-        ctxRDEM = new EffectiveMemoryPie('#realDataEffMemoryChart', 'размер данных*', true),
-        ctxC = new GroupsPie('#couplesChart', 'каплы', true),
-        ctxEMDC = new MemoryBar('#dscMemoryChart', 'эффективное место по датацентрам'),
+    var ctxEM = new EffectiveMemoryPie('#effectiveMemoryChart', 'реплики: эффективное место', true),
+        ctxELRCM = new LrcEffectiveMemoryPie('#LrcEffectiveMemoryChart', 'LRC: эффективное место'),
+        ctxTM = new TotalMemoryPie('#totalMemoryChart', 'реплики: общее место'),
+        ctxTLRCM = new LrcMemoryPie('#LrcMemoryChart', 'LRC: общее место'),
+        ctxC = new CouplesPie('#couplesChart', 'каплы', true),
+        ctxUG = new UnusedGroupsPie('#UnusedGroupsChart', 'неиспользуемые группы', true),
+        ctxUS = new UnusedSpacePie('#UnusedSpaceChart', 'неиспользуемое место', true),
+        ctxEMDC = new MemoryBar('#dscMemoryChart', 'реплики: эффективное место по дц'),
+        ctxTMDC = new TotalMemoryBar('#dscTotalMemoryChart', 'реплики: общее место по дц'),
+        ctxLRCDC = new LrcTotalMemoryBar('#dscLrcMemoryChart', 'LRC: общее место по датацентрам'),
         ctxKDC = new KeysBar('#dscKeysChart', 'ключи по датацентрам'),
-        ctxGDC = new CouplesBar('#dscCouplesChart', 'каплы по датацентрам');
+        ctxCDC = new CouplesBar('#dscCouplesChart', 'каплы по датацентрам'),
+        ctxUGDC = new UnusedGroupsBar('#dscUnusedGroupsChart', 'неипользуемые группы по дц'),
+        ctxUMDC = new UnusedMemoryBar('#dscUnusedMemoryChart', 'неипользуемое место по дц');
 
     var barClicks = [[ctxEMDC, 'free_space'],
                      [ctxKDC, 'fragmentation'],
-                     [ctxGDC, 'couple_status']];
+                     [ctxCDC, 'couple_status']];
 
     var settings = ((localStorage &&
                      localStorage['ns'] &&
@@ -31,7 +38,8 @@
     var ns_container = $('.namespaces'),
         namespaces_menu = $('.namespaces-menu'),
         namespaces = {},
-        namespaces_data = {},
+        namespaces_per_dc_data = {},
+        namespaces_data = {};
         namespaces_menus = {};
 
     var selectAllMI = $('<span class="menu-item ns-menu-item">'),
@@ -182,13 +190,19 @@
         if (settings[ns] == true) {
 
             var ns_chart = nsChart(ns),
+                ns_per_dc_data = namespaces_per_dc_data[ns];
                 ns_data = namespaces_data[ns];
 
-            ns_chart.m_bars.update(ns_data);
-            ns_chart.em_bars.update(ns_data);
-            ns_chart.k_bars.update(ns_data);
-            ns_chart.c_bars.update(ns_data);
-            ns_chart.co_bars.update(ns_data);
+            ns_chart.emp_pies.update(ns_data);
+            ns_chart.tmp_pies.update(ns_data);
+            ns_chart.lrc_em_pies.update(ns_data);
+            ns_chart.lrc_tm_pies.update(ns_data);
+            ns_chart.m_bars.update(ns_per_dc_data);
+            ns_chart.em_bars.update(ns_per_dc_data);
+            ns_chart.lrc_m_bars.update(ns_per_dc_data);
+            ns_chart.k_bars.update(ns_per_dc_data);
+            ns_chart.c_bars.update(ns_per_dc_data);
+            ns_chart.co_bars.update(ns_per_dc_data);
         } else {
             delete namespaces[ns];
             $('.namespaces #' + ns).remove();
@@ -208,13 +222,24 @@
 
             insertAlphabetically(chart_set, ns_container, byId);
 
-            var m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
+            var emp_chart = $('<div class="chart emp-chart-' + ns + '">').appendTo(chart_set),
+                tmp_chart = $('<div class="chart tmp-chart-' + ns + '">').appendTo(chart_set),
+                lrc_emp_chart = $('<div class="chart lrc-em-chart-' + ns + '">').appendTo(chart_set),
+                lrc_tmp_chart = $('<div class="chart lrc-tm-chart-' + ns + '">').appendTo(chart_set),
+                clear3 = $('<span class="clear">').appendTo(chart_set);
+                m_chart = $('<div class="chart m-chart-' + ns + '">').appendTo(chart_set),
                 em_chart = $('<div class="chart em-chart-' + ns + '">').appendTo(chart_set),
+                lrc_chart = $('<div class="chart lrc-m-chart-' + ns + '">').appendTo(chart_set),
                 k_chart = $('<div class="chart k-chart-' + ns + '">').appendTo(chart_set),
                 c_chart = $('<div class="chart c-chart-' + ns + '">').appendTo(chart_set),
                 co_chart = $('<div class="chart co-chart-' + ns + '">').appendTo(chart_set),
+                emp_pies = new EffectiveMemoryPie('.emp-chart-' + ns, 'реплики: эффективное место', true),
+                tmp_pies = new TotalMemoryPie('.tmp-chart-' + ns, 'реплики: общее место'),
+                lrc_em_pies = new LrcEffectiveMemoryPie('.lrc-em-chart-' + ns, 'LRC: эффективное место'),
+                lrc_tm_pies = new LrcMemoryPie('.lrc-tm-chart-' + ns, 'LRC: общее место'),
                 m_bars = new TotalMemoryBar('.m-chart-' + ns, 'общее место'),
                 em_bars = new MemoryBar('.em-chart-' + ns, 'эффективное место'),
+                lrc_m_bars = new LrcTotalMemoryBar('.lrc-m-chart-' + ns, 'LRC: общее место'),
                 k_bars = new KeysBar('.k-chart-' + ns, 'ключи'),
                 c_bars = new CouplesBar('.c-chart-' + ns, 'каплы'),
                 co_bars = new OutagesBar('.co-chart-' + ns, 'отключение ДЦ*', '* что произойдет, если отключится конкретный ДЦ');
@@ -224,8 +249,13 @@
             $('<span class="clear">').appendTo(chart_set);
 
             namespaces[ns] = {
+                'emp_pies': emp_pies,
+                'tmp_pies': tmp_pies,
+                'lrc_em_pies': lrc_em_pies,
+                'lrc_tm_pies': lrc_tm_pies,
                 'm_bars': m_bars,
                 'em_bars': em_bars,
+                'lrc_m_bars': lrc_m_bars,
                 'k_bars': k_bars,
                 'c_bars': c_bars,
                 'co_bars': co_bars
@@ -260,47 +290,60 @@
             dataType: 'json',
             success: function (data) {
 
-                var open_couples = data['open_couples'],
-                    frozen_couples = data['frozen_couples'],
-                    closed_couples = data['total_couples'] - open_couples - frozen_couples;
-
                 ctxEM.update(data);
+                ctxELRCM.update(data);
                 ctxTM.update(data);
-                ctxRDEM.update(data['real_data']);
+                ctxTLRCM.update(data);
                 ctxC.update(data);
+                ctxUG.update(data);
+                ctxUS.update(data);
 
                 ctxEMDC.update(data['dc']);
+                ctxTMDC.update(data['dc']);
+                ctxLRCDC.update(data['dc']);
                 ctxKDC.update(data['dc']);
-                ctxGDC.update(data['dc']);
+                ctxCDC.update(data['dc']);
+                ctxUGDC.update(data['dc']);
+                ctxUMDC.update(data['dc']);
 
-                var ns_items = iterItems(data['namespaces']);
+                var ns_per_dc_items = iterItems(data['namespaces']),
+                    ns_items = iterItems(data['namespaces_only']);
 
                 // namespaces stats
-                var new_data = {};
+                var new_ns_per_dc_data = {};
+                for (var idx in ns_per_dc_items) {
+                    var ns = ns_per_dc_items[idx][0],
+                        ns_per_dc_data = ns_per_dc_items[idx][1];
+                    new_ns_per_dc_data[ns] = ns_per_dc_data;
+                }
+                var new_ns_data = {};
                 for (var idx in ns_items) {
                     var ns = ns_items[idx][0],
                         ns_data = ns_items[idx][1];
-                    new_data[ns] = ns_data;
+                    new_ns_data[ns] = ns_data;
                 }
 
-                namespaces_data = new_data;
+                namespaces_per_dc_data = new_ns_per_dc_data;
+                namespaces_data = new_ns_data;
 
                 if (initLoad) {
                     maybe_ns = location.hash.substr(1);
-                    if (namespaces_data[maybe_ns] !== undefined) {
+                    if (namespaces_per_dc_data[maybe_ns] !== undefined
+                        && namespaces_data[maybe_ns] !== undefined) {
                         settings[maybe_ns] = true;
                         localStorage['ns'] = JSON.stringify(settings);
                     }
                 }
 
-                for (var ns in namespaces_data) {
+                for (var ns in namespaces_per_dc_data) {
                     nsMenuItem(ns);
                     display_ns(ns);
                 }
 
                 if (initLoad) {
                     maybe_ns = location.hash.substr(1);
-                    if (namespaces_data[maybe_ns] !== undefined) {
+                    if (namespaces_per_dc_data[maybe_ns] !== undefined
+                        && namespaces_data[maybe_ns] !== undefined) {
                         // hash is a namespace, move to the anchor
                         location.hash = '#dummy';
                         location.hash = '#' + maybe_ns;

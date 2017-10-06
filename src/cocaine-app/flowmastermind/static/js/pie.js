@@ -5,19 +5,43 @@
 
 function EffectiveMemoryPie(container, chartLabel, renderLabels) {
     var self = this;
-    self.width = 150;
+    self.width = 180;
+    self.constructor.super.call(self, container, chartLabel, renderLabels);
+}
+
+function LrcEffectiveMemoryPie(container, chartLabel, renderLabels) {
+    var self = this;
+    self.width = 170;
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
 function TotalMemoryPie(container, chartLabel, renderLabels) {
     var self = this;
+    self.width = 160;
+    self.constructor.super.call(self, container, chartLabel, renderLabels);
+}
+
+function LrcMemoryPie(container, chartLabel, renderLabels) {
+    var self = this;
     self.width = 150;
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
-function GroupsPie(container, chartLabel, renderLabels) {
+function CouplesPie(container, chartLabel, renderLabels) {
     var self = this;
     self.width = 275;
+    self.constructor.super.call(self, container, chartLabel, renderLabels);
+}
+
+function UnusedGroupsPie(container, chartLabel, renderLabels) {
+    var self = this;
+    self.width = 150;
+    self.constructor.super.call(self, container, chartLabel, renderLabels);
+}
+
+function UnusedSpacePie(container, chartLabel, renderLabels) {
+    var self = this;
+    self.width = 220;
     self.constructor.super.call(self, container, chartLabel, renderLabels);
 }
 
@@ -27,11 +51,11 @@ function Pie(container, chartLabel, renderLabels) {
     self.height = 150;
 
     self.svg_container = d3.select(container).insert('svg', ':first-child');
-    self.svg = self.svg_container
-            .attr('width', self.width + self.margin.left + self.margin.right)
-            .attr('height', self.height + self.margin.bottom + self.margin.top)
-        .append('g')
-            .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
+
+    if (renderLabels) {
+        self.addLegend();
+        self.width = d3.max([self.width, self.legend[0][0].getBBox().width]);
+    }
 
     self.chart_label = self.svg_container
         .append('g')
@@ -39,19 +63,23 @@ function Pie(container, chartLabel, renderLabels) {
             .attr('transform', 'translate(' + self.margin.left + ',' + (self.margin.top + self.height + 30) + ')')
         .append('text')
             .attr('fill-opacity', 1)
-            .attr('x', self.height / 2)
             .text(chartLabel);
+    self.width = d3.max([self.width, self.chart_label[0][0].getBBox().width]);
+    self.chart_label[0][0].setAttribute('x', self.width / 2);
 
-    if (renderLabels) {
-        self.addLegend();
-    }
+    self.svg = self.svg_container
+        .attr('width', self.width + self.margin.left + self.margin.right)
+        .attr('height', self.height + self.margin.bottom + self.margin.top)
+    .append('g')
+        .attr('transform', 'translate(' + self.margin.left + ',' + self.margin.top + ')');
+
 
     self.tooltip = new Tooltip();
     self.tooltip.appendTo(container);
 
     self.gpie = self.svg
         .append('g')
-        .attr('transform', 'translate(' + (self.height / 2) + ',' + (self.height / 2) + ')');
+        .attr('transform', 'translate(' + (self.width / 2) + ',' + (self.height / 2) + ')');
 
     self.pie = d3.layout.pie()
         .value(function (d) { return d.value; })
@@ -65,6 +93,19 @@ function Pie(container, chartLabel, renderLabels) {
         .outerRadius(Math.round(self.height / 2) + 15);
 }
 
+Pie.prototype.defaultPrepareData = function (rawdata) {
+    var self = this;
+
+    var data = [];
+
+    var data_types = self.color.domain().slice();
+    for (var index = 0; index < data_types.length; ++index) {
+        data.push({value: rawdata[data_types[index]] ? rawdata[data_types[index]] : 0,
+                   type: data_types[index]});
+    }
+
+    return {data: data};
+};
 
 function extend(Child, Parent) {
     var F = function() { };
@@ -77,58 +118,121 @@ function extend(Child, Parent) {
 
 // extend(MemoryPie, Pie);
 extend(EffectiveMemoryPie, Pie);
+extend(LrcEffectiveMemoryPie, Pie);
 extend(TotalMemoryPie, Pie);
-extend(GroupsPie, Pie);
+extend(LrcMemoryPie, Pie);
+extend(CouplesPie, Pie);
+extend(UnusedGroupsPie, Pie);
+extend(UnusedSpacePie, Pie);
 
 
-EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 EffectiveMemoryPie.prototype.labels = {
-    free_space: 'свободно',
-    occupied_space: 'занято',
+    effective_free_space: 'свободно',
+    bad_effective_free_space: 'недоступно',
+    wasted_effective_free_space: 'свободное в FROZEN|ARCHIVED капле',
+    reserved_effective_free_space: 'зарезервировано свободное',
+    effective_uncommitted_keys_size: 'незакоммиченно',
+    effective_used_space: 'занято',
+    effective_removed_keys_size: 'помечено удаленными',
 };
 
 EffectiveMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_space', 'occupied_space'])
-    .range(['rgb(78,201,106)', 'rgb(200,200,200)']);
+    .domain([
+        'effective_free_space',
+        'bad_effective_free_space',
+        'wasted_effective_free_space',
+        'reserved_effective_free_space',
+        'effective_uncommitted_keys_size',
+        'effective_used_space',
+        'effective_removed_keys_size',
+    ])
+    .range([
+        'rgb(78,201,106)',
+        'rgb(240,72,72)',
+        'rgb(184, 121, 209)',
+        'rgb(58, 170, 209)',
+        'rgb(224, 210, 122)',
+        'rgb(200,200,200)',
+        'rgb(97, 99, 232)',
+    ]);
 
-EffectiveMemoryPie.prototype.prepareData = function(rawdata) {
-    var data = [];
+EffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
 
-    data.push({value: rawdata['effective_free_space'],
-               type: 'free_space'});
-    data.push({value: rawdata['effective_space'] - rawdata['effective_free_space'],
-               type: 'occupied_space'});
-
-    return {data: data};
-};
-
+EffectiveMemoryPie.prototype.labelLength = 210;
 EffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 EffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
 EffectiveMemoryPie.prototype.legendLabelOffset = 10;
 
+LrcEffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
-TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
+LrcEffectiveMemoryPie.prototype.labels = {
+    effective_free_lrc_space: 'свободно',
+    bad_effective_free_lrc_space: 'недоступно свободное',
+    effective_uncommitted_lrc_keys_size: 'незакоммиченно',
+    effective_used_lrc_space: 'закоммиченно',
+    effective_removed_lrc_keys_size: 'удалено',
+};
+
+LrcEffectiveMemoryPie.prototype.color = d3.scale.ordinal()
+    .domain([
+        'effective_free_lrc_space',
+        'bad_effective_free_lrc_space',
+        'effective_uncommitted_lrc_keys_size',
+        'effective_used_lrc_space',
+        'effective_removed_lrc_keys_size',
+    ])
+    .range([
+        'rgb(78,201,106)',
+        'rgb(240,72,72)',
+        'rgb(224, 210, 122)',
+        'rgb(200,200,200)',
+        'rgb(97, 99, 232)',
+    ]);
+
+LrcEffectiveMemoryPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
+
+LrcEffectiveMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
+LrcEffectiveMemoryPie.prototype.tooltipFormatter = prefixBytes;
+LrcEffectiveMemoryPie.prototype.legendLabelOffset = 10;
+
+TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 TotalMemoryPie.prototype.labels = {
     free_space: 'свободно',
-    occupied_space: 'занято',
-    uncoupled_space: 'не используется'
+    removed_keys_size: 'удалено',
+    committed_keys_size: 'закоммиченно',
+    uncommitted_keys_size: 'незакоммиченно',
+    uncoupled_space: 'не используется',
+    bad_free_space: 'недоступное свободное',
 };
 
 TotalMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_space', 'occupied_space', 'uncoupled_space'])
-    .range(['rgb(78,201,106)', 'rgb(200,200,200)', 'rgb(246,244,158)']);
+    .domain(['free_space', 'removed_keys_size', 'committed_keys_size',
+            'uncommitted_keys_size', 'uncoupled_space', 'bad_free_space'])
+    .range(['rgb(78,201,106)', 'rgb(97, 99, 232)', 'rgb(200,200,200)',
+            'rgb(224, 210, 122)', 'rgb(246,244,158)', 'rgb(240,72,72)']);
 
 TotalMemoryPie.prototype.prepareData = function(rawdata) {
     var data = [];
 
     data.push({value: rawdata['free_space'],
                type: 'free_space'});
-    data.push({value: rawdata['total_space'] - rawdata['free_space'],
-               type: 'occupied_space'});
-    data.push({value: rawdata['uncoupled_space'],
-               type: 'uncoupled_space'})
+    data.push({value: rawdata['total_space']
+                      - rawdata['free_space']
+                      - rawdata['used_space'],
+               type: 'bad_free_space'});
+    data.push({value: rawdata['uncommitted_keys_size'],
+               type: 'uncommitted_keys_size'});
+    data.push({value: rawdata['used_space']
+                      - rawdata['uncommitted_keys_size']
+                      - rawdata['removed_keys_size'],
+               type: 'committed_keys_size'});
+    data.push({value: rawdata['removed_keys_size'],
+               type: 'removed_keys_size'});
+    data.push({value: rawdata['uncoupled_space'] ? rawdata['uncoupled_space'] : 0,
+               type: 'uncoupled_space'});
 
     return {data: data};
 };
@@ -137,40 +241,154 @@ TotalMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
 TotalMemoryPie.prototype.tooltipFormatter = prefixBytes;
 
 
+LrcMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
-GroupsPie.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
-
-GroupsPie.prototype.color = d3.scale.ordinal()
-    .domain(['broken_couples', 'closed_couples',
-             'frozen_couples', 'bad_couples', 'open_couples'])
-    .range(['rgb(150,35,0)', 'rgb(200,200,200)',
-            'rgb(150,197,255)', 'rgb(240,72,72)', 'rgb(78,201,106)']);
-
-GroupsPie.prototype.labels = {
-    bad_couples: 'недоступно для записи',
-    broken_couples: 'конфигурация',
-    closed_couples: 'заполнено',
-    frozen_couples: 'заморожено',
-    open_couples: 'открыто',
+LrcMemoryPie.prototype.labels = {
+    free_lrc_space: 'свободно',
+    bad_free_space: 'недоступное свободное',
+    uncommitted_lrc_keys_size: 'незакоммиченно',
+    committed_lrc_space: 'закоммиченно',
+    removed_lrc_keys_size: 'удалено',
+    uncoupled_lrc_space: 'не используется',
+    reserved_lrc_space: 'зарезервировано',
 };
 
-GroupsPie.prototype.prepareData = function(rawdata) {
+LrcMemoryPie.prototype.color = d3.scale.ordinal()
+    .domain(['free_lrc_space', 'bad_free_space', 'uncommitted_lrc_keys_size',
+            'committed_lrc_space', 'removed_lrc_keys_size', 'uncoupled_lrc_space', 'reserved_lrc_space'])
+    .range(['rgb(78,201,106)', 'rgb(240,72,72)', 'rgb(224, 210, 122)',
+            'rgb(200,200,200)', 'rgb(97, 99, 232)', 'rgb(246,244,158)', 'rgb(133, 229, 219)']);
+
+LrcMemoryPie.prototype.prepareData = function(rawdata) {
     var data = [];
 
-    data.push({value: rawdata['open_couples'],
-               type: 'open_couples'});
-    data.push({value: rawdata['bad_couples'],
-               type: 'bad_couples'});
-    data.push({value: rawdata['frozen_couples'],
-               type: 'frozen_couples'});
-    data.push({value: rawdata['closed_couples'],
-               type: 'closed_couples'});
-    data.push({value: rawdata['broken_couples'],
-               type: 'broken_couples'});
+    data.push({value: rawdata['free_lrc_space'],
+               type: 'free_lrc_space'});
+    data.push({value: rawdata['total_lrc_space']
+            - rawdata['free_lrc_space']
+            - rawdata['used_lrc_space'],
+               type: 'bad_free_space'});
+    data.push({value: rawdata['uncommitted_lrc_keys_size'],
+               type: 'uncommitted_lrc_keys_size'});
+    data.push({value: rawdata['used_lrc_space']
+                      - rawdata['uncommitted_lrc_keys_size']
+                      - rawdata['removed_lrc_keys_size'],
+               type: 'committed_lrc_space'});
+    data.push({value: rawdata['removed_lrc_keys_size'],
+               type: 'removed_lrc_keys_size'});
+    data.push({value: rawdata['uncoupled_lrc_space'] ? rawdata['uncoupled_lrc_space'] : 0,
+               type: 'uncoupled_lrc_space'});
+    data.push({value: rawdata['reserved_lrc_space'] ? rawdata['reserved_lrc_space'] : 0,
+               type: 'reserved_lrc_space'});
 
     return {data: data};
-}
+};
 
+LrcMemoryPie.prototype.pieLabelFormatter = prefixBytesRound;
+LrcMemoryPie.prototype.tooltipFormatter = prefixBytes;
+
+
+CouplesPie.prototype.margin = {top: 70, right: 10, left: 10, bottom: 40};
+
+CouplesPie.prototype.color = d3.scale.ordinal()
+    .domain([
+        'open_couples',
+        'bad_couples',
+        'archived_couples',
+        'closed_couples',
+        'frozen_couples',
+        'broken_couples',
+        'service_active_couples',
+        'service_stalled_couples',
+    ]).range([
+        'rgb(78,201,106)',
+        'rgb(240,72,72)',
+        'rgb(120,120,120)',
+        'rgb(200,200,200)',
+        'rgb(150,197,255)',
+        'rgb(150,35,0)',
+        'rgb(220, 110, 220)',
+        'rgb(140, 70, 140)',
+    ]);
+
+CouplesPie.prototype.labels = {
+    open_couples: 'открыто',
+    bad_couples: 'недоступно для записи',
+    archived_couples: 'в архиве',
+    closed_couples: 'заполнено',
+    frozen_couples: 'заморожено',
+    broken_couples: 'конфигурация',
+    service_active_couples: 'в сервисе',
+    service_stalled_couples: 'проблемные в сервисе',
+};
+
+CouplesPie.prototype.prepareData = Pie.prototype.defaultPrepareData
+
+UnusedGroupsPie.prototype.margin = {top: 70, right: 10, left: 10, bottom: 40};
+
+UnusedGroupsPie.prototype.color = d3.scale.ordinal()
+    .domain([
+        'uncoupled_groups',
+        'uncoupled_cache_groups',
+        'uncoupled_lrc_groups',
+        'reserved_lrc_groups',
+        'unused_locked_groups',
+        'bad_unused_groups',
+    ]).range([
+        'rgb(229, 214, 137)',
+        'rgb(211, 219, 199)',
+        'rgb(139, 232, 205)',
+        'rgb(139, 213, 232)',
+        'rgb(184, 121, 209)',
+        'rgb(240,72,72)',
+    ]);
+
+UnusedGroupsPie.prototype.labels = {
+    uncoupled_groups: 'для реплики',
+    uncoupled_cache_groups: 'для кэша',
+    uncoupled_lrc_groups: 'для lrc',
+    reserved_lrc_groups: 'зарезервированные для lrc',
+    unused_locked_groups: 'заблокированные',
+    bad_unused_groups: 'недоступные',
+};
+
+UnusedGroupsPie.prototype.labelLength = 160;
+UnusedGroupsPie.prototype.prepareData = Pie.prototype.defaultPrepareData;
+
+
+UnusedSpacePie.prototype.margin = {top: 70, right: 10, left: 10, bottom: 40};
+
+UnusedSpacePie.prototype.color = d3.scale.ordinal()
+    .domain([
+        'uncoupled_space',
+        'uncoupled_cached_space',
+        'uncoupled_lrc_space',
+        'reserved_lrc_space',
+        'unused_locked_space',
+        'bad_unused_space',
+    ]).range([
+        'rgb(229, 214, 137)',
+        'rgb(211, 219, 199)',
+        'rgb(139, 232, 205)',
+        'rgb(139, 213, 232)',
+        'rgb(184, 121, 209)',
+        'rgb(240,72,72)',
+    ]);
+
+UnusedSpacePie.prototype.labels = {
+    uncoupled_space: 'для реплики',
+    uncoupled_cached_space: 'для кэша',
+    uncoupled_lrc_space: 'для lrc',
+    reserved_lrc_space: 'зарезервированные для lrc',
+    unused_locked_space: 'заблокированные',
+    bad_unused_space: 'недоступные',
+};
+
+UnusedSpacePie.prototype.labelLength = 160;
+UnusedSpacePie.prototype.prepareData = Pie.prototype.defaultPrepareData;
+
+UnusedSpacePie.prototype.pieLabelFormatter = prefixBytesRound;
+UnusedSpacePie.prototype.tooltipFormatter = prefixBytes;
 
 Pie.prototype.update = function (rawdata) {
 
@@ -259,8 +477,10 @@ Pie.prototype.hideTooltip = function () {
         .style('fill-opacity', 0.6);
 
     self.tooltip.hide();
-}
+};
 
+Pie.prototype.legend_per_line = 2;
+Pie.prototype.labelLength = 150;
 Pie.prototype.addLegend = function () {
 
     var self = this;
@@ -273,9 +493,14 @@ Pie.prototype.addLegend = function () {
     var labels = self.color.domain().slice(),
         colors = self.color.range().slice();
 
-    var labelLength = 90;
     var flatcl = d3.zip(colors, labels).reverse();
-    var levelcl = [flatcl.slice(0, 2), flatcl.slice(2)];
+    var level = 0;
+    var levelcl = [];
+    while ((level + 1) * self.legend_per_line < labels.length) {
+        levelcl.push(flatcl.slice(level * self.legend_per_line, (level + 1) * self.legend_per_line));
+        ++level;
+    }
+    levelcl.push(flatcl.slice(level * self.legend_per_line));
 
     levelcl.forEach(function (cl, j) {
         cl.forEach(function (cl, i) {
@@ -284,13 +509,13 @@ Pie.prototype.addLegend = function () {
                 .attr('class', 'legend-colorsample')
                 .attr('height', 10)
                 .attr('width', 10)
-                .attr('transform', 'translate(' + (i * labelLength) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
+                .attr('transform', 'translate(' + (i * self.labelLength) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
                 .style('fill', cl[0]);
 
             self.legend
                 .append('text')
                 .attr('class', 'legend-label')
-                .attr('transform', 'translate(' + (i * labelLength + 15) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
+                .attr('transform', 'translate(' + (i * self.labelLength + 15) + ',' + (self.legendLabelOffset + (j * 15)) + ')')
                 .attr('y', 4)
                 .text('— ' + self.labels[cl[1]]);
         });
@@ -300,6 +525,7 @@ Pie.prototype.addLegend = function () {
         self.legend
             .attr('transform', 'translate(' + (self.width - self.legend[0][0].getBBox().width) + ',0)');
     }
+    self.margin.top = d3.max([self.margin.top, self.legend[0][0].getBBox().height + 20]);
 };
 
 Pie.prototype.arcTween = function (self) {

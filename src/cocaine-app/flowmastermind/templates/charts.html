@@ -14,37 +14,60 @@
     </div>
     <div class="inner-content">
         <div class="chart-set" id="memory">
-            <div class="chart">
-                <div id="effectiveMemoryChart" width="200" height="200"></div>
+            <div class="chart-line">
+                <div class="chart">
+                    <div id="effectiveMemoryChart" width="200" height="200"></div>
+                </div>
+                <div class="chart">
+                    <div id="totalMemoryChart" width="200" height="200"></div>
+                </div>
+                <div class="chart">
+                    <div id="LrcEffectiveMemoryChart" width="200" height="200"></div>
+                </div>
+                <div class="chart">
+                    <div id="LrcMemoryChart" width="200" height="200"></div>
+                </div>
             </div>
-            <div class="chart">
-                <div id="totalMemoryChart" width="200" height="200"></div>
-            </div>
-            <div class="chart">
-                <div id="realDataEffMemoryChart"></div>
-                <!-- <span class="chart-label-small"><sup>*</sup>экспериментальная фича,<br />
-                доверяй, но проверяй</span> -->
-            </div>
-            <!-- <span class="clear" /> -->
-        <!-- </div>
-        <div class="chart-set" id="couples"> -->
-            <div class="chart">
-                <div id="couplesChart"></div>
-            </div>
+            <div class="chart-line">
+                <!-- <span class="clear" /> -->
+            <!-- </div>
+            <div class="chart-set" id="couples"> -->
+                <div class="chart">
+                    <div id="couplesChart"></div>
+                </div>
+                <div class="chart">
+                    <div id="UnusedGroupsChart"></div>
+                </div>
+                <div class="chart">
+                    <div id="UnusedSpaceChart"></div>
+                </div>
             <span class="clear" />
+            </div>
         </div>
         <div class="chart-set" id="dcs-memory">
             <div class="chart">
                 <div id="dscMemoryChart"></div>
             </div>
             <div class="chart">
+                <div id="dscTotalMemoryChart"></div>
+            </div>
+            <div class="chart">
+                <div id="dscLrcMemoryChart"></div>
+            </div>
+            <div class="chart">
                 <div id="dscKeysChart"></div>
+            </div>
+            <div class="chart">
+                <div id="dscUnusedMemoryChart"></div>
             </div>
             <span class="clear" />
         </div>
         <div class="chart-set" id="dcs-groups">
             <div class="chart">
                 <div id="dscCouplesChart"></div>
+            </div>
+            <div class="chart">
+                <div id="dscUnusedGroupsChart"></div>
             </div>
             <span class="clear" />
         </div>
@@ -63,7 +86,6 @@
     <script src="/static/js/ajax.js"></script>
     <script src="/static/js/helpers.js"></script>
     <script src="/static/js/colors.js"></script>
-    <script src="/static/js/render.js"></script>
     <script src="/static/js/tooltip.js"></script>
     <script src="/static/js/bars.js"></script>
     <script src="/static/js/pie.js"></script>
