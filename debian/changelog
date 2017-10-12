@@ -1,3 +1,13 @@
+flowmastermind (1.2) trusty; urgency=medium
+
+  * Add jobs filter page
+  * Add common job types, statuses
+  * Add clear method to Jobs model
+  * Add jobs updater object
+  * Extend paginator with callback on page click and clear method
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 13 Oct 2017 00:17:32 +0300
+
 flowmastermind (1.1) trusty; urgency=medium
 
   * Fix: show outage statistics correctly
