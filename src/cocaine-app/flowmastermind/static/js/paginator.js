@@ -1,4 +1,4 @@
-var Paginator = (function (container) {
+var Paginator = (function (container, select_page_cb) {
 
     function Paginator() {
         this.total = 0;
@@ -19,10 +19,14 @@ var Paginator = (function (container) {
             }
             this[k] = state[k];
         });
-        console.log(updated);
-        if (updated) {
+        // console.log(updated);
+        // if (updated) {
             this.eventer.trigger("update", [state]);
-        }
+        // }
+    };
+
+    Paginator.prototype.clear = function() {
+        this.eventer.trigger("clear");
     };
 
     function PaginatorView(eventer) {
@@ -43,6 +47,15 @@ var Paginator = (function (container) {
             PseudoURL.load();
             return false;
         });
+
+        if (select_page_cb) {
+            this.container.on('click', 'a', function (event) {
+                event.preventDefault();
+                var offset = parseInt($(this).attr('offset'));
+                console.log('Callback with offset ' + offset);
+                select_page_cb(offset);
+            });
+        }
     }
 
     PaginatorView.prototype.range = function(start, stop, step) {
@@ -81,26 +94,30 @@ var Paginator = (function (container) {
 
         if (total_pages > 1) {
             // Previous button
-            var span = $('<a>');
+            var span = $('<a>'),
+                offset = (cur_page - 2) * state.limit;
             span.addClass('previous_page');
             if (cur_page == 1) {
                 span.addClass('disabled');
             } else {
                 span.attr('href', state.baseUrl + '?limit=' + state.limit
-                                                + '&offset=' + ((cur_page - 2) * state.limit));
+                                                + '&offset=' + offset);
             }
+            span.attr('offset', offset);
             span.text('Раньше');
             els.push(span[0].outerHTML);
         }
 
         function createPageWr(current) {
             function createPage(page, i) {
+                var offset = (page - 1) * state.limit;
                 if (current) {
                     var el = $('<em class="current">');
                 } else {
                     var el = $('<a>');
                     el.attr('href', state.baseUrl + '?limit=' + state.limit
-                                                  + '&offset=' + ((page - 1) * state.limit));
+                                                  + '&offset=' + offset);
+                    el.attr('offset', offset);
                 }
                 el.text(page);
                 els.push(el[0].outerHTML);
@@ -134,13 +151,15 @@ var Paginator = (function (container) {
 
         if (total_pages > 1) {
             // Next button
-            var span = $('<a>');
+            var span = $('<a>'),
+                offset = cur_page * state.limit;
             span.addClass('next_page');
             if (cur_page == total_pages) {
                 span.addClass('disabled');
             } else {
                 span.attr('href', state.baseUrl + '?limit=' + state.limit
-                                                + '&offset=' + ((cur_page) * state.limit));
+                                                + '&offset=' + offset);
+                span.attr('offset', offset);
             }
             span.text('Позже');
             els.push(span[0].outerHTML);
@@ -149,11 +168,15 @@ var Paginator = (function (container) {
         this.pagination.html(els.join(''));
     };
 
+    PaginatorView.prototype.clearPaginator = function(event) {
+        this.pagination.html('');
+    };
 
     var paginator = new Paginator();
     var view = new PaginatorView(paginator.eventer);
 
     view.eventer.on("update", view.updatePaginator.bind(view));
+    view.eventer.on("clear", view.clearPaginator.bind(view));
 
     return {
         model: paginator,
