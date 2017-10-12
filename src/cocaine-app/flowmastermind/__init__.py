@@ -18,6 +18,7 @@ from flask import abort, render_template
 from flowmastermind.auth import auth_controller
 from flowmastermind.config import config
 from flowmastermind.error import ApiResponseError, AuthenticationError, AuthorizationError
+from flowmastermind.jobs import job_types, job_types_groups, job_statuses
 from flowmastermind.response import JsonResponse
 
 
@@ -156,6 +157,21 @@ def job(job_id):
         menu_page='jobs',
         job_id=job_id,
     )
+
+
+@app.route('/jobs/filter/')
+def jobs_filter():
+    try:
+        return render_template(
+            'jobs_filter.html',
+            job_types=job_types,
+            job_types_groups=job_types_groups,
+            job_statuses=job_statuses,
+        )
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
 
 
 @app.route('/jobs/')

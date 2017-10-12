@@ -1,0 +1,20 @@
+    <jobs>
+        <job_types_groups>
+            {% for group in job_types_groups.itervalues() %}
+            <job_types_group id="{{ group.group_id }}" label="{{ group.label }}" position="{{ group.position }}">
+            </job_types_group>
+            {% endfor %}
+        </job_types_groups>
+        <job_types>
+            {% for job_type in job_types.itervalues() %}
+            <job_type id="{{ job_type.type }}" label="{{ job_type.label }}" job_types_group_id="{{ job_type.job_types_group_id }}" />
+            </job_type>
+            {% endfor %}
+        </job_types>
+        <job_statuses>
+            {% for job_status in job_statuses %}
+            <job_status id="{{ job_status.id }}" label="{{ job_status.label }}" />
+            </job_status>
+            {% endfor %}
+        </job_statuses>
+    </jobs>
