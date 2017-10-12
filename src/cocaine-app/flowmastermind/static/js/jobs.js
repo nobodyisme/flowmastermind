@@ -1,6 +1,6 @@
 (function() {
 
-    var updatePeriod = 30000,
+    var retryPeriod = 30,
         jobs_container = $('.jobs-containers'),
         paginator_container = jobs_container.find('.paginator_container'),
         job_id = jobs_container.attr('job-id'),
@@ -13,6 +13,7 @@
         offset = jobs_container.attr('job-offset'),
         spinner = new Spinner('div.job-init-spinner', jobs_container.width()),
         job_id_search_form = $('.job-search'),
+        jobs_updater = JobsUpdater(30),
         paginator = Paginator(paginator_container);
 
     spinner.start();
@@ -50,60 +51,20 @@
 
                     Jobs.view.updateContainers();
 
-                    setTimeout(periodicTask, updatePeriod);
+                    jobs_updater.run();
                 } else {
                     spinner.blink('#ab2d2d');
-                    setTimeout(loadJobs, updatePeriod);
+                    setTimeout(loadJobs, retryPeriod);
                 }
             },
             error: function (data) {
                 spinner.blink('#ab2d2d');
-                setTimeout(loadJobs, updatePeriod);
-            }
-        })
-    }
-
-    function updateJobs() {
-        var job_ids = [];
-        for (var id in Jobs.model.jobs) {
-            job_ids.push(id);
-        }
-        if (job_ids.length == 0) return;
-
-        $.ajax({
-            url: '/json/jobs/update/',
-            data: {jobs: job_ids,
-                   ts: new Date().getTime()},
-            timeout: 30000,
-            dataType: 'json',
-            type: 'POST',
-            success: function (response) {
-
-                if (response['status'] == 'success') {
-                    spinner.stop();
-                    var data = response['response'];
-
-                    for (var idx in data) {
-                        var state = data[idx];
-
-                        Jobs.model.update(state.id, state);
-                    }
-                } else {
-                    spinner.blink('#ab2d2d');
-                }
-            },
-            error: function (data) {
-                spinner.blink('#ab2d2d');
+                setTimeout(loadJobs, retryPeriod);
             }
         })
     }
 
     loadJobs();
-
-    function periodicTask() {
-        updateJobs();
-        setTimeout(periodicTask, updatePeriod);
-    }
 
     job_id_search_form.submit(function (event) {
         event.preventDefault();

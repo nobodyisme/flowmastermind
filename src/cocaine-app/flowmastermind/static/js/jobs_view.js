@@ -1,3 +1,69 @@
+var JobsUpdater = function(update_period) {
+
+    function Timer(cb) {
+        this.update_timeout = undefined;
+        this.update_period = update_period || 60;
+        this.cb = cb;
+    };
+
+    Timer.prototype.run = function() {
+        var self = this;
+        self.reset();
+    };
+
+    Timer.prototype.reset = function() {
+        var self = this;
+        if (self.update_timeout) {
+            clearTimeout(self.update_timeout);
+            self.update_timeout = undefined;
+        }
+        self.update_timeout = setTimeout(self.tick.bind(self), self.update_period * 1000);
+    };
+
+    Timer.prototype.tick = function() {
+        var self = this;
+        self.cb();
+        self.update_timeout = setTimeout(self.tick.bind(self), self.update_period * 1000);
+    }
+
+    function updateJobs() {
+        var job_ids = [];
+        for (var id in Jobs.model.jobs) {
+            job_ids.push(id);
+        }
+        if (job_ids.length == 0) return;
+
+        $.ajax({
+            url: '/json/jobs/update/',
+            data: {jobs: job_ids,
+                   ts: new Date().getTime()},
+            timeout: 30000,
+            dataType: 'json',
+            type: 'POST',
+            success: function (response) {
+
+                if (response['status'] == 'success') {
+                    var data = response['response'];
+
+                    for (var idx in data) {
+                        var state = data[idx];
+                        Jobs.model.update(state.id, state);
+                    }
+                }
+            },
+            error: function (data) {
+            }
+        })
+    };
+
+    var timer = new Timer(updateJobs);
+
+    return {
+        run: timer.run.bind(timer),
+        reset: timer.reset.bind(timer),
+    }
+};
+
 var Jobs = (function () {
 
     var commands = Commands($('.jobs-containers'));
