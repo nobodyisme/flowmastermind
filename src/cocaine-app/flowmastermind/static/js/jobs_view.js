@@ -87,6 +87,11 @@ var Jobs = (function () {
         // update state
     };
 
+    Jobs.prototype.clear = function() {
+        this.jobs = {};
+        this.eventer.trigger("clear");
+    };
+
     function JobsView(eventer) {
         this.eventer = eventer;
 
@@ -1098,11 +1103,19 @@ var Jobs = (function () {
         }
     };
 
+    JobsView.prototype.clearJobs = function(event) {
+        var self = this,
+            jobs = this.container.find('.job');
+
+        jobs.remove();
+    };
+
     var jobs = new Jobs();
     var view = new JobsView(jobs.eventer);
 
     view.eventer.on("create", view.createJob.bind(view));
     view.eventer.on("update", view.updateJob.bind(view));
+    view.eventer.on("clear", view.clearJobs.bind(view));
 
     return {
         model: jobs,
