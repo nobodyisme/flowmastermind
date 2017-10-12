@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}Задачи{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/jobs.css" />
+    <link rel="stylesheet" href="/static/css/jobs.css" />
+    <link rel="stylesheet" href="/static/css/paginator.css" />
+    <link rel="stylesheet" href="/static/css/3rd/jquery-textext/textext.core.css" />
+    <link rel="stylesheet" href="/static/css/3rd/jquery-textext/textext.plugin.autocomplete.css" />
+    <link rel="stylesheet" href="/static/css/3rd/jquery-textext/textext.plugin.tags.css" />
+    <link rel="stylesheet" href="/static/css/3rd/jquery.datetimepicker.min.css" />
+    <link rel="stylesheet" href="/static/css/jobs_filter.css" />
+{% endblock %}
+
+{% block content %}
+
+    {% include 'utils/jobs.html' %}
+
+    <div class="inner-content">
+        <form class="jobs-filter" id="filters-form">
+            <div class="filters">
+                <div class="filter-column filter-column1">
+                    <div class="job-types-filter filter">
+                        <div class="filter-label">Типы джобов:</div>
+                        <div class="filter-setter">
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-column filter-column2">
+                    <div class="job-statuses-filter filter">
+                        <div class="filter-label">Статусы:</div>
+                        <div class="filter-setter">
+                        </div>
+                    </div>
+                    <div class="job-datetime-filter filter">
+                        <div class="filter-label">Таймстемпы:</div>
+                        <div class="filter-setter">
+                            <div class="datetime-filters">
+                                <div class="datetime-filter-label">
+                                    создание:
+                                </div>
+                                <div class="datetimes-filter-setter">
+                                    <div class="datetime-filter-setter">
+                                        от: <input class="datetimepicker" type="text" name="min_create_ts">
+                                    </div>
+                                    <div class="datetime-filter-setter">
+                                        до: <input class="datetimepicker" type="text" name="max_create_ts">
+                                    </div>
+                                </div>
+                                <div class="datetime-filter-label">
+                                    завершение:
+                                </div>
+                                <div class="datetimes-filter-setter">
+                                    <div class="datetime-filter-setter">
+                                        от: <input class="datetimepicker" type="text" name="min_finish_ts">
+                                    </div>
+                                    <div class="datetime-filter-setter">
+                                        до: <input class="datetimepicker" type="text" name="max_finish_ts">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="job-limit-filter filter">
+                        <div class="filter-label">Поскока:</div>
+                        <div class="filter-setter">
+                            <div class="limit-filter">
+                                <span class="limit-label">джобов на странице: </span>
+                                <input class="limit" type="text" name="limit" value="50" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-column filter-column3">
+                    <div class="tags-filter filter">
+                        <div class="filter-label">Теги:</div>
+                        <div class="filter-setter">
+                            <div class="tags-type-filters">
+                                <div class="tags-type-filter tags-ids-filter">
+                                    <div class="filter-label">айдишнички:</div>
+                                    <div class="filter-setter">
+                                        <textarea name="tags_ids" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="tags-type-filter tags-namespaces-filter">
+                                    <div class="filter-label">неймспейсы:</div>
+                                    <div class="filter-setter">
+                                        <textarea name="tags_namespaces" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="tags-type-filter tags-couples-filter">
+                                    <div class="filter-label">каплы:</div>
+                                    <div class="filter-setter">
+                                        <textarea name="tags_couples" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="tags-type-filter tags-groupsets-filter">
+                                    <div class="filter-label">групсеты:</div>
+                                    <div class="filter-setter">
+                                        <textarea name="tags_groupsets" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="tags-type-filter tags-groups-filter">
+                                    <div class="filter-label">группы:</div>
+                                    <div class="filter-setter">
+                                        <textarea name="tags_groups" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="tags-type-filter tags-hostnames-filter">
+                                    <div class="filter-label">хосты:</div>
+                                    <div class="filter-setter">
+                                        <textarea name="tags_hostnames" rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="tags-type-filter tags-paths-filter">
+                                    <div class="filter-label">пути на дисках:</div>
+                                    <div class="filter-setter">
+                                        <textarea name="tags_paths" rows="1"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="submit_filter_button">
+                    <span class="pre-left line-1">«Меня сложно </span>
+                    <span class="button-label line-2">Найти</span>
+                    <span class="line-2-post">,</span>
+                    <span class="pre-right line-3"> легко потерять </span>
+                    <span class="pre-right line-4">и невозможно забыть»</span>
+                </div>
+            </div>
+            <!--input id="filter_button" type="button" value="Отправить" /-->
+        </form>
+        <div class="jobs-containers" job-limit="50">
+            <div class="jobs-filter-spinner"></div>
+            <div class="paginator_container"></div>
+            <div id="jobs-list" class="tab-content">
+            </div>
+        </div>
+        <div class="helpers" style="display:none;">
+            <img class="job-action-pb" src="/static/img/job_action.gif" width="220" height="19" />
+            <div class="job-list-empty">пусто</div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="/static/js/helpers.js"></script>
+    <script src="/static/js/url.js"></script>
+    <script src="/static/js/paginator.js"></script>
+    <script src="/static/js/spinner.js"></script>
+    <script src="/static/js/error.js"></script>
+    <script src="/static/js/ajax.js"></script>
+    <script src="/static/js/commands_view.js"></script>
+    <script src="/static/js/3rd/jquery-textext/textext.core.js"></script>
+    <script src="/static/js/3rd/jquery-textext/textext.plugin.autocomplete.js"></script>
+    <script src="/static/js/3rd/jquery-textext/textext.plugin.tags.js"></script>
+    <script src="/static/js/3rd/jquery.datetimepicker.full.min.js"></script>
+    <script src="/static/js/jobs_view.js"></script>
+    <script src="/static/js/custom_jobs_labels.js"></script>
+    <script src="/static/js/job_types.js"></script>
+    <script src="/static/js/jobs_filter.js"></script>
+{% endblock %}

@@ -6,6 +6,7 @@ from flowmastermind.request import request as cocaine_request
 import datetime
 from functools import wraps
 import json
+import time
 import traceback
 import urllib2
 
@@ -28,6 +29,7 @@ app = Flask(__name__)
 
 
 DEFAULT_DT_FORMAT = '%Y-%m-%d %H:%M:%S'
+JOBS_FILTER_DT_FIELD_FORMAT = '%Y/%m/%d %H:%M'
 
 
 def json_response(func):
@@ -380,6 +382,102 @@ def json_jobs_list(job_id=None, job_type=None, job_status=None, tag=None):
 
     try:
 
+        resp = cocaine_request('get_job_list', msgpack.packb([params]))
+
+        def convert_tss_to_dt(d):
+            if d.get('create_ts'):
+                d['create_ts'] = ts_to_dt(d['create_ts'])
+            if d['start_ts']:
+                d['start_ts'] = ts_to_dt(d['start_ts'])
+            if d['finish_ts']:
+                d['finish_ts'] = ts_to_dt(d['finish_ts'])
+
+        for r in resp['jobs']:
+            convert_tss_to_dt(r)
+            for error_msg in r.get('error_msg', []):
+                error_msg['ts'] = ts_to_dt(error_msg['ts'])
+            for task in r['tasks']:
+                convert_tss_to_dt(task)
+
+        return resp
+    except Exception as e:
+        logging.error(e)
+        logging.error(traceback.format_exc())
+        raise
+
+
+def dt_to_ts(s, format=DEFAULT_DT_FORMAT):
+    if not s:
+        return None
+    dt = datetime.datetime.strptime(s, format)
+    return int(time.mktime(dt.timetuple()))
+
+
+@app.route('/json/jobs/filter/')
+@json_response
+def json_jobs_filter():
+    limit = request.args.get('limit', 50)
+    offset = request.args.get('offset', 0)
+
+    types = request.args.getlist('job_types') or None
+    statuses = request.args.getlist('job_statuses') or None
+
+    min_create_ts = dt_to_ts(
+        request.args.get('min_create_ts'),
+        format=JOBS_FILTER_DT_FIELD_FORMAT,
+    )
+    max_create_ts = dt_to_ts(
+        request.args.get('max_create_ts'),
+        format=JOBS_FILTER_DT_FIELD_FORMAT,
+    )
+    min_finish_ts = dt_to_ts(
+        request.args.get('min_finish_ts'),
+        format=JOBS_FILTER_DT_FIELD_FORMAT,
+    )
+    max_finish_ts = dt_to_ts(
+        request.args.get('max_finish_ts'),
+        format=JOBS_FILTER_DT_FIELD_FORMAT,
+    )
+
+    ids = None
+    ids_values = json.loads(request.args.get('tags_ids'))
+    if ids_values:
+        ids = ids_values
+
+    def ident(x):
+        return x
+
+    tag_types = (
+        ('namespaces', 'namespaces', ident),
+        ('couples', 'couple_ids', int),
+        ('groupsets', 'groupset_ids', ident),
+        ('groups', 'group_ids', int),
+        ('hostnames', 'hostnames', ident),
+        ('paths', 'paths', ident),
+    )
+
+    tags = {}
+    for tag_type, tag_request_type, map_processor in tag_types:
+        tag_values = json.loads(request.args.get('tags_' + tag_type))
+        if tag_values:
+            tags[tag_request_type] = map(map_processor, tag_values)
+
+    params = {
+        'ids': ids,
+        'types': types,
+        'statuses': statuses,
+        'tags': tags,
+        'min_create_ts': min_create_ts,
+        'max_create_ts': max_create_ts,
+        'min_finish_ts': min_finish_ts,
+        'max_finish_ts': max_finish_ts,
+        'limit': limit,
+        'offset': offset,
+    }
+
+    logging.debug('Job filter request params: {}'.format(params))
+
+    try:
         resp = cocaine_request('get_job_list', msgpack.packb([params]))
 
         def convert_tss_to_dt(d):

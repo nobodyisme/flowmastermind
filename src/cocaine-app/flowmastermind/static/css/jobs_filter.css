@@ -1,0 +1,206 @@
+.filters {
+    display: block;
+    position: relative;
+    width: 100%;
+    min-width: 800px;
+}
+
+.filter-column {
+    display: block;
+    position: absolute;
+    width: 33%;
+}
+
+.filter-column1 {
+    left: 0;
+}
+
+.filter-column2 {
+    left: 33%;
+}
+
+.filter-column3 {
+    left: 66%;
+}
+
+.tags-type-filters {
+    border: 1px solid #eee;
+    margin: 10px 0 12px 0;
+    padding: 5px;
+}
+
+.filter-setter {
+    margin: 0 5px;
+}
+
+.filter-setter input[type='checkbox'] {
+    width: 15px;
+    height: 15px;
+}
+
+.filter-setter .text-core .text-wrap textarea,
+.filter-setter .text-core .text-wrap input {
+    border: 1px solid #ccc;
+}
+
+.filter-setter .text-core .text-wrap .text-dropdown {
+    border: 1px solid #ccc;
+}
+
+.filter-setter .text-core .text-wrap .text-tags .text-tag .text-button {
+    border: 1px solid #ccc;
+    background: #eee;
+}
+
+.filter-setter .text-core .text-wrap .text-dropdown .text-list .text-suggestion.text-selected {
+    color: #333;
+    background: #ccc;
+}
+
+.job-types-groups {
+    padding: 5px 0;
+}
+
+.job-types-group-container {
+    display: block;
+    position: relative;
+    margin: 10px 0 12px 0;
+    border: 1px solid #eee;
+    padding: 5px;
+}
+
+.job-types-group-container > label {
+    display: block;
+    position: absolute;
+    top: -13px;
+    padding: 4px;
+    font-size: 13px;
+    background-color: #fff;
+}
+
+.job-types-group-container .job-types-group {
+    padding-left: 10px;
+}
+
+.job-types-group-container .job-types-group > label {
+    padding-left: 7px;
+    font-size: 12px;
+}
+
+.tags-type-filter {
+    margin: 0 0 7px 0;
+}
+
+.tags-type-filter .filter-label {
+    padding: 2px 0;
+    font-size: 12px;
+}
+
+.tags-type-filter input {
+    width: 300px;
+}
+
+.filter-setter .text-core .text-wrap textarea {
+    width: 300px;
+}
+
+.statuses-filters {
+    border: 1px solid #eee;
+    margin: 10px 0 12px 0;
+    padding: 10px 5px;
+}
+
+.statuses-filters .job-status {
+    padding-left: 10px;
+}
+
+.statuses-filters .job-status > label {
+    padding-left: 7px;
+    font-size: 12px;
+}
+
+.datetime-filters {
+    border: 1px solid #eee;
+    margin: 10px 0 12px 0;
+    padding: 10px 5px;
+    font-size: 12px;
+}
+
+.datetime-filters .datetime-filter-label {
+    padding-left: 10px;
+}
+
+.datetime-filters .datetimes-filter-setter {
+    padding: 5px 0 8px 20px;
+}
+
+.datetime-filters .datetimes-filter-setter .datetime-filter-setter {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.limit-filter {
+    border: 1px solid #eee;
+    margin: 10px 0 12px 0;
+    padding: 5px;
+}
+
+.limit-filter .limit-label {
+    font-size: 12px;
+    padding-left: 10px;
+}
+
+.submit_filter_button {
+    position: absolute;
+    right: 30px;
+    bottom: 0;
+    padding: 3px;
+    width: 220px;
+    color: #454545;
+    font-family: Arial, sans-serif;
+}
+
+.submit_filter_button span {
+    display: block;
+    font-size: 8px;
+    line-height: 12px;
+}
+
+.submit_filter_button span.pre-left {
+    text-align: left;
+}
+
+.submit_filter_button span.button-label {
+    display: inline-block;
+    color: #222;
+    font-size: 16px;
+    padding: 10px;
+    background-color: #ffdb4d;
+    border-radius: 3px;
+    margin: 1px 0 4px 60px;
+}
+
+.submit_filter_button span.button-label:hover {
+    background-color: #ffd43e;
+    cursor: pointer;
+}
+
+.submit_filter_button span.pre-right {
+    /* text-align: right; */
+}
+
+.submit_filter_button span.line-1 {
+    padding-left: 40px;
+}
+
+.submit_filter_button span.line-2-post {
+    display: inline-block;
+}
+
+.submit_filter_button span.line-3 {
+    padding-left: 95px;
+}
+
+.submit_filter_button span.line-4 {
+    padding-left: 120px;
+}

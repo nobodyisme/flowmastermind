@@ -367,6 +367,7 @@
 /* TABS */
 
 .jobs-containers {
+    position: relative;
     margin-right: 2px;
 }
 
@@ -413,6 +414,14 @@
     width: 100%;
     position: absolute;
     top: 80px;
+    left: 0;
+}
+
+.jobs-filter-spinner {
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
     left: 0;
 }
 
