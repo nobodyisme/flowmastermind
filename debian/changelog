@@ -1,3 +1,9 @@
+flowmastermind (1.3) trusty; urgency=medium
+
+  * Fix for new templates
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 13 Oct 2017 00:22:53 +0300
+
 flowmastermind (1.2) trusty; urgency=medium
 
   * Add jobs filter page
