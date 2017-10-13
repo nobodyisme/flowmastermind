@@ -240,7 +240,7 @@ function prefix_int(i) {
 function format_timestamp(ts) {
     var a = new Date(ts * 1000);
     var year = a.getFullYear();
-    var month = prefix_int(a.getMonth());
+    var month = prefix_int(a.getMonth() + 1);
     var date = prefix_int(a.getDate());
     var hour = prefix_int(a.getHours());
     var min = prefix_int(a.getMinutes());
