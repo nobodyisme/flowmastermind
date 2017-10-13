@@ -147,12 +147,21 @@ var Jobs = (function () {
                      '<span class="composite-line-sub">' + state['host'] + '</span></span>' +
                      (state['keys'] ? ', ключей в группах: [' + state['keys'].join(', ') + ']' : '');
         } else if (state['type'] == 'couple_defrag_job') {
-            var fragmentation = [];
+            var fragmentation = [],
+                efficiency = [],
+                namespaces = state['namespaces'] || [];
             state['fragmentation'].forEach(function (data) {
                 fragmentation.push(parseFloat(data * 100).toFixed(2) + '%');
             });
-            title = 'Дефрагментация капла ' + state['couple'] +
-                    ', фрагментация: [' + fragmentation.join(', ') + ']';
+            state['efficiency'] = state['efficiency'] || [];
+            state['efficiency'].forEach(function (data) {
+                efficiency.push(parseFloat(data * 100).toFixed(2) + '%');
+            });
+
+            title = 'Дефрагментация капла ' + state['couple'] + ' из ns ['
+                + namespaces.join(', ') + '], фрагментация: ['
+                + fragmentation.join(', ') + ']' + ', эффективность ['
+                + efficiency.join(', ') + ']';
         } else if (state['type'] == 'restore_group_job') {
             title = 'Восстановление группы ' + state['group'];
             if (state['uncoupled_group']) {
