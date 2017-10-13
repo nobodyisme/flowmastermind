@@ -1,3 +1,9 @@
+flowmastermind (1.5) trusty; urgency=medium
+
+  * Fix run history month view
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 13 Oct 2017 17:27:21 +0300
+
 flowmastermind (1.4) trusty; urgency=medium
 
   * Show more info about defrag
