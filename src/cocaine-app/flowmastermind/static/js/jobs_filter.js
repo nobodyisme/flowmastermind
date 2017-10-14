@@ -12,7 +12,8 @@
         this.offset = offset;
         this.spinner = null;
         this.running = false;
-        this.retryTimeout = 5000;
+        this.retryDelay = 5000;
+        self.retryTimeout = undefined;
     };
 
     Request.prototype.run = function() {
@@ -30,9 +31,14 @@
     };
 
     Request.prototype.cancel = function () {
-        this.running = false;
+        var self = this;
+
+        self.running = false;
         if (self.spinner) {
             self.spinner.stop();
+        }
+        if (self.retryTimeout) {
+            cancelTimeout(self.retryTimeout);
         }
     };
 
@@ -54,6 +60,9 @@
             dataType: 'json',
             type: 'GET',
             success: function (response) {
+                if (!self.running) {
+                    return;
+                }
 
                 if (response['status'] == 'success') {
                     self.spinner.stop();
@@ -76,12 +85,15 @@
                     jobs_updater.reset();
                 } else {
                     self.spinner.blink('#ab2d2d');
-                    setTimeout(self.perform.bind(self), self.retryTimeout);
+                    self.retryTimeout = setTimeout(self.perform.bind(self), self.retryDelay);
                 }
             },
             error: function (data) {
+                if (!self.running) {
+                    return;
+                }
                 self.spinner.blink('#ab2d2d');
-                setTimeout(self.perform.bind(self), self.retryTimeout);
+                self.retryTimeout = setTimeout(self.perform.bind(self), self.retryDelay);
             }
         });
     };
