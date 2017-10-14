@@ -192,7 +192,15 @@
                     { result : textext.itemManager().filter(list, query) }
                 );
             });
-        })
+        });
+
+        $('.tags-type-filter textarea').on('focusout', function (e) {
+            var self = $(this).textext()[0].tags(),
+                val = self.val(),
+                tag = self.itemManager().stringToItem(val);
+            self.addTags([tag]);
+            self.val('');
+        });
     };
 
     function filterJobs(offset) {
