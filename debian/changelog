@@ -1,3 +1,10 @@
+flowmastermind (1.6) trusty; urgency=medium
+
+  * Improve process of cancelling jobs filter requests
+  * Add tags on fields focus out event
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Sat, 14 Oct 2017 17:43:55 +0300
+
 flowmastermind (1.5) trusty; urgency=medium
 
   * Fix run history month view
