@@ -802,6 +802,8 @@ var Jobs = (function () {
             this.renderAddCoupleMetaInfo(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'remove_couple_meta_info') {
             this.renderRemoveCoupleMetaInfo(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'create_groupset') {
+            this.renderCreateGroupset(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -1051,6 +1053,14 @@ var Jobs = (function () {
 
         title += 'Удаление мета-информации о капле ' + task_state['couple'];
         title += ' из групсета ' + task_state['groupset'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderCreateGroupset = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Создание групсета ' + task_state['groupset'] + ' типа ' + task_state['groupset_type'];
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
     }
