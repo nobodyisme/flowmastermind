@@ -1,3 +1,9 @@
+flowmastermind (1.8) trusty; urgency=medium
+
+  * Show namespace end ts
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Tue, 24 Oct 2017 13:26:30 +0300
+
 flowmastermind (1.7) trusty; urgency=medium
 
   * Render create groupset task
