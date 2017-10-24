@@ -193,6 +193,12 @@
                 ns_per_dc_data = namespaces_per_dc_data[ns];
                 ns_data = namespaces_data[ns];
 
+            var can_be_full_data = ns_data['can_be_full'] || {};
+            ns_chart.namespace_end_ts.text(
+                'Место может закончиться: ' + dateToStr(new Date(can_be_full_data['ts'] * 1000)) +
+                ' (ещё ' + Math.round(can_be_full_data['remaining_hours']).toFixed(2) + ' часов)'
+            );
+
             ns_chart.emp_pies.update(ns_data);
             ns_chart.tmp_pies.update(ns_data);
             ns_chart.lrc_em_pies.update(ns_data);
@@ -218,6 +224,8 @@
 
             var chart_set = $('<div class="chart-set" id="' + ns + '">'),
                 chart_label = $('<span class="ns-chart-label">').appendTo(chart_set),
+                namespace_name = $('<div>').appendTo(chart_label),
+                namespace_end_ts = $('<div class="ns-end-ts">').appendTo(chart_label),
                 clear2 = $('<span class="clear">').appendTo(chart_set);
 
             insertAlphabetically(chart_set, ns_container, byId);
@@ -244,11 +252,12 @@
                 c_bars = new CouplesBar('.c-chart-' + ns, 'каплы'),
                 co_bars = new OutagesBar('.co-chart-' + ns, 'отключение ДЦ*', '* что произойдет, если отключится конкретный ДЦ');
 
-            chart_label.text('Неймспейс ' + ns);
+            namespace_name.text('Неймспейс ' + ns);
 
             $('<span class="clear">').appendTo(chart_set);
 
             namespaces[ns] = {
+                'namespace_end_ts': namespace_end_ts,
                 'emp_pies': emp_pies,
                 'tmp_pies': tmp_pies,
                 'lrc_em_pies': lrc_em_pies,

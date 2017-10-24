@@ -94,6 +94,10 @@ span.chart-label-small {
     text-align: center;
 }
 
+.ns-end-ts {
+    font-size: 14px;
+}
+
 .ns-chart-label {
     display: block;
     padding: 10px 0 5px 20px;
