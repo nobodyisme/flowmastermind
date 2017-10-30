@@ -736,6 +736,9 @@ var Jobs = (function () {
                         if (record['artifacts']) {
                             var artifacts_col = $('<td colspan="6">').appendTo(artifacts_row);
 
+                            if (record['error_msg']) {
+                                $('<td>').text('Ошибка: ' + record['error_msg']).appendTo(artifacts_col);
+                            }
                             $('<textarea class="artifacts">').text(JSON.stringify(record['artifacts'], null, 4)).appendTo(artifacts_col);
 
                             artifacts_row.appendTo(table);
