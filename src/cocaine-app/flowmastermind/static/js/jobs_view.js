@@ -489,8 +489,8 @@ var Jobs = (function () {
             error_list = $('<div class="job-errorlist">').prependTo(task_list);
             var error_list_header = $('<div class="job-errorlist-header">').appendTo(error_list),
                 error_list_last = $('<div class="job-errorlist-last">').appendTo(error_list),
-                more_btn = $('<a href="#" class="job-errorlist-showmore-btn">').appendTo(error_list);
-                error_list_more = $('<div class="job-errorlist-more">').appendTo(error_list),
+                more_btn = $('<a href="#" class="job-errorlist-showmore-btn">').appendTo(error_list),
+                error_list_more = $('<div class="job-errorlist-more">').appendTo(error_list);
             error_list_more.css('display', 'none');
             error_list_header.text('Ошибки:');
 
