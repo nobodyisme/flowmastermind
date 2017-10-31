@@ -1,3 +1,11 @@
+flowmastermind (1.9) trusty; urgency=medium
+
+  * Render lrc_list task info
+  * Add info about task attempt error
+  * Polish code
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Tue, 31 Oct 2017 12:14:10 +0300
+
 flowmastermind (1.8) trusty; urgency=medium
 
   * Show namespace end ts

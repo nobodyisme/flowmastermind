@@ -489,8 +489,8 @@ var Jobs = (function () {
             error_list = $('<div class="job-errorlist">').prependTo(task_list);
             var error_list_header = $('<div class="job-errorlist-header">').appendTo(error_list),
                 error_list_last = $('<div class="job-errorlist-last">').appendTo(error_list),
-                more_btn = $('<a href="#" class="job-errorlist-showmore-btn">').appendTo(error_list);
-                error_list_more = $('<div class="job-errorlist-more">').appendTo(error_list),
+                more_btn = $('<a href="#" class="job-errorlist-showmore-btn">').appendTo(error_list),
+                error_list_more = $('<div class="job-errorlist-more">').appendTo(error_list);
             error_list_more.css('display', 'none');
             error_list_header.text('Ошибки:');
 
@@ -736,6 +736,9 @@ var Jobs = (function () {
                         if (record['artifacts']) {
                             var artifacts_col = $('<td colspan="6">').appendTo(artifacts_row);
 
+                            if (record['error_msg']) {
+                                $('<td>').text('Ошибка: ' + record['error_msg']).appendTo(artifacts_col);
+                            }
                             $('<textarea class="artifacts">').text(JSON.stringify(record['artifacts'], null, 4)).appendTo(artifacts_col);
 
                             artifacts_row.appendTo(table);
@@ -756,6 +759,7 @@ var Jobs = (function () {
             || task_state['type'] == 'lrc_recovery'
             || task_state['type'] == 'rsync_backend_task'
             || task_state['type'] == 'lrc_tools'
+            || task_state['type'] == 'lrc_list'
         ) {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
