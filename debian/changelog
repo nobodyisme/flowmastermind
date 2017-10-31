@@ -1,3 +1,9 @@
+flowmastermind (1.11) trusty; urgency=medium
+
+  * Add job link
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Tue, 31 Oct 2017 22:05:19 +0300
+
 flowmastermind (1.10) trusty; urgency=medium
 
   * Fix task title for dnet_client commands
