@@ -878,6 +878,8 @@ var Jobs = (function () {
             } else if (task_state['params']['group']) {
                 title += 'группы ' + task_state['params']['group'];
             }
+        } else if (task_state['cmd']) {
+            var title = task_state['cmd'];
         }
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
