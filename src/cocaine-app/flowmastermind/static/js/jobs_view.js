@@ -268,7 +268,14 @@ var Jobs = (function () {
             this.createTask(task_list, state['tasks'][idx]);
         }
 
-        job_id.text('id: ' + uid);
+        job_id.append("<span>id: </span>");
+        var job_link = $('<a>');
+        job_link.attr('href', '/job/' + uid + '/');
+        job_link.text(uid);
+        job_link.on('click', function (event) {
+            event.stopPropagation();
+        });
+        job_id.append(job_link);
 
         job.appendTo(this.cont);
     };
