@@ -277,6 +277,20 @@ var Jobs = (function () {
         });
         job_id.append(job_link);
 
+        var copy_job_id_icon = $('<img width="16" height="16" src="/static/img/copy.png" class="job-id-copy-icon">').appendTo(job_id);
+        copy_job_id_icon.attr('alt', 'скопировать в буфер');
+        copy_job_id_icon.on('click', function (event) {
+            var self = $(this),
+                job_link = self.siblings('a')[0];
+            copyToClipboard(job_link);
+            event.stopPropagation();
+
+            copy_job_id_icon.attr('src', '/static/img/completed.png');
+            setTimeout(function () {
+                copy_job_id_icon.attr('src', '/static/img/copy.png');
+            }, 1000);
+        });
+
         job.appendTo(this.cont);
     };
 

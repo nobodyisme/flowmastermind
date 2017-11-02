@@ -169,6 +169,13 @@
     padding: 0 10px;
 }
 
+.job-id .job-id-copy-icon {
+    cursor: pointer;
+    vertical-align: middle;
+    padding-left: 8px;
+    margin-top: -4px;
+}
+
 .job-search {
     text-align: right;
 }
