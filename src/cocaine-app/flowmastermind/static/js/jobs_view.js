@@ -298,6 +298,7 @@ var Jobs = (function () {
         var task = $('<div class="task">'),
             task_status_icon = $('<div class="task-status-icon">').appendTo(task),
             task_title = $('<div class="task-title">').appendTo(task),
+            task_id = $('<div class="task-id">').appendTo(task_title),
             task_maintitle = $('<div class="task-maintitle">').appendTo(task_title),
             task_subtitle = $('<div class="task-subtitle">').appendTo(task_title),
             task_time = $('<div class="task-time">').appendTo(task),
@@ -309,6 +310,22 @@ var Jobs = (function () {
             task_run_history = $('<div class="task-run-history">').appendTo(task);
 
         this.renderCustomTaskFields(task_state, task_maintitle, task_subtitle, task_additional_data);
+
+        task_id.append("<span>id: <span>");
+        task_id.append('<span class="task-id-label">' + task_state['id'] + "</span>");
+        var copy_task_id_icon = $('<img width="16" height="16" src="/static/img/copy.png" class="task-id-copy-icon">').appendTo(task_id);
+        copy_task_id_icon.attr('alt', 'скопировать в буфер');
+        copy_task_id_icon.on('click', function (event) {
+            var self = $(this),
+                task_id_label = self.siblings('span.task-id-label')[0];
+            copyToClipboard(task_id_label);
+            event.stopPropagation();
+
+            copy_task_id_icon.attr('src', '/static/img/completed.png');
+            setTimeout(function () {
+                copy_task_id_icon.attr('src', '/static/img/copy.png');
+            }, 1000);
+        });
 
         task.appendTo(task_list);
     };
