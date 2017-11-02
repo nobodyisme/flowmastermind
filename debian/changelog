@@ -1,3 +1,9 @@
+flowmastermind (1.13) trusty; urgency=medium
+
+  * Add task ids
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Fri, 03 Nov 2017 00:27:18 +0300
+
 flowmastermind (1.12) trusty; urgency=medium
 
   * Add job id copy icon
