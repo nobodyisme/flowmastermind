@@ -685,54 +685,6 @@ def json_command_status(uid):
     return resp
 
 
-@app.route('/json/commands/execute/node/shutdown/', methods=['POST'])
-@json_response
-def json_commands_node_shutdown():
-    node = request.form.get('node')
-    host, port = node.split(':')
-    if not node:
-        raise ValueError('Node should be specified')
-    cmd_resp = cocaine_request(
-        'shutdown_node_cmd',
-        msgpack.packb([host.encode('utf-8'), int(port)])
-    )
-    cmd = mastermind_response(cmd_resp)
-
-    resp = cocaine_request(
-        'execute_cmd',
-        msgpack.packb([host, cmd, {'node': node}])
-    )
-    resp = mastermind_response(resp)
-
-    uid = resp.keys()[0]
-
-    return uid
-
-
-@app.route('/json/commands/execute/node/start/', methods=['POST'])
-@json_response
-def json_commands_node_start():
-    node = request.form.get('node')
-    host, port = node.split(':')
-    if not node:
-        raise ValueError('Node should be specified')
-    cmd_resp = cocaine_request(
-        'start_node_cmd',
-        msgpack.packb([host.encode('utf-8'), int(port)])
-    )
-    cmd = mastermind_response(cmd_resp)
-
-    resp = cocaine_request(
-        'execute_cmd',
-        msgpack.packb([host, cmd, {'node': node}])
-    )
-    resp = mastermind_response(resp)
-
-    uid = resp.keys()[0]
-
-    return uid
-
-
 @app.route('/json/monitor/couple-free-effective-space/<namespace>/')
 @json_response
 def json_monitor_couple_free_eff_space(namespace):
