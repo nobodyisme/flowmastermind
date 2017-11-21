@@ -201,18 +201,29 @@ TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 TotalMemoryPie.prototype.labels = {
     free_space: 'свободно',
-    removed_keys_size: 'удалено',
-    committed_keys_size: 'закоммиченно',
-    uncommitted_keys_size: 'незакоммиченно',
-    uncoupled_space: 'не используется',
     bad_free_space: 'недоступное свободное',
+    uncommitted_keys_size: 'незакоммиченно',
+    committed_keys_size: 'закоммиченно',
+    removed_keys_size: 'удалено',
+    uncoupled_space: 'не используется',
 };
 
 TotalMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_space', 'removed_keys_size', 'committed_keys_size',
-            'uncommitted_keys_size', 'uncoupled_space', 'bad_free_space'])
-    .range(['rgb(78,201,106)', 'rgb(97, 99, 232)', 'rgb(200,200,200)',
-            'rgb(224, 210, 122)', 'rgb(246,244,158)', 'rgb(240,72,72)']);
+    .domain([
+        'free_space',
+        'bad_free_space',
+        'uncommitted_keys_size',
+        'committed_keys_size',
+        'removed_keys_size',
+        'uncoupled_space',
+    ]).range([
+        'rgb(78,201,106)',
+        'rgb(240,72,72)',
+        'rgb(224, 210, 122)',
+        'rgb(200,200,200)',
+        'rgb(97, 99, 232)',
+        'rgb(246,244,158)',
+    ]);
 
 TotalMemoryPie.prototype.prepareData = function(rawdata) {
     var data = [];
