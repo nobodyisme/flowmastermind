@@ -245,7 +245,7 @@ LrcMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 
 LrcMemoryPie.prototype.labels = {
     free_lrc_space: 'свободно',
-    bad_free_space: 'недоступное свободное',
+    bad_free_lrc_space: 'недоступное свободное',
     uncommitted_lrc_keys_size: 'незакоммиченно',
     committed_lrc_space: 'закоммиченно',
     removed_lrc_keys_size: 'удалено',
@@ -254,7 +254,7 @@ LrcMemoryPie.prototype.labels = {
 };
 
 LrcMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_lrc_space', 'bad_free_space', 'uncommitted_lrc_keys_size',
+    .domain(['free_lrc_space', 'bad_free_lrc_space', 'uncommitted_lrc_keys_size',
             'committed_lrc_space', 'removed_lrc_keys_size', 'uncoupled_lrc_space', 'reserved_lrc_space'])
     .range(['rgb(78,201,106)', 'rgb(240,72,72)', 'rgb(224, 210, 122)',
             'rgb(200,200,200)', 'rgb(97, 99, 232)', 'rgb(246,244,158)', 'rgb(133, 229, 219)']);
@@ -267,7 +267,7 @@ LrcMemoryPie.prototype.prepareData = function(rawdata) {
     data.push({value: rawdata['total_lrc_space']
             - rawdata['free_lrc_space']
             - rawdata['used_lrc_space'],
-               type: 'bad_free_space'});
+               type: 'bad_free_lrc_space'});
     data.push({value: rawdata['uncommitted_lrc_keys_size'],
                type: 'uncommitted_lrc_keys_size'});
     data.push({value: rawdata['used_lrc_space']
