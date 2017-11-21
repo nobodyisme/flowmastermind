@@ -131,6 +131,7 @@ EffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40}
 EffectiveMemoryPie.prototype.labels = {
     effective_free_space: 'свободно',
     bad_effective_free_space: 'недоступно',
+    downtimed_effective_free_space: 'свободное в даунтайме',
     wasted_effective_free_space: 'свободное в FROZEN|ARCHIVED капле',
     reserved_effective_free_space: 'зарезервировано свободное',
     effective_uncommitted_keys_size: 'незакоммиченно',
@@ -142,6 +143,7 @@ EffectiveMemoryPie.prototype.color = d3.scale.ordinal()
     .domain([
         'effective_free_space',
         'bad_effective_free_space',
+        'downtimed_effective_free_space',
         'wasted_effective_free_space',
         'reserved_effective_free_space',
         'effective_uncommitted_keys_size',
@@ -151,6 +153,7 @@ EffectiveMemoryPie.prototype.color = d3.scale.ordinal()
     .range([
         'rgb(78,201,106)',
         'rgb(240,72,72)',
+        'rgb(68, 136, 255)',
         'rgb(184, 121, 209)',
         'rgb(58, 170, 209)',
         'rgb(224, 210, 122)',
@@ -170,6 +173,7 @@ LrcEffectiveMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 
 LrcEffectiveMemoryPie.prototype.labels = {
     effective_free_lrc_space: 'свободно',
     bad_effective_free_lrc_space: 'недоступно свободное',
+    downtimed_effective_free_lrc_space: 'свободное в даунтайме',
     effective_uncommitted_lrc_keys_size: 'незакоммиченно',
     effective_used_lrc_space: 'закоммиченно',
     effective_removed_lrc_keys_size: 'удалено',
@@ -179,6 +183,7 @@ LrcEffectiveMemoryPie.prototype.color = d3.scale.ordinal()
     .domain([
         'effective_free_lrc_space',
         'bad_effective_free_lrc_space',
+        'downtimed_effective_free_lrc_space',
         'effective_uncommitted_lrc_keys_size',
         'effective_used_lrc_space',
         'effective_removed_lrc_keys_size',
@@ -186,6 +191,7 @@ LrcEffectiveMemoryPie.prototype.color = d3.scale.ordinal()
     .range([
         'rgb(78,201,106)',
         'rgb(240,72,72)',
+        'rgb(68, 136, 255)',
         'rgb(224, 210, 122)',
         'rgb(200,200,200)',
         'rgb(97, 99, 232)',
@@ -202,6 +208,7 @@ TotalMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 TotalMemoryPie.prototype.labels = {
     free_space: 'свободно',
     bad_free_space: 'недоступное свободное',
+    downtimed_free_space: 'свободное в даунтайме',
     uncommitted_keys_size: 'незакоммиченно',
     committed_keys_size: 'закоммиченно',
     removed_keys_size: 'удалено',
@@ -212,6 +219,7 @@ TotalMemoryPie.prototype.color = d3.scale.ordinal()
     .domain([
         'free_space',
         'bad_free_space',
+        'downtimed_free_space',
         'uncommitted_keys_size',
         'committed_keys_size',
         'removed_keys_size',
@@ -219,6 +227,7 @@ TotalMemoryPie.prototype.color = d3.scale.ordinal()
     ]).range([
         'rgb(78,201,106)',
         'rgb(240,72,72)',
+        'rgb(68, 136, 255)',
         'rgb(224, 210, 122)',
         'rgb(200,200,200)',
         'rgb(97, 99, 232)',
@@ -232,8 +241,11 @@ TotalMemoryPie.prototype.prepareData = function(rawdata) {
                type: 'free_space'});
     data.push({value: rawdata['total_space']
                       - rawdata['free_space']
+                      - rawdata['downtimed_free_space']
                       - rawdata['used_space'],
                type: 'bad_free_space'});
+    data.push({value: rawdata['downtimed_free_space'],
+               type: 'downtimed_free_space'});
     data.push({value: rawdata['uncommitted_keys_size'],
                type: 'uncommitted_keys_size'});
     data.push({value: rawdata['used_space']
@@ -257,6 +269,7 @@ LrcMemoryPie.prototype.margin = {top: 50, right: 10, left: 10, bottom: 40};
 LrcMemoryPie.prototype.labels = {
     free_lrc_space: 'свободно',
     bad_free_lrc_space: 'недоступное свободное',
+    downtimed_free_lrc_space: 'свободное в даунтайме',
     uncommitted_lrc_keys_size: 'незакоммиченно',
     committed_lrc_space: 'закоммиченно',
     removed_lrc_keys_size: 'удалено',
@@ -265,9 +278,9 @@ LrcMemoryPie.prototype.labels = {
 };
 
 LrcMemoryPie.prototype.color = d3.scale.ordinal()
-    .domain(['free_lrc_space', 'bad_free_lrc_space', 'uncommitted_lrc_keys_size',
+    .domain(['free_lrc_space', 'bad_free_lrc_space', 'downtimed_free_lrc_space', 'uncommitted_lrc_keys_size',
             'committed_lrc_space', 'removed_lrc_keys_size', 'uncoupled_lrc_space', 'reserved_lrc_space'])
-    .range(['rgb(78,201,106)', 'rgb(240,72,72)', 'rgb(224, 210, 122)',
+    .range(['rgb(78,201,106)', 'rgb(240,72,72)', 'rgb(68, 136, 255)', 'rgb(224, 210, 122)',
             'rgb(200,200,200)', 'rgb(97, 99, 232)', 'rgb(246,244,158)', 'rgb(133, 229, 219)']);
 
 LrcMemoryPie.prototype.prepareData = function(rawdata) {
@@ -277,8 +290,11 @@ LrcMemoryPie.prototype.prepareData = function(rawdata) {
                type: 'free_lrc_space'});
     data.push({value: rawdata['total_lrc_space']
             - rawdata['free_lrc_space']
+            - rawdata['downtimed_free_lrc_space']
             - rawdata['used_lrc_space'],
                type: 'bad_free_lrc_space'});
+    data.push({value: rawdata['downtimed_free_lrc_space'],
+               type: 'downtimed_free_lrc_space'});
     data.push({value: rawdata['uncommitted_lrc_keys_size'],
                type: 'uncommitted_lrc_keys_size'});
     data.push({value: rawdata['used_lrc_space']
@@ -305,6 +321,7 @@ CouplesPie.prototype.color = d3.scale.ordinal()
     .domain([
         'open_couples',
         'bad_couples',
+        'downtimed_couples',
         'archived_couples',
         'closed_couples',
         'frozen_couples',
@@ -314,6 +331,7 @@ CouplesPie.prototype.color = d3.scale.ordinal()
     ]).range([
         'rgb(78,201,106)',
         'rgb(240,72,72)',
+        'rgb(68, 136, 255)',
         'rgb(120,120,120)',
         'rgb(200,200,200)',
         'rgb(150,197,255)',
@@ -325,6 +343,7 @@ CouplesPie.prototype.color = d3.scale.ordinal()
 CouplesPie.prototype.labels = {
     open_couples: 'открыто',
     bad_couples: 'недоступно для записи',
+    downtimed_couples: 'в даунтайме',
     archived_couples: 'в архиве',
     closed_couples: 'заполнено',
     frozen_couples: 'заморожено',

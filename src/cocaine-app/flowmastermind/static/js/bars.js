@@ -232,6 +232,7 @@ MemoryBar.prototype.color = d3.scale.ordinal()
         'effective_uncommitted_keys_size',
         'reserved_effective_free_space',
         'wasted_effective_free_space',
+        'downtimed_effective_free_space',
         'bad_effective_free_space',
         'effective_free_space',
         'uncoupled_space',
@@ -242,6 +243,7 @@ MemoryBar.prototype.color = d3.scale.ordinal()
         'rgb(224, 210, 122)',
         'rgb(58, 170, 209)',
         'rgb(184, 121, 209)',
+        'rgb(68, 136, 255)',
         'rgb(240,72,72)',
         'rgb(78,201,106)',
         'rgb(242,238,96)',
@@ -253,13 +255,14 @@ MemoryBar.prototype.labels = {
     effective_uncommitted_keys_size: 'незакоммиченно',
     reserved_effective_free_space: 'зарезервировано свободное',
     wasted_effective_free_space: 'свободное в FROZEN|ARCHIVED капле',
+    downtimed_effective_free_space: 'свободное в даунтайме',
     bad_effective_free_space: 'недоступно',
     effective_free_space: 'свободно',
     uncoupled_space: 'не используется',
 };
 
 MemoryBar.prototype.margin = {top: 50, right: 10, left: 50, bottom: 40};
-MemoryBar.prototype.labelLength = 170;
+MemoryBar.prototype.labelLength = 210;
 
 MemoryBar.prototype.prepareData = Bar.prototype.defaultPrepareData;
 
@@ -272,6 +275,7 @@ TotalMemoryBar.prototype.color = d3.scale.ordinal()
         'removed_keys_size',
         'committed_keys_size',
         'uncommitted_keys_size',
+        'downtimed_free_space',
         'bad_free_space',
         'free_space',
         'uncoupled_space',
@@ -279,6 +283,7 @@ TotalMemoryBar.prototype.color = d3.scale.ordinal()
         'rgb(97, 99, 232)',
         'rgb(200,200,200)',
         'rgb(224, 210, 122)',
+        'rgb(68, 136, 255)',
         'rgb(240,72,72)',
         'rgb(78,201,106)',
         'rgb(242,238,96)',
@@ -288,6 +293,7 @@ TotalMemoryBar.prototype.labels = {
     removed_keys_size: 'удалено',
     committed_keys_size: 'закоммиченно',
     uncommitted_keys_size: 'незакоммиченно',
+    downtimed_free_space: 'свободное в даунтайме',
     bad_free_space: 'недоступное свободное',
     free_space: 'свободно',
     uncoupled_space: 'не используется',
@@ -316,8 +322,12 @@ TotalMemoryBar.prototype.prepareData = function (rawdata) {
                  y: d.value['uncommitted_keys_size'],
                  type: 'uncommitted_keys_size'});
         el.push({x: d.key,
+                 y: d.value['downtimed_free_space'],
+                 type: 'downtimed_free_space'});
+        el.push({x: d.key,
                  y: d.value['total_space']
                     - d.value['free_space']
+                    - d.value['downtimed_free_space']
                     - d.value['used_space'],
                  type: 'bad_free_space'});
         el.push({x: d.key,
@@ -346,6 +356,7 @@ LrcTotalMemoryBar.prototype.color = d3.scale.ordinal()
         'removed_lrc_keys_size',
         'committed_lrc_keys_size',
         'uncommitted_lrc_keys_size',
+        'downtimed_free_lrc_space',
         'bad_free_lrc_space',
         'free_lrc_space',
         'uncoupled_lrc_space',
@@ -355,6 +366,7 @@ LrcTotalMemoryBar.prototype.color = d3.scale.ordinal()
         'rgb(97, 99, 232)',
         'rgb(200,200,200)',
         'rgb(224, 210, 122)',
+        'rgb(68, 136, 255)',
         'rgb(240,72,72)',
         'rgb(78,201,106)',
         'rgb(246,244,158)',
@@ -365,6 +377,7 @@ LrcTotalMemoryBar.prototype.labels = {
     removed_lrc_keys_size: 'помечено удаленными',
     committed_lrc_keys_size: 'закоммиченно',
     uncommitted_lrc_keys_size: 'незакоммиченно',
+    downtimed_free_lrc_space: 'свободное в даунтайме',
     bad_free_lrc_space: 'недоступное свободное',
     free_lrc_space: 'свободно',
     uncoupled_lrc_space: 'не используется',
@@ -393,8 +406,12 @@ LrcTotalMemoryBar.prototype.prepareData = function (rawdata) {
                  y: d.value['uncommitted_lrc_keys_size'],
                  type: 'uncommitted_lrc_keys_size'});
         el.push({x: d.key,
+                 y: d.value['downtimed_free_lrc_space'],
+                 type: 'downtimed_free_lrc_space'});
+        el.push({x: d.key,
                  y: d.value['total_lrc_space']
                     - d.value['free_lrc_space']
+                    - d.value['downtimed_free_lrc_space']
                     - d.value['used_lrc_space'],
                  type: 'bad_free_lrc_space'});
         el.push({x: d.key,
@@ -457,6 +474,7 @@ CouplesBar.prototype.color = d3.scale.ordinal()
         'closed_couples',
         'frozen_couples',
         'open_couples',
+        'downtimed_couples',
         'service_active_couples',
         'service_stalled_couples',
         'uncoupled_groups',
@@ -467,6 +485,7 @@ CouplesBar.prototype.color = d3.scale.ordinal()
         'rgb(200,200,200)',
         'rgb(150,197,255)',
         'rgb(78,201,106)',
+        'rgb(68, 136, 255)',
         'rgb(220, 110, 220)',
         'rgb(140, 70, 140)',
         'rgb(242,238,96)',
@@ -479,6 +498,7 @@ CouplesBar.prototype.labels = {
     closed_couples: 'заполненные каплы',
     frozen_couples: 'замороженные каплы',
     open_couples: 'открытые на запись каплы',
+    downtimed_couples: 'каплы в даунтайме',
     service_active_couples: 'каплы в сервисе',
     service_stalled_couples: 'проблемные каплы в сервисе',
     uncoupled_groups: 'групп не в капле'
@@ -561,6 +581,7 @@ OutagesBar.prototype.color = d3.scale.ordinal()
         'closed_couples',
         'frozen_couples',
         'open_couples',
+        'downtimed_couples',
         'service_active_couples',
         'service_stalled_couples',
     ]).range([
@@ -570,6 +591,7 @@ OutagesBar.prototype.color = d3.scale.ordinal()
         'rgb(200,200,200)',
         'rgb(150,197,255)',
         'rgb(78,201,106)',
+        'rgb(68, 136, 255)',
         'rgb(220, 110, 220)',
         'rgb(140, 70, 140)',
     ]);
@@ -581,6 +603,7 @@ OutagesBar.prototype.labels = {
     closed_couples: 'заполнены',
     frozen_couples: 'заморожено',
     open_couples: 'открыто на запись',
+    downtimed_couples: 'в даунтайме',
     service_active_couples: 'в сервисе',
     service_stalled_couples: 'проблемные в сервисе',
 };
