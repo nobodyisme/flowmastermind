@@ -310,7 +310,7 @@ TreeMap.prototype.periodicUpdate = function () {
         };
         var couple_status = undefined;
         // TODO add info about archived_couples, service_active_couples, service_stalled_couples,
-        // uncoupled_groups, occupied_space/used_space
+        // uncoupled_groups, occupied_space/used_space, downtime couples
         if (self.filter == 'uncoupled_space') {
             couple_status = 'UNCOUPLED';
         } else if (self.filter == 'free_space' || self.filter == 'open_couples') {
