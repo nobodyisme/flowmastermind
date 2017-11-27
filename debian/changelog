@@ -1,3 +1,11 @@
+flowmastermind (1.14) trusty; urgency=medium
+
+  * Show downtime stats
+  * Show stats of space in pie and bars in the same order
+  * Remove unused handles
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Mon, 27 Nov 2017 14:12:06 +0300
+
 flowmastermind (1.13) trusty; urgency=medium
 
   * Add task ids
