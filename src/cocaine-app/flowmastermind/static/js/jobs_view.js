@@ -125,15 +125,12 @@ var Jobs = (function () {
         var title = '';
         if (state['type'] == 'move_job') {
             title = 'Переезд группы ' + state['group'] + ' ' +
-                    'с хоста <span class="composite-line">' + state['src_hostname'] +
+                    'с хоста <span class="composite-line">' + state['src_host'] +
                     ':' + state['src_port'] +
-                    (state['src_backend_id'] != undefined ? '/' + state['src_backend_id'] : '') +
-                    '<span class="composite-line-sub">' + state['src_host'] + '</span></span> ' +
-                    'на хост <span class="composite-line">' + state['dst_hostname'] +
+                    (state['src_backend_id'] != undefined ? '/' + state['src_backend_id'] : '') + '</span> ' +
+                    'на хост <span class="composite-line">' + state['dst_host'] +
                     ':' + state['dst_port'] +
-                    (state['dst_backend_id'] != undefined ? '/' + state['dst_backend_id'] : '') +
-                    '<span class="composite-line-sub">' +
-                    state['dst_host'] + '</span></span>';
+                    (state['dst_backend_id'] != undefined ? '/' + state['dst_backend_id'] : '') + '</span>';
         } else if (state['type'] == 'recover_dc_job') {
             if (state['couple']) {
                 title = 'Восстановление ключей капла ' + state['couple'];
@@ -141,10 +138,9 @@ var Jobs = (function () {
                 title = 'Восстановление ключей группы ' + state['group'];
             }
             title += ' ' +
-                     'на хосте <span class="composite-line">' + state['hostname'] +
+                     'на хосте <span class="composite-line">' + state['host'] +
                      ':' + state['port'] +
-                     (state['backend_id'] != undefined ? '/' + state['backend_id'] : '') +
-                     '<span class="composite-line-sub">' + state['host'] + '</span></span>' +
+                     (state['backend_id'] != undefined ? '/' + state['backend_id'] : '') + '</span>' +
                      (state['keys'] ? ', ключей в группах: [' + state['keys'].join(', ') + ']' : '');
         } else if (state['type'] == 'couple_defrag_job') {
             var fragmentation = [],
@@ -860,8 +856,7 @@ var Jobs = (function () {
         task_maintitle.text(cmdTitle);
         task_maintitle.attr('title', task_state['cmd']);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     };
 
     JobsView.prototype.closeCmdStatus = function () {
@@ -870,13 +865,11 @@ var Jobs = (function () {
     };
 
     JobsView.prototype.renderHistoryRemoveNodeFields = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
-        var cleantitle = 'отвязывание ноды ' + task_state['hostname'] + ':' +
-                        task_state['port'] + ' (' + task_state['host'] + ') ' +
-                        'от группы ' + task_state['group'];
+        var cleantitle = 'отвязывание ноды ' + task_state['host'] + ':' +
+                        task_state['port'] + ' от группы ' + task_state['group'];
         if (task_state['backend_id'] != undefined) {
-            cleantitle = 'отвязывание бэкенда ' + task_state['hostname'] + ':' +
-                        task_state['port'] + '/' + task_state['backend_id'] + ' (' +
-                        task_state['host'] + ') ' + 'от группы ' + task_state['group'];
+            cleantitle = 'отвязывание бэкенда ' + task_state['host'] + ':' +
+                        task_state['port'] + '/' + task_state['backend_id'] + ' от группы ' + task_state['group'];
         }
         task_maintitle.html(cleantitle);
         task_maintitle.attr('title', cleantitle);
@@ -895,8 +888,7 @@ var Jobs = (function () {
         task_maintitle.html(cleantitle);
         task_maintitle.attr('title', cleantitle);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderRemoveGroup = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -904,8 +896,7 @@ var Jobs = (function () {
         task_maintitle.html(cleantitle);
         task_maintitle.attr('title', cleantitle);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderDnetClientBackendCmd = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -922,8 +913,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderWriteMetaKey = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -992,8 +982,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderMarkBackend = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -1012,8 +1001,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderRemovePath = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -1024,8 +1012,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderCreateGroupFile = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -1042,8 +1029,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderCreateIdsFile = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -1054,8 +1040,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderCreateFileMarker = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -1067,8 +1052,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderCheckFileSystem = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -1079,8 +1063,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderAddCoupleMetaInfo = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
@@ -1138,8 +1121,7 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
-            task_state['hostname'] + '<span class="composite-line-sub">' +
-            task_state['host'] + '</span></span>');
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderWriteExternalStorageMapping = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
