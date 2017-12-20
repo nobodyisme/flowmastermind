@@ -1,3 +1,9 @@
+flowmastermind (1.15) trusty; urgency=medium
+
+  * Use 'host' instead of 'hostname'
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 20 Dec 2017 19:19:13 +0300
+
 flowmastermind (1.14) trusty; urgency=medium
 
   * Show downtime stats
