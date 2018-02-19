@@ -836,6 +836,8 @@ var Jobs = (function () {
             this.renderCreateFileMarker(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'check_file_system') {
             this.renderCheckFileSystem(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'check_groupset') {
+            this.renderCheckGroupset(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'add_couple_meta_info') {
             this.renderAddCoupleMetaInfo(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'remove_couple_meta_info') {
@@ -1064,6 +1066,18 @@ var Jobs = (function () {
         task_maintitle.attr('title', title);
         task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
             task_state['host'] + '</span>');
+    }
+
+    JobsView.prototype.renderCheckGroupset = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Проверка групсета ' + task_state['groupset'];
+        if (task_state['check_consistency']) {
+            title += ' на консистентность ключей';
+        }
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
     }
 
     JobsView.prototype.renderAddCoupleMetaInfo = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
