@@ -208,6 +208,13 @@ var Jobs = (function () {
         } else if (state['type'] == 'backend_cleanup_job') {
             title = 'Удаление бекенда ';
             title += 'группы  ' + state['group'];
+        } else if (state['type'] == 'discard_groupset_job') {
+            title = 'Удаление данных групсета ' + state['groupset'];
+            if (state['couples'].length == 1) {
+                title += ' (капл ' + state['couples'][0] + ')';
+            } else if (state['couples'].length > 1) {
+                title += ' (каплы ' + state['couples'].join(', ') + ')';
+            }
         }
         return title;
     };

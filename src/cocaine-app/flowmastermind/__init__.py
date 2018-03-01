@@ -149,6 +149,7 @@ SUPPORTED_JOB_TYPES = (
     'lrc-remove',
     'cleanup',
     'backend_cleanup',
+    'couple-remove-groupset',
 )
 
 
@@ -342,6 +343,9 @@ MM_JOB_TYPES = {
     ),
     'backend_cleanup': (
         'backend_cleanup_job',
+    ),
+    'couple-remove-groupset': (
+        'discard_groupset_job',
     ),
 }
 
