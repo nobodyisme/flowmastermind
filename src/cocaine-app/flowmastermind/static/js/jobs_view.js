@@ -844,6 +844,10 @@ var Jobs = (function () {
             this.renderRemoveCoupleMetaInfo(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'create_groupset') {
             this.renderCreateGroupset(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'check_group_location') {
+            this.renderCheckGroupLocation(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'history_remove_groupset') {
+            this.renderHistoryRemoveGroupset(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -1104,6 +1108,27 @@ var Jobs = (function () {
         title += 'Создание групсета ' + task_state['groupset'] + ' типа ' + task_state['groupset_type'];
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
+    }
+
+    JobsView.prototype.renderCheckGroupLocation = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Соответствие группы ' + task_state['group'];
+        title += ' бекенду ' + task_state['params']['backend'];
+        if (task_state['params']['base_path']) {
+            title += ' (путь ' + task_state['params']['base_path'] + ')';
+        }
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['host'] + '</span>');
+    }
+
+    JobsView.prototype.renderHistoryRemoveGroupset = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'удаление групсета ' + task_state['groupset'] + ' из истории групп';
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.text('очистка истории');
     }
 
     JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
