@@ -968,7 +968,7 @@ var Jobs = (function () {
         title += 'настроек капла ' + task_state['couple'];
 
         if (task_state['settings']['read_preference']) {
-            title += ', приоритеты чтения: ' + task_state['settings']['read_preference'].join(', ');
+            title += ', приоритеты чтения: [' + task_state['settings']['read_preference'].join(', ') + ']';
         }
 
         task_maintitle.html(title);
