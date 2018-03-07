@@ -1120,7 +1120,7 @@ var Jobs = (function () {
     JobsView.prototype.renderCheckGroupLocation = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
         var title = '';
 
-        title += 'Соответствие группы ' + task_state['group'];
+        title += 'Соответствие группы ' + task_state['params']['group'];
         title += ' бекенду ' + task_state['params']['backend'];
         if (task_state['params']['base_path']) {
             title += ' (путь ' + task_state['params']['base_path'] + ')';
