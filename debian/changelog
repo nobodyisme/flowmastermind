@@ -1,3 +1,9 @@
+flowmastermind (1.18) trusty; urgency=medium
+
+  * Fix check group location task rendering
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Wed, 07 Mar 2018 18:13:15 +0300
+
 flowmastermind (1.17) trusty; urgency=medium
 
   * Add remove groupset jobs
