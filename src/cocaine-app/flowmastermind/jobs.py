@@ -22,20 +22,25 @@ lrc_jobs = JobTypesGroup(
     label=u'lrc-групсеты',
     position=1,
 )
+couple_jobs = JobTypesGroup(
+    'couple_jobs',
+    label=u'каплы',
+    position=2,
+)
 convert_jobs = JobTypesGroup(
     'convert_jobs',
     label=u'конвертация',
-    position=2,
+    position=3,
 )
 backend_jobs = JobTypesGroup(
     'backend_jobs',
     label=u'бекенды',
-    position=3,
+    position=4,
 )
 obsolete_jobs = JobTypesGroup(
     'obsolete_jobs',
     label=u'ну такие',
-    position=4,
+    position=5,
 )
 
 job_types_groups = {
@@ -43,6 +48,7 @@ job_types_groups = {
     for job_types_group in (
         replicas_jobs,
         lrc_jobs,
+        couple_jobs,
         convert_jobs,
         backend_jobs,
         obsolete_jobs,
@@ -124,6 +130,11 @@ job_types = {
             'restore_uncoupled_lrc_group_job',
             label=u'восстановление uncoupled-lrc-группы',
             job_types_group_id=lrc_jobs.group_id,
+        ),
+        JobType(
+            'discard_groupset_job',
+            label=u'удаление групсета',
+            job_types_group_id=couple_jobs.group_id,
         ),
 
         JobType(
