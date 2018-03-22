@@ -801,6 +801,7 @@ var Jobs = (function () {
             || task_state['type'] == 'rsync_backend_task'
             || task_state['type'] == 'lrc_tools'
             || task_state['type'] == 'lrc_list'
+            || task_state['type'] == 'lrc_defrag'
         ) {
             this.renderMinionCmdFields(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_node') {
