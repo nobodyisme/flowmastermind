@@ -98,6 +98,13 @@
                     {% endif %}
                 </span>
                 <span class="menu-page-item">
+                    {% if cur_page != 'lrc-defrag' %}
+                        <a href="/jobs/lrc-defrag/">lrc-дефрагментация</a>
+                    {% else %}
+                        <span class="selected">lrc-дефрагментация</span>
+                    {% endif %}
+                </span>
+                <span class="menu-page-item">
                     {% if cur_page != 'cleanup' %}
                         <a href="/jobs/cleanup/">чистка</a>
                     {% else %}
