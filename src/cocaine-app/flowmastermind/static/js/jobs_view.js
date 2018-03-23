@@ -197,6 +197,8 @@ var Jobs = (function () {
             title = 'Синхронизация lrc-группсета ' + state['lrc_groupset'];
         } else if (state['type'] == 'remove_lrc_groupset_job') {
             title = 'Удаление капла ' + state['couple_to_remove'] + ' из lrc-группсета ' + state['lrc_groupset'];
+        } else if (state['type'] == 'defrag_lrc_groupset_job') {
+            title = 'Дефрагментация lrc-групсета ' + state['lrc_groupset'];
         } else if (state['type'] == 'ttl_cleanup_job') {
             title = 'Чистка ключей с истёкшим TTL, ';
             if (state['couple'] != undefined) {

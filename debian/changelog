@@ -1,3 +1,9 @@
+flowmastermind (1.21) trusty; urgency=medium
+
+  * Show title for defrag of lrc groupset
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Fri, 23 Mar 2018 15:50:43 +0300
+
 flowmastermind (1.20) trusty; urgency=medium
 
   * Add defrag lrc groupset jobs
