@@ -107,6 +107,11 @@ job_types = {
             job_types_group_id=lrc_jobs.group_id,
         ),
         JobType(
+            'defrag_lrc_groupset_job',
+            label=u'дефрагментация lrc-групсета',
+            job_types_group_id=lrc_jobs.group_id,
+        ),
+        JobType(
             'restore_lrc_group_job',
             label=u'восстановление lrc-группы',
             job_types_group_id=lrc_jobs.group_id,
