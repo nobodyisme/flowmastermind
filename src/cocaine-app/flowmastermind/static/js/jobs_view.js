@@ -590,7 +590,7 @@ var Jobs = (function () {
                     $('<td>артефакты</td>').appendTo(header_row);
                     $('<td>cледующий запуск</td>').appendTo(header_row);
 
-                    task_state['run_history'].forEach(function (record) {
+                    task_state['run_history'].reverse().forEach(function (record) {
                         var row = $('<tr>');
                         $('<td>').text(format_timestamp(record['start_ts'])).appendTo(row);
                         $('<td>').text(format_timestamp(record['finish_ts'])).appendTo(row);
