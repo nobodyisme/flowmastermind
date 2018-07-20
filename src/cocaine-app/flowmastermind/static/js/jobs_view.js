@@ -858,6 +858,8 @@ var Jobs = (function () {
             this.renderCheckGroupLocation(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'history_remove_groupset') {
             this.renderHistoryRemoveGroupset(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'add_groupset_to_couple') {
+            this.renderAddGroupsetToCouple(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -1139,6 +1141,14 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.text('очистка истории');
+    }
+
+    JobsView.prototype.renderAddGroupsetToCouple = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'Добавление групсета ' + task_state['groupset'] + ' в капл ' + task_state['couple'] +
+            ' (тип ' + task_state['groupset_key'] + ')';
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.text('сохранение в монгу информации о групсете');
     }
 
     JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
