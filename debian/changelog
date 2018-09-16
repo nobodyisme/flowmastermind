@@ -1,3 +1,10 @@
+flowmastermind (1.25) trusty; urgency=medium
+
+  * Change title for add groupset to couple task
+  * Add render remove groupset from couple task
+
+ -- Andrey Vasilenkov <indigo@yandex-team.ru>  Sun, 16 Sep 2018 21:22:21 +0300
+
 flowmastermind (1.24) trusty; urgency=medium
 
   * Add 'add groupset to couple' task
