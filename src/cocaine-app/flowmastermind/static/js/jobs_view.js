@@ -1146,7 +1146,7 @@ var Jobs = (function () {
     }
 
     JobsView.prototype.renderAddGroupsetToCouple = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
-        var title = 'Добавление групсета ' + task_state['groupset'] + ' в капл ' + task_state['couple'] +
+        var title = 'Добавление групсета ' + task_state['groupset'] + ' в запись капла ' + task_state['couple'] + ' в базе '
             ' (тип ' + task_state['groupset_key'] + ')';
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
