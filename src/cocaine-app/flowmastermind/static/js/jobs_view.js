@@ -862,6 +862,8 @@ var Jobs = (function () {
             this.renderAddGroupsetToCouple(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'remove_groupset_from_couple') {
             this.renderRemoveGroupsetFromCouple(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'add_future_backend_record') {
+            this.renderAddFutureBackendRecord(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -1159,6 +1161,15 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.text('сохранение в монгу информации о групсете');
+    }
+
+    JobsView.prototype.renderAddFutureBackendRecord = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'запоминаем что новый бэкенд появится после чистки бэкенда '
+            + task_state['hostname'] + ':' + task_state['fs_path'] + '/' + task_state['relative_path']
+            + ' использовавшегося группой ' + task_state['previous_group_id'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.text('запись о будущем бэкенде');
     }
 
     JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
