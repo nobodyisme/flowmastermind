@@ -1,3 +1,9 @@
+flowmastermind (1.26) trusty; urgency=medium
+
+  * Add 'add_future_backend_record' task
+
+ -- Evgenii Gorinov <jonny-k@yandex-team.ru>  Fri, 18 Jan 2019 15:06:22 +0300
+
 flowmastermind (1.25) trusty; urgency=medium
 
   * Change title for add groupset to couple task
