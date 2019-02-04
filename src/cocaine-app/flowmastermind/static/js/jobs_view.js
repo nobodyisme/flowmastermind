@@ -864,6 +864,8 @@ var Jobs = (function () {
             this.renderRemoveGroupsetFromCouple(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'add_future_backend_record') {
             this.renderAddFutureBackendRecord(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'eblob_kit') {
+            this.renderEblobKit(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -1170,6 +1172,22 @@ var Jobs = (function () {
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
         task_subtitle.text('запись о будущем бэкенде');
+    }
+
+    JobsView.prototype.renderEblobKit = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = 'eblob_kit';
+        if (task_state['params']['json-file']) {
+            title += ' --json-file ' + task_state['params']['json-file'];
+        }
+        if (task_state['params']['log-file']) {
+            title += ' --log-file ' + task_state['params']['log-file'];
+        }
+        title += ' ' + task_state['params']['subcommand'];
+        title += ' ' + task_state['params']['path'];
+        title += ' --destination' + task_state['params']['destination'];
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.text('запуск eblob_kit');
     }
 
     JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
