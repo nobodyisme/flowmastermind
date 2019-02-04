@@ -1,3 +1,17 @@
+flowmastermind (1.28) xenial; urgency=medium
+
+  * Add fix eblobs jobs
+  * Show title for eblob_kit
+  * Add eblob_kit_job to filter
+
+ -- Evgeny Avramenko <kanst9@yandex-team.ru>  Mon, 04 Feb 2019 14:48:20 +0300
+
+flowmastermind (1.27) trusty; urgency=medium
+
+  * Add 'eblob_kit' task
+
+ -- Evgeny Avramenko <kanst9@yandex-team.ru>  Mon, 04 Feb 2019 14:32:07 +0300
+
 flowmastermind (1.26) trusty; urgency=medium
 
   * Add 'add_future_backend_record' task

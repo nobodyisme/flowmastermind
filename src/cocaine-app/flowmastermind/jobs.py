@@ -147,6 +147,11 @@ job_types = {
             label=u'Удаление бекенда',
             job_types_group_id=backend_jobs.group_id,
         ),
+        JobType(
+            'fix_eblobs_job',
+            label=u'eblob_kit',
+            job_types_group_id=backend_jobs.group_id,
+        ),
 
         JobType(
             'add_lrc_groupset_job',

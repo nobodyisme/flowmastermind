@@ -151,6 +151,7 @@ SUPPORTED_JOB_TYPES = (
     'cleanup',
     'backend_cleanup',
     'couple-remove-groupset',
+    'eblob_kit',
 )
 
 
@@ -350,6 +351,9 @@ MM_JOB_TYPES = {
     ),
     'couple-remove-groupset': (
         'discard_groupset_job',
+    ),
+    'eblob_kit': (
+        'fix_eblobs_job',
     ),
 }
 
