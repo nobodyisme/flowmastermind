@@ -868,6 +868,8 @@ var Jobs = (function () {
             this.renderAddFutureBackendRecord(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else if (task_state['type'] == 'eblob_kit') {
             this.renderEblobKit(task_state, task_maintitle, task_subtitle, task_additional_data);
+        } else if (task_state['type'] == 'move_elliptics_data') {
+            this.renderMoveEllipticsData(task_state, task_maintitle, task_subtitle, task_additional_data);
         } else {
             console.log('Unknown task type: ' + task_state['type']);
         }
@@ -1186,10 +1188,23 @@ var Jobs = (function () {
         }
         title += ' ' + task_state['params']['subcommand'];
         title += ' ' + task_state['params']['path'];
-        title += ' --destination' + task_state['params']['destination'];
+        title += ' --destination ' + task_state['params']['destination'];
         task_maintitle.html(title);
         task_maintitle.attr('title', title);
-        task_subtitle.text('запуск eblob_kit');
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['host'] + '</span>');
+    }
+
+    JobsView.prototype.renderMoveEllipticsData = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
+        var title = '';
+
+        title += 'Переименование файлов ' + task_state['params']['move_src'];
+        title += ' в ' + task_state['params']['move_dst'];
+
+        task_maintitle.html(title);
+        task_maintitle.attr('title', title);
+        task_subtitle.html('таск миньона на хосте <span class="composite-line">' +
+            task_state['host'] + '</span>');
     }
 
     JobsView.prototype.renderChangeCoupleFrozenStatus = function(task_state, task_maintitle, task_subtitle, task_additional_data) {
